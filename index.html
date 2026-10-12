@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f2ea" />
+    <meta name="description" content="A thoughtful guide to games, films, series and books for your family." />
+    <title>Little Lens | A clearer way to choose</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#home" aria-label="Little Lens home">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M4 9.5 16 5l12 4.5v13L16 27 4 22.5v-13Z" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="16" r="5.2" stroke="currentColor" stroke-width="1.8"/><path d="m16 10.8 1.6 3.7 3.6 1.5-3.6 1.5-1.6 3.7-1.5-3.7-3.7-1.5 3.7-1.5 1.5-3.7Z" fill="currentColor"/></svg></span>
+          <span class="brand-name">little<span>lens</span></span>
+        </a>
+        <p class="sidebar-label">YOUR FAMILY</p>
+        <button class="nav-link is-active" data-view="discover" type="button"><span class="nav-icon" aria-hidden="true">⌕</span> Discover</button>
+        <button class="nav-link" data-view="saved" type="button"><span class="nav-icon nav-heart" aria-hidden="true">♡</span> Saved <span class="saved-count" id="saved-count">0</span></button>
+
+        <div class="sidebar-note">
+          <span class="note-spark" aria-hidden="true">✳</span>
+          <p>Every family has its own lens.</p>
+          <span>Use our guide as a starting point, then decide what feels right for yours.</span>
+        </div>
+        <div class="sidebar-bottom"><span class="status-dot"></span> A little more peace of mind</div>
+      </aside>
+
+      <main id="home" class="main-content">
+        <header class="topbar">
+          <span class="breadcrumb">FAMILY GUIDE <span>/</span> <strong id="breadcrumb-current">DISCOVER</strong></span>
+          <button class="about-button" id="about-button" type="button"><span aria-hidden="true">ⓘ</span> About our guide</button>
+        </header>
+
+        <section class="welcome-row" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> MAKE ROOM FOR THE GOOD STUFF</p>
+            <h1 id="page-title">A clearer way<br />to <span>choose.</span></h1>
+            <p class="welcome-copy">A little context goes a long way. Find the right next watch, read, or play for your family.</p>
+          </div>
+          <div class="welcome-art" role="img" aria-label="A warm, quiet corner with a book, film and game for family time">
+            <div class="art-window"><div class="window-sun"></div><div class="window-hill hill-one"></div><div class="window-hill hill-two"></div></div>
+            <div class="art-shelf"></div><div class="art-book book-one"></div><div class="art-book book-two"></div><div class="art-cup">✳</div>
+            <span class="art-caption">GOOD STORIES<br />GROW WITH THEM</span>
+          </div>
+        </section>
+
+        <section class="search-panel" aria-label="Find a title">
+          <div class="search-topline"><span>WHAT ARE YOU CURIOUS ABOUT?</span><span class="search-hint">Try a title or a topic</span></div>
+          <form id="search-form" class="search-form">
+            <label class="search-input-wrap" for="search-input"><span class="search-icon" aria-hidden="true">⌕</span><input id="search-input" name="query" type="search" placeholder="Search a film, series, game, book, or creator..." autocomplete="off" /><kbd>↵</kbd></label>
+            <button class="search-button" type="submit">Find a guide <span aria-hidden="true">↗</span></button>
+          </form>
+          <div class="filter-row">
+            <div class="media-filters" role="group" aria-label="Filter by media type">
+              <button class="filter-chip active" data-type="all" type="button">Everything</button>
+              <button class="filter-chip" data-type="movie" type="button"><span aria-hidden="true">▻</span> Films</button>
+              <button class="filter-chip" data-type="series" type="button"><span aria-hidden="true">▤</span> Series</button>
+              <button class="filter-chip" data-type="game" type="button"><span aria-hidden="true">⌘</span> Games</button>
+              <button class="filter-chip" data-type="book" type="button"><span aria-hidden="true">▧</span> Books</button>
+              <button class="filter-chip" data-type="creator" type="button"><span aria-hidden="true">◉</span> Creators</button>
+            </div>
+            <label class="age-filter">FOR AGE <select id="age-filter" aria-label="Filter titles by child age"><option value="any">Any age</option><option value="2">2+</option><option value="3">3+</option><option value="6">6+</option><option value="9">9+</option><option value="12">12+</option><option value="15">15+</option><option value="18">18+</option></select></label>
+          </div>
+        </section>
+
+        <section class="results-section" aria-labelledby="results-title">
+          <div class="results-heading"><div><p class="eyebrow results-eyebrow" id="results-kicker">A FEW GOOD PLACES TO START</p><h2 id="results-title">Popular with families <span class="result-count" id="result-count"></span></h2></div><button id="clear-filters" class="clear-button" type="button">Clear filters <span aria-hidden="true">↺</span></button></div>
+          <div class="search-context" id="search-context" aria-live="polite"></div>
+          <div id="results" class="results-grid" aria-live="polite"></div>
+          <p class="results-footnote"><span aria-hidden="true">✳</span> Age guidance is a starting point, not a rulebook. Ratings vary by country, and every kid is different.</p>
+        </section>
+        <footer class="mobile-footer"><span class="status-dot"></span> A little more peace of mind</footer>
+      </main>
+    </div>
+
+    <dialog id="title-dialog" class="title-dialog" aria-labelledby="detail-title">
+      <form method="dialog" class="detail-close-form"><button class="dialog-close" aria-label="Close title details">×</button></form>
+      <div id="detail-content"></div>
+      <form method="dialog"><button class="dialog-done">Close guide</button></form>
+    </dialog>
+
+    <dialog id="about-dialog" class="about-dialog">
+      <form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form>
+      <p class="eyebrow">A NOTE FROM US</p><h2>Helpful context.<br /><span>Your call.</span></h2>
+      <p>Little Lens is a small, hand-curated guide to common titles. Ages are recommendations, not guarantees, and a title's official rating can vary by country, edition, or platform.</p>
+      <p>We call out common themes to help you decide what fits your child. We don't have a verified guide for every title yet; when we don't, we'll say so rather than guess.</p>
+      <p>Entries imported from the supplied spreadsheet show a provisional ~13+ placeholder until reviewed. It is not based on a title-specific assessment or an official rating; check the source rating and preview the content before deciding.</p>
+      <p class="dialog-last">You know your kid best. That's the lens that matters.</p>
+      <form method="dialog"><button class="dialog-done">Got it</button></form>
+    </dialog>
+  </body>
+</html>
