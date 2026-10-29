@@ -133,8 +133,44 @@ const themeNotes = {
   "Wildlife encounters": { concern: true, note: "Videos show real animals; close-up footage may be unsettling or unsafe to imitate." },
   "Violence": { concern: true, note: "Violence is a notable part of the story; its intensity can vary across episodes or scenes." },
 };
-const state = { query: "", type: "all", age: "any", view: "discover" };
-const savedTitles = new Set(JSON.parse(localStorage.getItem("little-lens-saved") || "[]"));
+const genreOptions = {
+  "Animation": ["animation", "animated", "pixar", "dreamworks", "studio ghibli"],
+  "Fantasy": ["fantasy", "magic", "myth", "dragon", "wizard"],
+  "Adventure": ["adventure", "peril", "quest", "exploration"],
+  "Comedy": ["comedy", "humor", "funny", "sitcom"],
+  "Science & nature": ["science", "nature", "documentary", "wildlife", "planet", "engineering"],
+  "Family & friendship": ["family", "friendship", "kindness", "relationships"],
+  "Puzzles & building": ["puzzle", "sandbox", "building", "creativity", "platformer", "simulation"],
+  "Sports & competition": ["sports", "racing", "competition", "football", "soccer"],
+  "Mystery & spooky": ["mystery", "horror", "creepy", "scary"],
+  "Action": ["action", "combat", "battle", "superhero"],
+};
+const defaultProfile = { id: "child-1", name: "My child", age: 8, genres: [], avoid: [], likes: [], searches: [] };
+function readStoredJson(key, fallback) {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+let profiles = readStoredJson("little-lens-profiles", [defaultProfile]);
+if (!Array.isArray(profiles) || !profiles.length) profiles = [{ ...defaultProfile }];
+profiles = profiles.map((profile, index) => ({
+  ...defaultProfile,
+  ...profile,
+  id: profile.id || `child-${index + 1}`,
+  age: Math.min(18, Math.max(2, Number(profile.age) || 8)),
+  genres: Array.isArray(profile.genres) ? profile.genres : [],
+  avoid: Array.isArray(profile.avoid) ? profile.avoid : [],
+  likes: Array.isArray(profile.likes) ? profile.likes : [],
+  searches: Array.isArray(profile.searches) ? profile.searches : [],
+}));
+let activeProfileId = readStoredJson("little-lens-active-profile", profiles[0].id);
+if (!profiles.some((profile) => profile.id === activeProfileId)) activeProfileId = profiles[0].id;
+const state = { query: "", type: "all", age: "profile", view: "discover" };
+const savedTitles = new Set(readStoredJson("little-lens-saved", []));
+const titleReviews = readStoredJson("little-lens-reviews", {});
 
 const results = document.querySelector("#results");
 const searchInput = document.querySelector("#search-input");
@@ -142,19 +178,119 @@ const ageFilter = document.querySelector("#age-filter");
 const resultCount = document.querySelector("#result-count");
 const searchContext = document.querySelector("#search-context");
 
+function getActiveProfile() {
+  return profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
+}
+
+function getAgeLimit() {
+  const profileAge = getActiveProfile().age;
+  return state.age === "profile" ? profileAge : Math.min(profileAge, Number(state.age));
+}
+
+function persistProfiles() {
+  localStorage.setItem("little-lens-profiles", JSON.stringify(profiles));
+  localStorage.setItem("little-lens-active-profile", JSON.stringify(activeProfileId));
+}
+
+function itemSearchText(item) {
+  return `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase();
+}
+
+function matchesGenre(item, genre) {
+  const text = itemSearchText(item);
+  return genreOptions[genre].some((keyword) => text.includes(keyword));
+}
+
+function recommendationScore(item) {
+  const profile = getActiveProfile();
+  let score = profile.genres.reduce((total, genre) => total + (matchesGenre(item, genre) ? 4 : 0), 0);
+  const likedTags = profile.likes
+    .map((key) => titles.find((title) => titleKey(title) === key))
+    .filter(Boolean)
+    .flatMap((title) => title.tags);
+  score += item.tags.filter((tag) => likedTags.includes(tag)).length * 2;
+  const searchTerms = profile.searches.flatMap((query) => query.toLowerCase().split(/\s+/)).filter((term) => term.length > 2);
+  score += searchTerms.reduce((total, term) => total + (itemSearchText(item).includes(term) ? 1 : 0), 0);
+  return score;
+}
+
+function renderProfileControls() {
+  const select = document.querySelector("#profile-select");
+  select.innerHTML = profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.name)} · age ${profile.age}</option>`).join("");
+  select.value = activeProfileId;
+}
+
 function titleKey(item) {
   return `${item.type}:${item.title}`;
 }
 
+function getTitleDescription(item) {
+  const catalogDetails = item.maker.split("·").map((part) => part.trim());
+  const source = catalogDetails[0];
+  const descriptor = catalogDetails[1];
+  const format = item.type === "book" && descriptor ? `a ${descriptor.toLowerCase()}` : `a ${typeNames[item.type].toLowerCase()}`;
+  const sourceText = item.type === "book" ? `by ${source}` : `from ${source}`;
+  const detailText = descriptor && item.type !== "book" ? ` Catalog details describe it as ${descriptor.toLowerCase()}.` : "";
+  const themeText = item.tags.length ? ` This guide flags themes of ${item.tags.join(", ")}.` : "";
+  return `${item.title} is listed as ${format} ${sourceText}.${detailText}${themeText}`;
+}
+
+function getReviews(item) {
+  const reviews = titleReviews[titleKey(item)];
+  return Array.isArray(reviews) ? reviews : [];
+}
+
+function renderReviews(item) {
+  const reviews = getReviews(item);
+  const average = reviews.length ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) : null;
+  const reviewCards = reviews.length
+    ? reviews.slice().reverse().map((review) => `<article class="family-review"><div class="review-heading"><strong>${escapeHtml(review.profileName)}</strong><span class="review-stars" aria-label="${review.score} out of 5 stars">${"★".repeat(review.score)}${"☆".repeat(5 - review.score)}</span></div><p class="review-fit">${escapeHtml(review.fit)}</p><p class="review-comment">${escapeHtml(review.comment)}</p><time>${escapeHtml(new Date(review.createdAt).toLocaleDateString())}</time></article>`).join("")
+    : `<p class="reviews-empty">No family notes for this title yet. Add the first one for ${escapeHtml(getActiveProfile().name)}.</p>`;
+
+  return `<section class="review-section" aria-labelledby="reviews-title">
+    <div class="review-section-heading"><div><p class="eyebrow">FAMILY EXPERIENCES</p><h3 id="reviews-title">Ratings &amp; notes</h3></div><p class="review-average">${average ? `<strong>${average}</strong><span class="review-stars" aria-label="Average ${average} out of 5 stars">${"★".repeat(Math.round(Number(average)))}${"☆".repeat(5 - Math.round(Number(average)))}</span><small>${reviews.length} ${reviews.length === 1 ? "note" : "notes"}</small>` : "No ratings yet"}</p></div>
+    <p class="review-privacy-note">These notes are saved in this browser only. They are not shared with other families.</p>
+    <div class="review-list">${reviewCards}</div>
+    <form id="review-form" class="review-form">
+      <h4>How did it fit your child?</h4>
+      <fieldset class="star-rating"><legend>Your rating</legend><div class="star-options">${[1, 2, 3, 4, 5].map((score) => `<label title="${score} out of 5"><input type="radio" name="review-rating" value="${score}" required><span aria-hidden="true">★</span><span class="visually-hidden">${score} out of 5</span></label>`).join("")}</div></fieldset>
+      <label class="review-fit-label">Overall fit<select name="fit"><option>Great fit</option><option>Mixed fit</option><option>Not a fit</option></select></label>
+      <label class="review-comment-label">Your comment<textarea name="comment" maxlength="600" required placeholder="What worked well, or what should another family know?" rows="3"></textarea></label>
+      <div class="review-form-footer"><span>Saved under ${escapeHtml(getActiveProfile().name)} on this device.</span><button type="submit">Save note</button></div>
+    </form>
+  </section>`;
+}
+
+function submitReview(item, form) {
+  const formData = new FormData(form);
+  const score = Number(formData.get("review-rating"));
+  const comment = String(formData.get("comment") || "").trim();
+  if (!score || !comment) return;
+  const key = titleKey(item);
+  const reviews = getReviews(item);
+  reviews.push({
+    profileId: getActiveProfile().id,
+    profileName: getActiveProfile().name,
+    score,
+    fit: String(formData.get("fit")),
+    comment,
+    createdAt: new Date().toISOString(),
+  });
+  titleReviews[key] = reviews;
+  localStorage.setItem("little-lens-reviews", JSON.stringify(titleReviews));
+  showTitleDetails(item);
+}
+
 function getVisibleTitles() {
   const query = state.query.trim().toLowerCase();
+  const profile = getActiveProfile();
   return titles.filter((item) => {
     const matchesType = state.type === "all" || item.type === state.type;
-    const matchesAge = state.age === "any" || (item.age !== null && item.age <= Number(state.age));
+    const matchesAge = item.age !== null && item.age <= getAgeLimit();
+    const matchesAvoid = !item.tags.some((tag) => profile.avoid.includes(tag));
     const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
-    const searchable = `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase();
-    return matchesType && matchesAge && matchesSaved && (!query || searchable.includes(query));
-  });
+    return matchesType && matchesAge && matchesAvoid && matchesSaved && (!query || itemSearchText(item).includes(query));
+  }).sort((first, second) => recommendationScore(second) - recommendationScore(first));
 }
 
 function cardTemplate(item, index) {
@@ -174,21 +310,28 @@ function cardTemplate(item, index) {
 function render() {
   const visibleTitles = getVisibleTitles();
   const renderedTitles = visibleTitles.slice(0, visibleLimit);
+  const profile = getActiveProfile();
   const query = state.query.trim().toLowerCase();
   const awaitingReviewCount = titles.filter((item) => item.provisional
     && (state.type === "all" || item.type === state.type)
     && (state.view !== "saved" || savedTitles.has(titleKey(item)))
     && (!query || `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase().includes(query))).length;
   const searchLabel = state.query.trim() || (state.type === "all" ? "All titles" : typePlurals[state.type]);
-  const filterSummary = state.age === "any" ? "any age" : `age ${state.age}+`;
+  const filterSummary = `age ${getAgeLimit()} or younger`;
+  const preferenceSummary = profile.genres.length ? ` Prioritizing ${profile.genres.join(", ")}.` : "";
+  const avoidSummary = profile.avoid.length ? ` Avoiding ${profile.avoid.join(", ")}.` : "";
+  const learningSummary = profile.likes.length || profile.searches.length
+    ? ` Tuned by ${profile.likes.length} saved ${profile.likes.length === 1 ? "title" : "titles"} and ${profile.searches.length} recent ${profile.searches.length === 1 ? "search" : "searches"}.`
+    : " Save titles or search to make these picks more personal.";
   const pendingNotice = awaitingReviewCount
     ? ` ${awaitingReviewCount} imported listings use a provisional ~13+ estimate; their content and official ratings are not verified.`
     : "";
-  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? "YOU SEARCHED FOR" : "YOUR GUIDE"}</span><strong>${escapeHtml(searchLabel)}</strong><span>${visibleTitles.length} ${visibleTitles.length === 1 ? "guide" : "guides"} for ${filterSummary}.${pendingNotice} Select a result to see its notes.</span>`;
+  renderProfileControls();
+  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? "YOU SEARCHED FOR" : "PICKS FOR"}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${visibleTitles.length} ${visibleTitles.length === 1 ? "guide" : "guides"} for ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} Select a result to see its notes.</span>`;
   document.querySelector("#breadcrumb-current").textContent = state.view === "saved" ? "SAVED" : "DISCOVER";
-  document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : 'A clearer way<br />to <span>choose.</span>';
-  document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : "A FEW GOOD PLACES TO START";
-  document.querySelector("#results-title").childNodes[0].textContent = state.view === "saved" ? "Your saved titles " : state.query ? "Guide matches " : "Popular with families ";
+  document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : `A clearer way<br />to <span>choose.</span>`;
+  document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : `PERSONALIZED FOR ${profile.name.toUpperCase()}`;
+  document.querySelector("#results-title").childNodes[0].textContent = state.view === "saved" ? "Your saved titles " : state.query ? "Guide matches " : `Ideas for ${profile.name} `;
   document.querySelector("#saved-count").textContent = savedTitles.size;
   resultCount.textContent = `(${visibleTitles.length})`;
 
@@ -213,7 +356,7 @@ function escapeHtml(text) {
 function resetFilters() {
   state.query = "";
   state.type = "all";
-  state.age = "any";
+  state.age = "profile";
   state.view = "discover";
   searchInput.value = "";
   ageFilter.value = "any";
@@ -226,6 +369,12 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   state.query = searchInput.value;
   state.view = "discover";
+  const query = state.query.trim();
+  if (query) {
+    const profile = getActiveProfile();
+    profile.searches = [query, ...profile.searches.filter((search) => search.toLowerCase() !== query.toLowerCase())].slice(0, 8);
+    persistProfiles();
+  }
   document.querySelectorAll(".nav-link").forEach((button) => button.classList.toggle("is-active", button.dataset.view === "discover"));
   render();
 });
@@ -254,6 +403,88 @@ document.querySelectorAll(".nav-link").forEach((button) => button.addEventListen
   render();
 }));
 
+const profileDialog = document.querySelector("#profile-dialog");
+let editingProfileId = activeProfileId;
+
+function renderProfileList() {
+  document.querySelector("#profile-list").innerHTML = profiles.map((profile) => `<button class="profile-list-item${profile.id === editingProfileId ? " selected" : ""}" type="button" data-edit-profile="${escapeHtml(profile.id)}"><span class="profile-avatar" aria-hidden="true">${escapeHtml(profile.name.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(profile.name)}<small>Age ${profile.age}</small></span></button>`).join("");
+}
+
+function renderProfileEditor(profile) {
+  editingProfileId = profile?.id || null;
+  const form = document.querySelector("#profile-form");
+  form.reset();
+  document.querySelector("#profile-name").value = profile?.name || "";
+  document.querySelector("#profile-age").value = profile?.age || 8;
+  document.querySelector("#genre-options").innerHTML = Object.keys(genreOptions).map((genre) => `<label class="preference-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${profile?.genres.includes(genre) ? " checked" : ""}><span>${escapeHtml(genre)}</span></label>`).join("");
+  const avoidThemes = Object.entries(themeNotes).filter(([, details]) => details.concern).map(([theme]) => theme).sort();
+  document.querySelector("#avoid-options").innerHTML = avoidThemes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(theme)}</span></label>`).join("");
+  document.querySelector("#delete-profile-button").disabled = !profile || profiles.length <= 1;
+  document.querySelector("#clear-learning-button").disabled = !profile || (!profile.likes.length && !profile.searches.length);
+  renderProfileList();
+}
+
+function openProfileDialog(profile = getActiveProfile()) {
+  renderProfileEditor(profile);
+  if (!profileDialog.open) profileDialog.showModal();
+}
+
+document.querySelector("#profile-select").addEventListener("change", (event) => {
+  activeProfileId = event.target.value;
+  state.age = "profile";
+  ageFilter.value = "profile";
+  persistProfiles();
+  render();
+});
+
+document.querySelector("#profile-edit-button").addEventListener("click", () => openProfileDialog());
+document.querySelector("#profile-manage-button").addEventListener("click", () => openProfileDialog());
+document.querySelector("#add-profile-button").addEventListener("click", () => renderProfileEditor(null));
+document.querySelector("#profile-list").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-edit-profile]");
+  const profile = profiles.find((item) => item.id === button?.dataset.editProfile);
+  if (profile) renderProfileEditor(profile);
+});
+
+document.querySelector("#profile-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const profile = profiles.find((item) => item.id === editingProfileId);
+  const updatedProfile = {
+    ...(profile || { id: `child-${Date.now()}`, likes: [], searches: [] }),
+    name: document.querySelector("#profile-name").value.trim(),
+    age: Math.min(18, Math.max(2, Number(document.querySelector("#profile-age").value))),
+    genres: [...document.querySelectorAll("input[name='genres']:checked")].map((input) => input.value),
+    avoid: [...document.querySelectorAll("input[name='avoid']:checked")].map((input) => input.value),
+  };
+  if (profile) profiles = profiles.map((item) => item.id === profile.id ? updatedProfile : item);
+  else profiles.push(updatedProfile);
+  activeProfileId = updatedProfile.id;
+  state.age = "profile";
+  ageFilter.value = "profile";
+  persistProfiles();
+  profileDialog.close();
+  render();
+});
+
+document.querySelector("#delete-profile-button").addEventListener("click", () => {
+  if (!editingProfileId || profiles.length <= 1) return;
+  profiles = profiles.filter((profile) => profile.id !== editingProfileId);
+  if (activeProfileId === editingProfileId) activeProfileId = profiles[0].id;
+  persistProfiles();
+  render();
+  renderProfileEditor(getActiveProfile());
+});
+
+document.querySelector("#clear-learning-button").addEventListener("click", () => {
+  const profile = profiles.find((item) => item.id === editingProfileId);
+  if (!profile) return;
+  profile.likes = [];
+  profile.searches = [];
+  persistProfiles();
+  render();
+  renderProfileEditor(profile);
+});
+
 results.addEventListener("click", (event) => {
   if (event.target.closest("[data-load-more]")) {
     visibleLimit += pageSize;
@@ -264,9 +495,16 @@ results.addEventListener("click", (event) => {
   const button = event.target.closest("[data-save]");
   if (button) {
     const key = button.dataset.save;
-    if (savedTitles.has(key)) savedTitles.delete(key);
-    else savedTitles.add(key);
+    const profile = getActiveProfile();
+    if (savedTitles.has(key)) {
+      savedTitles.delete(key);
+      profile.likes = profile.likes.filter((like) => like !== key);
+    } else {
+      savedTitles.add(key);
+      profile.likes = [...new Set([...profile.likes, key])];
+    }
     localStorage.setItem("little-lens-saved", JSON.stringify([...savedTitles]));
+    persistProfiles();
     render();
     return;
   }
@@ -281,28 +519,38 @@ document.querySelector("#clear-filters").addEventListener("click", resetFilters)
 document.querySelector("#about-button").addEventListener("click", () => document.querySelector("#about-dialog").showModal());
 
 function showTitleDetails(item) {
-  const positives = item.tags.filter((tag) => !themeNotes[tag].concern);
-  const concerns = item.tags.filter((tag) => themeNotes[tag].concern);
+  const positives = item.tags.filter((tag) => !themeNotes[tag]?.concern);
+  const concerns = item.tags.filter((tag) => themeNotes[tag]?.concern);
+  const ageLimit = getAgeLimit();
   const ageNote = item.provisional
     ? `This is a provisional ${item.age}+ placeholder, not a title-specific recommendation. The spreadsheet has no verified age or content data for this listing; check an official rating and preview it before deciding.`
-    : state.age === "any"
-    ? `Our guide suggests starting around age ${item.age}+. This is a recommendation, not an official classification.`
-    : `For the age ${state.age}+ filter, this title is ${item.age <= Number(state.age) ? "within" : "above"} the suggested range. Its guide age is ${item.age}+. Read the themes below and decide what fits your child.`;
-  const themeList = (tags) => tags.map((tag) => `<li><strong>${escapeHtml(tag)}</strong><span>${escapeHtml(themeNotes[tag].note)}</span></li>`).join("");
+    : `For ${escapeHtml(getActiveProfile().name)}, our guide suggests starting around age ${item.age}+. The current profile limit is ${ageLimit}+. This is a recommendation, not an official classification.`;
+  const themeList = (tags) => tags.map((tag) => `<li><strong>${escapeHtml(tag)}</strong><span>${escapeHtml(themeNotes[tag]?.note || "This theme is listed in the catalog; check the title and local rating for more context.")}</span></li>`).join("");
 
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${typeNames[item.type].toUpperCase()} GUIDE <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
     <div class="detail-age-row"><div class="detail-age${item.provisional ? " age-provisional" : ""}"><span>${item.provisional ? "ESTIMATED AGE" : "OUR GUIDE AGE"}</span><strong>${item.provisional ? "~" : ""}${item.age}+</strong></div><p>${escapeHtml(ageNote)}</p></div>
     <p class="detail-rating"><strong>${item.provisional ? "Catalog status:" : "Listed label:"}</strong> ${escapeHtml(item.provisional ? "Provisional age estimate · not reviewed" : item.rating)}${item.provisional ? " · No official rating or content notes have been verified." : " · Ratings can vary by region, edition, or platform."}</p>
+    <section class="detail-overview"><h3>About this title</h3><p>${escapeHtml(getTitleDescription(item))}</p></section>
     <div class="detail-sections">
-      <section class="detail-section"><h3>Why it might be a good fit</h3>${positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${item.provisional ? "Positive themes have not been reviewed for this listing yet." : "This guide doesn't flag specific positive themes for this title."}</p>`}</section>
+      <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${item.provisional ? "Positive themes have not been reviewed for this listing yet." : "This guide doesn't flag specific positive themes for this title."}</p>`}</section>
       <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : "<p class=\"detail-empty\">No specific concerns are flagged in this guide. Check the local rating for full details.</p>"}</section>
     </div>
-    <p class="detail-footnote">${item.provisional ? "The ~13+ value is a temporary category-wide placeholder, not a researched age recommendation. The source spreadsheet marks this entry for verification." : item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>`;
-  document.querySelector("#title-dialog").showModal();
+    <p class="detail-footnote">${item.provisional ? "The ~13+ value is a temporary category-wide placeholder, not a researched age recommendation. The source spreadsheet marks this entry for verification." : item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
+    ${renderReviews(item)}`;
+  const reviewForm = document.querySelector("#review-form");
+  reviewForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitReview(item, reviewForm);
+  });
+  const titleDialog = document.querySelector("#title-dialog");
+  if (!titleDialog.open) titleDialog.showModal();
 }
 
+renderProfileControls();
+renderProfileEditor(getActiveProfile());
+document.querySelector("#profile-form").reset();
 render();
 
 fetch("catalog-review.json")

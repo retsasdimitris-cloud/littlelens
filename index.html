@@ -37,6 +37,11 @@
           <button class="about-button" id="about-button" type="button"><span aria-hidden="true">ⓘ</span> About our guide</button>
         </header>
 
+        <section class="profile-bar" aria-label="Child profile">
+          <label for="profile-select"><span>SHOWING PICKS FOR</span><select id="profile-select" aria-label="Choose a child profile"></select></label>
+          <div class="profile-actions"><button id="profile-edit-button" type="button">Preferences</button><button id="profile-manage-button" type="button">Manage profiles</button></div>
+        </section>
+
         <section class="welcome-row" aria-labelledby="page-title">
           <div>
             <p class="eyebrow"><span class="eyebrow-line"></span> MAKE ROOM FOR THE GOOD STUFF</p>
@@ -65,7 +70,7 @@
               <button class="filter-chip" data-type="book" type="button"><span aria-hidden="true">▧</span> Books</button>
               <button class="filter-chip" data-type="creator" type="button"><span aria-hidden="true">◉</span> Creators</button>
             </div>
-            <label class="age-filter">FOR AGE <select id="age-filter" aria-label="Filter titles by child age"><option value="any">Any age</option><option value="2">2+</option><option value="3">3+</option><option value="6">6+</option><option value="9">9+</option><option value="12">12+</option><option value="15">15+</option><option value="18">18+</option></select></label>
+            <label class="age-filter">AGE UP TO <select id="age-filter" aria-label="Filter titles by age"><option value="profile">Child's age</option><option value="2">2+</option><option value="3">3+</option><option value="6">6+</option><option value="9">9+</option><option value="12">12+</option><option value="15">15+</option><option value="18">18+</option></select></label>
           </div>
         </section>
 
@@ -93,6 +98,31 @@
       <p>Entries imported from the supplied spreadsheet show a provisional ~13+ placeholder until reviewed. It is not based on a title-specific assessment or an official rating; check the source rating and preview the content before deciding.</p>
       <p class="dialog-last">You know your kid best. That's the lens that matters.</p>
       <form method="dialog"><button class="dialog-done">Got it</button></form>
+    </dialog>
+
+    <dialog id="profile-dialog" class="profile-dialog" aria-labelledby="profile-dialog-title">
+      <form method="dialog" class="profile-dialog-close"><button class="dialog-close" aria-label="Close profile settings">×</button></form>
+      <p class="eyebrow">A LENS FOR EVERY KID</p>
+      <h2 id="profile-dialog-title">Child profiles</h2>
+      <div class="profile-editor-layout">
+        <aside class="profile-list-panel" aria-label="Profiles">
+          <div id="profile-list" class="profile-list"></div>
+          <button id="add-profile-button" class="add-profile-button" type="button">+ Add a child</button>
+        </aside>
+        <form id="profile-form" class="profile-form">
+          <div class="profile-basics">
+            <label>Child's name<input id="profile-name" name="name" maxlength="32" required placeholder="e.g. Alex" /></label>
+            <label>Age<input id="profile-age" name="age" type="number" min="2" max="18" required /></label>
+          </div>
+          <fieldset><legend>Genres to prioritize</legend><p class="fieldset-hint">We'll bring these closer to the top.</p><div id="genre-options" class="option-grid"></div></fieldset>
+          <fieldset><legend>Themes to avoid</legend><p class="fieldset-hint">Titles with these content notes won't appear in this child's picks.</p><div id="avoid-options" class="option-grid avoid-options"></div></fieldset>
+          <div class="profile-form-actions">
+            <button id="delete-profile-button" class="delete-profile-button" type="button">Delete profile</button>
+            <button id="clear-learning-button" class="clear-learning-button" type="button">Clear learned interests</button>
+            <button class="save-profile-button" type="submit">Save profile</button>
+          </div>
+        </form>
+      </div>
     </dialog>
   </body>
 </html>
