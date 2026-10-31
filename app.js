@@ -188,6 +188,42 @@ function getAgeLimit() {
   return state.age === "profile" ? profileAge : Math.min(profileAge, Number(state.age));
 }
 
+function getGreekRatingInfo(item) {
+  if (item.type === "game" && [3, 7, 12, 16, 18].includes(Number(item.pegiRating))) {
+    const pegiAge = Number(item.pegiRating);
+    return { label: `PEGI ${pegiAge}`, age: pegiAge, source: item.ratingSource };
+  }
+  if (item.type === "movie" && item.greekFilmRating) {
+    const filmAges = { Unrestricted: 0, "13": 13, "17": 17, "18": 18 };
+    if (Object.hasOwn(filmAges, item.greekFilmRating)) {
+      return { label: item.greekFilmRating === "Unrestricted" ? "Unrestricted" : `Greece ${item.greekFilmRating}`, age: filmAges[item.greekFilmRating], source: item.ratingSource };
+    }
+  }
+  return null;
+}
+
+function getAgeInfo(item) {
+  const officialRating = getGreekRatingInfo(item);
+  const age = officialRating?.age ?? (item.age === null || item.age === undefined ? null : Number(item.age));
+  return {
+    age,
+    officialRating,
+    isEstimated: !officialRating && age !== null,
+    source: officialRating?.source || item.ageSource || null,
+    sourceName: item.ageSourceName || null,
+  };
+}
+
+function getGreekRatingStatus(item) {
+  return {
+    movie: "Greek film classification not verified",
+    series: "Greek series rating not verified",
+    game: "PEGI rating not verified",
+    book: "No standard official book age rating",
+    creator: "No channel-wide official rating",
+  }[item.type] || "Greek official rating not verified";
+}
+
 function persistProfiles() {
   localStorage.setItem("little-lens-profiles", JSON.stringify(profiles));
   localStorage.setItem("little-lens-active-profile", JSON.stringify(activeProfileId));
@@ -261,7 +297,7 @@ function getTitleDescription(item) {
   };
   const chosenSummary = summaryByType[item.type] || summaryByType.movie;
   const tagsLine = item.tags.length ? `The guide highlights ${item.tags.join(", ")}.` : "";
-  const ageLine = item.age && item.age <= 5 ? "This is written for younger children who benefit from clear, reassuring storytelling and less intense conflict." : item.age && item.age <= 9 ? "This is aimed at children who can handle moderate stakes, emotional beats, and more layered character development." : item.age && item.age <= 12 ? "This usually suits children who are ready for more complexity, bigger choices, and stronger emotional or dramatic tension." : "This is better suited to older children or teens because it often deals with more intense conflict, deeper themes, or heavier emotional material.";
+  const ageLine = item.age === null || item.age === undefined ? "" : item.age <= 5 ? "This is written for younger children who benefit from clear, reassuring storytelling and less intense conflict." : item.age <= 9 ? "This is aimed at children who can handle moderate stakes, emotional beats, and more layered character development." : item.age <= 12 ? "This usually suits children who are ready for more complexity, bigger choices, and stronger emotional or dramatic tension." : "This is better suited to older children or teens because it often deals with more intense conflict, deeper themes, or heavier emotional material.";
   return `${chosenSummary.intro} ${chosenSummary.plot} ${chosenSummary.tone} ${tagsLine} ${ageLine}`;
 }
 
@@ -317,7 +353,8 @@ function getVisibleTitles() {
   const profile = getActiveProfile();
   return titles.filter((item) => {
     const matchesType = state.type === "all" || item.type === state.type;
-    const matchesAge = item.age === null || item.age <= getAgeLimit();
+    const age = getAgeInfo(item).age;
+    const matchesAge = age === null || age <= getAgeLimit();
     const matchesAvoid = !item.tags.some((tag) => profile.avoid.includes(tag));
     const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
     return matchesType && matchesAge && matchesAvoid && matchesSaved && (!query || itemSearchText(item).includes(query));
@@ -327,14 +364,17 @@ function getVisibleTitles() {
 function cardTemplate(item, index) {
   const key = titleKey(item);
   const isSaved = savedTitles.has(key);
+  const ageInfo = getAgeInfo(item);
   const tags = item.tags.map((tag) => `<span class="tag${themeNotes[tag]?.concern ? " concern" : ""}">${tag}</span>`).join("");
-  const ageBadge = `<span class="age-badge${item.age === null ? " age-provisional" : ""}" aria-label="${item.age === null ? "Age guidance not verified" : `Guide age ${item.age} and up`} for ${escapeHtml(item.title)}"><strong>${item.age === null ? "—" : `${item.age}+`}</strong><small>${item.age === null ? "VERIFY" : "GUIDE AGE"}</small></span>`;
+    const ageText = ageInfo.age === null ? "—" : ageInfo.age === 0 ? "All" : `${ageInfo.age}+`;
+    const ageBadgeLabel = ageInfo.age === null ? "Age needs title-specific research" : ageInfo.isEstimated ? `Estimated age ${ageInfo.age} and up` : `${ageInfo.officialRating.label}, age ${ageInfo.age} and up`;
+    const ageBadge = `<span class="age-badge${ageInfo.isEstimated ? " age-provisional" : ""}" aria-label="${ageBadgeLabel} for ${escapeHtml(item.title)}"><strong>${ageText}</strong><small>${ageInfo.age === null ? "RESEARCH" : ageInfo.isEstimated ? "ESTIMATE" : escapeHtml(ageInfo.officialRating.label)}</small></span>`;
   return `<article class="title-card" style="--cover:${item.color || typeColors[item.type]};animation-delay:${Math.min(index * 30, 180)}ms">
     <button class="card-open" type="button" data-details="${escapeHtml(key)}" aria-label="Show the official rating and reasons for ${escapeHtml(item.title)}"></button>
     <div class="cover${item.type === "creator" ? " creator-avatar" : ""}" data-artwork="${escapeHtml(key)}" aria-hidden="true"><img class="cover-image" alt="" loading="lazy" decoding="async"><span class="cover-mark">${escapeHtml(item.mark || item.title.slice(0, 1))}</span></div>
     <div class="title-copy"><p class="type-label">${typeIcons[item.type]} &nbsp;${typeNames[item.type]}</p><h3>${escapeHtml(item.title)}</h3><p class="publisher">${escapeHtml(item.maker)}</p><div class="tags">${tags}</div></div>
     <div class="card-side">${ageBadge}<button class="save-button${isSaved ? " saved" : ""}" type="button" data-save="${escapeHtml(key)}" aria-label="${isSaved ? "Remove" : "Save"} ${escapeHtml(item.title)}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button></div>
-    <div class="rating-line"><span>${escapeHtml(item.rating || "Rating not verified")}</span><span>·</span><span>${item.type === "creator" ? "Guidance varies by upload" : item.age === null ? "Check the official rating" : "See official rating"}</span></div>
+    <div class="rating-line"><span>${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}</span><span>·</span><span>${ageInfo.isEstimated ? "Little Lens estimate" : ageInfo.age === null ? "Title-specific age research needed" : "Official Greece/PEGI rating"}</span></div>
   </article>`;
 }
 
@@ -628,11 +668,21 @@ function getFallbackPositiveContent(item) {
 function showTitleDetails(item) {
   const positives = item.tags.filter((tag) => !themeNotes[tag]?.concern);
   const concerns = item.tags.filter((tag) => themeNotes[tag]?.concern);
-  const officialRating = item.rating || "Not officially rated";
+  const ageInfo = getAgeInfo(item);
+  const otherMarketRating = item.rating && !["Not yet reviewed", "Not officially rated", "To be verified"].includes(item.rating) ? item.rating : null;
+  const otherMarketLabel = otherMarketRating && /^(MPA|TV-|ESRB\b)/.test(otherMarketRating) ? "Other market label" : "Existing catalog label";
   const ageLimit = getAgeLimit();
-  const ageNote = item.age === null
-    ? "A guide age has not been verified for this title. Check the official rating for your region and preview the content before deciding."
-    : `For ${escapeHtml(getActiveProfile().name)}, our guide suggests starting around age ${item.age}+. The current profile limit is ${ageLimit}+. This is a recommendation, not an official classification.`;
+  const ratingSourceLink = ageInfo.officialRating?.source
+    ? ` · <a href="${escapeHtml(ageInfo.officialRating.source)}" target="_blank" rel="noopener noreferrer">PEGI source</a>`
+    : "";
+  const ageSourceLink = ageInfo.source && !ageInfo.officialRating
+    ? ` · <a href="${escapeHtml(ageInfo.source)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ageInfo.sourceName || "Age guidance source")}</a>`
+    : "";
+  const ageNote = ageInfo.age === null
+    ? "We don't yet have a title-specific age assessment for this choice. No category-wide age has been substituted; check local guidance and preview the content."
+    : ageInfo.isEstimated
+      ? `For ${escapeHtml(getActiveProfile().name)}, Little Lens suggests starting around age ${ageInfo.age}+. This is an estimate, not an official Greek classification; preview the title and check local guidance. The current profile limit is ${ageLimit} y/o.`
+      : `${escapeHtml(ageInfo.officialRating.label)} is the official Greece/PEGI classification listed for this title. The current profile limit is ${ageLimit} y/o.`;
   const titleDescription = item.provisional
     ? `${item.title} is listed in the parent content catalog as ${typeNames[item.type].toLowerCase()}. Its plot, official rating, and content details have not been reviewed yet.`
     : getTitleDescription(item);
@@ -644,8 +694,8 @@ function showTitleDetails(item) {
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${typeNames[item.type].toUpperCase()} GUIDE <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
-    <div class="detail-age-row"><div class="detail-age${item.age === null ? " age-provisional" : ""}"><span>${item.age === null ? "GUIDE AGE" : "OUR GUIDE AGE"}</span><strong>${item.age === null ? "Verify" : `${item.age}+`}</strong></div><p>${ageNote}</p></div>
-    <p class="detail-rating"><strong>${item.provisional ? "Rating status:" : "Official rating:"}</strong> ${escapeHtml(officialRating)} · ${item.type === "creator" ? "Creator guidance varies by upload, so the exact video matters." : "Ratings can vary by region, edition, or platform."}</p>
+    <div class="detail-age-row"><div class="detail-age${ageInfo.isEstimated ? " age-provisional" : ""}"><span>${ageInfo.officialRating ? "OFFICIAL RATING" : ageInfo.age === null ? "AGE STATUS" : "SUGGESTED AGE"}</span><strong>${ageInfo.age === null ? "Review" : ageInfo.age === 0 ? "All" : `${ageInfo.age}+`}</strong>${ageInfo.isEstimated ? "<small class=\"age-estimation-note\">It is Little Lens' estimation</small>" : ageInfo.officialRating ? `<small class="age-estimation-note">${escapeHtml(ageInfo.officialRating.label)}</small>` : ""}</div><p>${ageNote}</p></div>
+    <p class="detail-rating"><strong>${ageInfo.officialRating ? "Greek official rating:" : "Greek rating status:"}</strong> ${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}${ratingSourceLink}${ageSourceLink}${otherMarketRating ? ` · ${otherMarketLabel}: ${escapeHtml(otherMarketRating)}` : ""}${item.type === "creator" ? " · Guidance varies by upload." : ""}</p>
     <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
     <div class="detail-sections">
       <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${goodFitBlock}</section>
@@ -667,14 +717,35 @@ renderProfileEditor(getActiveProfile());
 document.querySelector("#profile-form").reset();
 render();
 
-fetch("catalog-review.json")
-  .then((response) => {
+Promise.all([
+  fetch("catalog-review.json").then((response) => {
     if (!response.ok) throw new Error("Catalog could not be loaded");
     return response.json();
-  })
-  .then((records) => {
+  }),
+  fetch("pegi-ratings.json").then((response) => response.ok ? response.json() : []).catch(() => []),
+  fetch("title-age-guidance.json").then((response) => response.ok ? response.json() : []).catch(() => []),
+  fetch("title-age-estimates.json").then((response) => response.ok ? response.json() : []).catch(() => []),
+])
+  .then(([records, ratings, ageGuidance, ageEstimates]) => {
     const existingKeys = new Set(curatedTitles.map(titleKey));
-    titles = [...curatedTitles, ...records.filter((item) => !existingKeys.has(titleKey(item))).map((item) => ({ ...item, provisional: item.age === null }))];
+    const ratingsByKey = new Map(ratings.map((rating) => [`game:${rating.title}`, rating]));
+    const ageGuidanceByKey = new Map(ageGuidance.map((guidance) => [`${guidance.type}:${guidance.title}`, guidance]));
+    const ageEstimatesByKey = new Map(ageEstimates.map((estimate) => [`${estimate.type}:${estimate.title}`, estimate]));
+    const applyLocalRating = (item) => {
+      const rating = ratingsByKey.get(titleKey(item));
+      const guidance = ageGuidanceByKey.get(titleKey(item));
+      const estimate = ageEstimatesByKey.get(titleKey(item));
+      return {
+        ...item,
+        ...(rating ? { pegiRating: rating.pegiRating, ratingSource: rating.source } : {}),
+        ...(guidance ? { age: guidance.age, ageSource: guidance.source, ageSourceName: guidance.sourceName } : {}),
+        ...(estimate ? { age: estimate.age, ageSourceName: "Little Lens" } : {}),
+      };
+    };
+    titles = [
+      ...curatedTitles.map(applyLocalRating),
+      ...records.filter((item) => !existingKeys.has(titleKey(item))).map((item) => applyLocalRating({ ...item, provisional: item.age === null })),
+    ];
     render();
   })
   .catch(() => {});

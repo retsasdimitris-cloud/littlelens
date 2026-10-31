@@ -130,7 +130,7 @@ kbd { padding: 3px 6px; border: 1px solid #e9e8e0; border-radius: 3px; color: #9
 .age-badge { display: flex; min-width: 46px; height: 43px; flex-direction: column; align-items: center; justify-content: center; border-radius: 3px; background: #e8edde; color: #3d573e; }
 .age-badge strong { font: 800 16px var(--display); line-height: 1; }
 .age-badge small { margin-top: 3px; font-size: 7px; font-weight: 700; }
-.age-badge.age-pending, .detail-age.age-pending, .age-badge.age-provisional, .detail-age.age-provisional { background: #f1eadb; color: #816c48; }
+.age-badge.age-pending, .detail-age.age-pending { background: #f1eadb; color: #816c48; }
 .save-button { display: grid; place-items: center; position: relative; z-index: 2; width: 28px; height: 28px; border: 1px solid #eceae2; border-radius: 3px; background: var(--panel); color: #92978e; font-size: 16px; cursor: pointer; pointer-events: auto !important; }
 .save-button:hover, .save-button.saved { border-color: #e5c4b5; background: #fbf0ec; color: #c26a54; }
 .rating-line { grid-column: 2 / 4; display: flex; align-items: center; gap: 5px; align-self: end; margin-top: -3px; color: #90958d; font-size: 8px; }
@@ -196,10 +196,12 @@ kbd { padding: 3px 6px; border: 1px solid #e9e8e0; border-radius: 3px; color: #9
 .detail-kicker span { color: #b4b7ae; }
 .title-dialog h2 { margin: 11px 0 18px; padding-right: 20px; font: 700 25px/1.25 var(--display); overflow-wrap: anywhere; }
 .detail-age-row { display: flex; align-items: center; gap: 14px; padding: 13px; border-radius: 3px; background: #f0f1e9; }
-.detail-age { flex: 0 0 auto; display: flex; width: 66px; height: 59px; flex-direction: column; align-items: center; justify-content: center; border-radius: 3px; background: #e1e9d8; color: #3d573e; }
+.detail-age { flex: 0 0 auto; display: flex; width: 102px; min-height: 72px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 5px; border-radius: 3px; background: #e1e9d8; color: #3d573e; }
 .detail-age span { font-size: 7px; font-weight: 700; letter-spacing: .35px; }
 .detail-age strong { margin-top: 2px; font: 800 22px var(--display); }
+.age-estimation-note { color: inherit; font-size: 6px; font-weight: 600; line-height: 1.15; text-align: center; }
 .detail-age-row > p { margin: 0; color: #636e61; font-size: 11px; line-height: 1.6; }
+.detail-rating a { color: #4c6a4e; text-decoration: underline; text-underline-offset: 2px; }
 .detail-rating { margin: 11px 0 17px; color: #848a80; font-size: 9px; line-height: 1.6; }
 .detail-rating strong { color: #596657; }
 .detail-overview { margin: 0 0 16px; padding: 16px 18px; border-left: 3px solid #879a71; background: #f5f6ef; }

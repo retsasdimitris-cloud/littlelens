@@ -1,0 +1,677 @@
+[
+  {
+    "title": "Age of Empires IV",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Age%20of%20Empires%20IV"
+  },
+  {
+    "title": "Animal Crossing: New Horizons",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Animal%20Crossing%3A%20New%20Horizons"
+  },
+  {
+    "title": "Apex Legends",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Apex%20Legends"
+  },
+  {
+    "title": "Assassin's Creed Mirage",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Assassin%27s%20Creed%20Mirage"
+  },
+  {
+    "title": "Assassin's Creed Valhalla",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Assassin%27s%20Creed%20Valhalla"
+  },
+  {
+    "title": "Baldur's Gate 3",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Baldur%27s%20Gate%203"
+  },
+  {
+    "title": "Barbie Dreamhouse Adventures",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Barbie%20Dreamhouse%20Adventures"
+  },
+  {
+    "title": "Battlefield 2042",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Battlefield%202042"
+  },
+  {
+    "title": "Bendy and the Dark Revival",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Bendy%20and%20the%20Dark%20Revival"
+  },
+  {
+    "title": "Bendy and the Ink Machine",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Bendy%20and%20the%20Ink%20Machine"
+  },
+  {
+    "title": "Call of Duty: Black Ops 6",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Call%20of%20Duty%3A%20Black%20Ops%206"
+  },
+  {
+    "title": "Candy Crush Saga",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Candy%20Crush%20Saga"
+  },
+  {
+    "title": "Celeste",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Celeste"
+  },
+  {
+    "title": "Cities: Skylines",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Cities%3A%20Skylines"
+  },
+  {
+    "title": "Clash Royale",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Clash%20Royale"
+  },
+  {
+    "title": "Clash of Clans",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Clash%20of%20Clans"
+  },
+  {
+    "title": "Cuphead",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Cuphead"
+  },
+  {
+    "title": "Cyberpunk 2077",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Cyberpunk%202077"
+  },
+  {
+    "title": "Dead by Daylight",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Dead%20by%20Daylight"
+  },
+  {
+    "title": "Destiny 2",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Destiny%202"
+  },
+  {
+    "title": "Disney Dreamlight Valley",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Disney%20Dreamlight%20Valley"
+  },
+  {
+    "title": "Disney Illusion Island",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Disney%20Illusion%20Island"
+  },
+  {
+    "title": "Disney Speedstorm",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Disney%20Speedstorm"
+  },
+  {
+    "title": "Donkey Kong Country: Tropical Freeze",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Donkey%20Kong%20Country%3A%20Tropical%20Freeze"
+  },
+  {
+    "title": "DreamWorks All-Star Kart Racing",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=DreamWorks%20All-Star%20Kart%20Racing"
+  },
+  {
+    "title": "Elden Ring",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Elden%20Ring"
+  },
+  {
+    "title": "Fall Guys",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Fall%20Guys"
+  },
+  {
+    "title": "Fallout 4",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Fallout%204"
+  },
+  {
+    "title": "Fallout 76",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Fallout%2076"
+  },
+  {
+    "title": "Far Cry 6",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Far%20Cry%206"
+  },
+  {
+    "title": "Final Fantasy VII Remake",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Final%20Fantasy%20VII%20Remake"
+  },
+  {
+    "title": "Final Fantasy XVI",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Final%20Fantasy%20XVI"
+  },
+  {
+    "title": "Fire Emblem: Three Houses",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Fire%20Emblem%3A%20Three%20Houses"
+  },
+  {
+    "title": "Five Nights at Freddy's",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Five%20Nights%20at%20Freddy%27s"
+  },
+  {
+    "title": "Five Nights at Freddy's: Security Breach",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Five%20Nights%20at%20Freddy%27s%3A%20Security%20Breach"
+  },
+  {
+    "title": "Forza Horizon 5",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Forza%20Horizon%205"
+  },
+  {
+    "title": "Forza Motorsport",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Forza%20Motorsport"
+  },
+  {
+    "title": "Gang Beasts",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Gang%20Beasts"
+  },
+  {
+    "title": "Genshin Impact",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Genshin%20Impact"
+  },
+  {
+    "title": "Gran Turismo 7",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Gran%20Turismo%207"
+  },
+  {
+    "title": "Grand Theft Auto V",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Grand%20Theft%20Auto%20V"
+  },
+  {
+    "title": "Hello Kitty Island Adventure",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Hello%20Kitty%20Island%20Adventure"
+  },
+  {
+    "title": "Hello Neighbor",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Hello%20Neighbor"
+  },
+  {
+    "title": "Hello Neighbor 2",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Hello%20Neighbor%202"
+  },
+  {
+    "title": "Hollow Knight",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Hollow%20Knight"
+  },
+  {
+    "title": "Honkai: Star Rail",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Honkai%3A%20Star%20Rail"
+  },
+  {
+    "title": "House Flipper",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=House%20Flipper"
+  },
+  {
+    "title": "Injustice 2",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Injustice%202"
+  },
+  {
+    "title": "Kerbal Space Program",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Kerbal%20Space%20Program"
+  },
+  {
+    "title": "Kirby and the Forgotten Land",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Kirby%20and%20the%20Forgotten%20Land"
+  },
+  {
+    "title": "Kirby's Return to Dream Land Deluxe",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Kirby%27s%20Return%20to%20Dream%20Land%20Deluxe"
+  },
+  {
+    "title": "LEGO Batman 3: Beyond Gotham",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=LEGO%20Batman%203%3A%20Beyond%20Gotham"
+  },
+  {
+    "title": "LEGO Harry Potter Collection",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=LEGO%20Harry%20Potter%20Collection"
+  },
+  {
+    "title": "LEGO Jurassic World",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=LEGO%20Jurassic%20World"
+  },
+  {
+    "title": "LEGO Marvel Super Heroes",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=LEGO%20Marvel%20Super%20Heroes"
+  },
+  {
+    "title": "LEGO Worlds",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=LEGO%20Worlds"
+  },
+  {
+    "title": "Little Nightmares",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Little%20Nightmares"
+  },
+  {
+    "title": "Little Nightmares II",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Little%20Nightmares%20II"
+  },
+  {
+    "title": "Luigi's Mansion 3",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Luigi%27s%20Mansion%203"
+  },
+  {
+    "title": "Madden NFL 25",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Madden%20NFL%2025"
+  },
+  {
+    "title": "Mafia: Definitive Edition",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Mafia%3A%20Definitive%20Edition"
+  },
+  {
+    "title": "Mario Kart 8 Deluxe",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Mario%20Kart%208%20Deluxe"
+  },
+  {
+    "title": "Mario Party Superstars",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Mario%20Party%20Superstars"
+  },
+  {
+    "title": "Metroid Dread",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Metroid%20Dread"
+  },
+  {
+    "title": "Microsoft Flight Simulator",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Microsoft%20Flight%20Simulator"
+  },
+  {
+    "title": "Minecraft",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Minecraft"
+  },
+  {
+    "title": "Monster Hunter Rise",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Monster%20Hunter%20Rise"
+  },
+  {
+    "title": "Mortal Kombat 1",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Mortal%20Kombat%201"
+  },
+  {
+    "title": "Moving Out",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Moving%20Out"
+  },
+  {
+    "title": "NBA 2K25",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=NBA%202K25"
+  },
+  {
+    "title": "Nintendo Switch Sports",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Nintendo%20Switch%20Sports"
+  },
+  {
+    "title": "Ori and the Blind Forest",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Ori%20and%20the%20Blind%20Forest"
+  },
+  {
+    "title": "Ori and the Will of the Wisps",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Ori%20and%20the%20Will%20of%20the%20Wisps"
+  },
+  {
+    "title": "Outlast",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Outlast"
+  },
+  {
+    "title": "Overcooked! All You Can Eat",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Overcooked%21%20All%20You%20Can%20Eat"
+  },
+  {
+    "title": "Paw Patrol: On a Roll!",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Paw%20Patrol%3A%20On%20a%20Roll%21"
+  },
+  {
+    "title": "Peppa Pig: World Adventures",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Peppa%20Pig%3A%20World%20Adventures"
+  },
+  {
+    "title": "Persona 5 Royal",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Persona%205%20Royal"
+  },
+  {
+    "title": "Pikmin 4",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Pikmin%204"
+  },
+  {
+    "title": "Planet Coaster",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Planet%20Coaster"
+  },
+  {
+    "title": "Planet Zoo",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Planet%20Zoo"
+  },
+  {
+    "title": "Pokémon GO",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20GO"
+  },
+  {
+    "title": "Pokémon Legends: Arceus",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Legends%3A%20Arceus"
+  },
+  {
+    "title": "Pokémon Mystery Dungeon: Rescue Team DX",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Mystery%20Dungeon%3A%20Rescue%20Team%20DX"
+  },
+  {
+    "title": "Pokémon Scarlet",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Scarlet"
+  },
+  {
+    "title": "Pokémon Shield",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Shield"
+  },
+  {
+    "title": "Pokémon Sword",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Sword"
+  },
+  {
+    "title": "Pokémon Violet",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Pok%C3%A9mon%20Violet"
+  },
+  {
+    "title": "Poptropica",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Poptropica"
+  },
+  {
+    "title": "Portal 2",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Portal%202"
+  },
+  {
+    "title": "PowerWash Simulator",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=PowerWash%20Simulator"
+  },
+  {
+    "title": "Princess Peach: Showtime!",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Princess%20Peach%3A%20Showtime%21"
+  },
+  {
+    "title": "Rayman Legends",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Rayman%20Legends"
+  },
+  {
+    "title": "Red Dead Redemption 2",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Red%20Dead%20Redemption%202"
+  },
+  {
+    "title": "Resident Evil 4",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Resident%20Evil%204"
+  },
+  {
+    "title": "Resident Evil Village",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Resident%20Evil%20Village"
+  },
+  {
+    "title": "Riders Republic",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Riders%20Republic"
+  },
+  {
+    "title": "Ring Fit Adventure",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Ring%20Fit%20Adventure"
+  },
+  {
+    "title": "Rocket League",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Rocket%20League"
+  },
+  {
+    "title": "RollerCoaster Tycoon Classic",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=RollerCoaster%20Tycoon%20Classic"
+  },
+  {
+    "title": "Saints Row",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Saints%20Row"
+  },
+  {
+    "title": "Sleeping Dogs",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Sleeping%20Dogs"
+  },
+  {
+    "title": "Sonic Forces",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Sonic%20Forces"
+  },
+  {
+    "title": "Sonic Frontiers",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Sonic%20Frontiers"
+  },
+  {
+    "title": "Sonic Mania",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Sonic%20Mania"
+  },
+  {
+    "title": "Sonic Superstars",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Sonic%20Superstars"
+  },
+  {
+    "title": "Splatoon 3",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Splatoon%203"
+  },
+  {
+    "title": "Stardew Valley",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Stardew%20Valley"
+  },
+  {
+    "title": "Starfield",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Starfield"
+  },
+  {
+    "title": "Steep",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Steep"
+  },
+  {
+    "title": "Street Fighter 6",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Street%20Fighter%206"
+  },
+  {
+    "title": "Subway Surfers",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Subway%20Surfers"
+  },
+  {
+    "title": "Super Mario 3D World",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Super%20Mario%203D%20World"
+  },
+  {
+    "title": "Super Mario Bros. Wonder",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Super%20Mario%20Bros.%20Wonder"
+  },
+  {
+    "title": "Super Mario Odyssey",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Super%20Mario%20Odyssey"
+  },
+  {
+    "title": "Super Mario Party Jamboree",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Super%20Mario%20Party%20Jamboree"
+  },
+  {
+    "title": "Super Smash Bros. Ultimate",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Super%20Smash%20Bros.%20Ultimate"
+  },
+  {
+    "title": "Tekken 8",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Tekken%208"
+  },
+  {
+    "title": "Temple Run 2",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=Temple%20Run%202"
+  },
+  {
+    "title": "Terraria",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=Terraria"
+  },
+  {
+    "title": "The Crew Motorfest",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=The%20Crew%20Motorfest"
+  },
+  {
+    "title": "The Elder Scrolls V: Skyrim",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=The%20Elder%20Scrolls%20V%3A%20Skyrim"
+  },
+  {
+    "title": "The Last of Us Part I",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=The%20Last%20of%20Us%20Part%20I"
+  },
+  {
+    "title": "The Last of Us Part II",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=The%20Last%20of%20Us%20Part%20II"
+  },
+  {
+    "title": "The Legend of Zelda: Breath of the Wild",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=The%20Legend%20of%20Zelda%3A%20Breath%20of%20the%20Wild"
+  },
+  {
+    "title": "The Legend of Zelda: Link's Awakening",
+    "pegiRating": 7,
+    "source": "https://pegi.info/search-pegi?q=The%20Legend%20of%20Zelda%3A%20Link%27s%20Awakening"
+  },
+  {
+    "title": "The Legend of Zelda: Tears of the Kingdom",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=The%20Legend%20of%20Zelda%3A%20Tears%20of%20the%20Kingdom"
+  },
+  {
+    "title": "The Sims 4",
+    "pegiRating": 12,
+    "source": "https://pegi.info/search-pegi?q=The%20Sims%204"
+  },
+  {
+    "title": "Trackmania",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Trackmania"
+  },
+  {
+    "title": "Two Point Campus",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Two%20Point%20Campus"
+  },
+  {
+    "title": "Two Point Hospital",
+    "pegiRating": 3,
+    "source": "https://pegi.info/search-pegi?q=Two%20Point%20Hospital"
+  },
+  {
+    "title": "Until Dawn",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Until%20Dawn"
+  },
+  {
+    "title": "Valorant",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=Valorant"
+  },
+  {
+    "title": "WWE 2K24",
+    "pegiRating": 16,
+    "source": "https://pegi.info/search-pegi?q=WWE%202K24"
+  },
+  {
+    "title": "Warframe",
+    "pegiRating": 18,
+    "source": "https://pegi.info/search-pegi?q=Warframe"
+  }
+]
