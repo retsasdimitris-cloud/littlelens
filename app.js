@@ -17,7 +17,7 @@ const curatedTitles = [
   { title: "Encanto", type: "movie", maker: "Disney · Animation", age: 6, rating: "MPA PG", tags: ["Family pressure", "Peril"], color: "#b47a91", mark: "E" },
   { title: "The Great British Bake Off", type: "series", maker: "Love Productions · Reality", age: 6, rating: "TV-PG", tags: ["Competition", "Gentle humor"], color: "#c68b66", mark: "B" },
   { title: "The Hobbit", type: "book", maker: "J. R. R. Tolkien · Fantasy", age: 11, rating: "Reading guide", tags: ["Fantasy violence", "Scary scenes"], color: "#73834e", mark: "H" },
-  { title: "Lego Star Wars: The Skywalker Saga", type: "game", maker: "TT Games · Adventure", age: 7, rating: "ESRB E10+", tags: ["Cartoon combat", "Co-op play"], color: "#dfae52", mark: "★" },
+  { title: "LEGO Star Wars: The Skywalker Saga", type: "game", maker: "TT Games · Adventure", age: 7, rating: "ESRB E10+", tags: ["Cartoon combat", "Co-op play"], color: "#dfae52", mark: "★" },
   { title: "The Baby-Sitters Club", type: "series", maker: "Netflix · Family drama", age: 8, rating: "TV-G", tags: ["Friendship", "Growing up"], color: "#e08e70", mark: "B" },
   { title: "Coraline", type: "book", maker: "Neil Gaiman · Fantasy", age: 11, rating: "Reading guide", tags: ["Creepy imagery", "Peril"], color: "#577d7a", mark: "C" },
   { title: "The Incredibles", type: "movie", maker: "Pixar · Animation", age: 8, rating: "MPA PG", tags: ["Action violence", "Peril"], color: "#c95848", mark: "i" },
@@ -77,6 +77,7 @@ const pageSize = 36;
 const typeNames = { movie: "Film", series: "Series", game: "Game", book: "Book", creator: "Creator" };
 const typePlurals = { movie: "Films", series: "Series", game: "Games", book: "Books", creator: "Creators" };
 const typeIcons = { movie: "▻", series: "▤", game: "⌘", book: "▧", creator: "◉" };
+const typeColors = { movie: "#4e9ba7", series: "#76a99d", game: "#db7052", book: "#84986c", creator: "#d2a54f" };
 const themeNotes = {
   "Action violence": { concern: true, note: "Superhero fights and action sequences include more intense physical conflict." },
   "Animal peril": { concern: true, note: "Animals face danger, which may be upsetting for children who are sensitive to animal stories." },
@@ -228,11 +229,40 @@ function getTitleDescription(item) {
   const catalogDetails = item.maker.split("·").map((part) => part.trim());
   const source = catalogDetails[0];
   const descriptor = catalogDetails[1];
+  const typeLabel = typeNames[item.type] || "Title";
   const format = item.type === "book" && descriptor ? `a ${descriptor.toLowerCase()}` : `a ${typeNames[item.type].toLowerCase()}`;
   const sourceText = item.type === "book" ? `by ${source}` : `from ${source}`;
-  const detailText = descriptor && item.type !== "book" ? ` Catalog details describe it as ${descriptor.toLowerCase()}.` : "";
-  const themeText = item.tags.length ? ` This guide flags themes of ${item.tags.join(", ")}.` : "";
-  return `${item.title} is listed as ${format} ${sourceText}.${detailText}${themeText}`;
+  const summaryByType = {
+    movie: {
+      intro: `${item.title} is ${format} ${sourceText}.`,
+      plot: "The story usually centres on a character or family facing a challenge, a journey, or an emotional turning point, then explores how they grow, connect, and find a way forward.",
+      tone: "It is often warm, funny, adventurous, or reassuring, with a mix of action, heart, and moments that teach empathy or courage."
+    },
+    series: {
+      intro: `${item.title} is ${format} ${sourceText}.`,
+      plot: "The plot unfolds across episodes, following recurring characters through daily life, friendships, mysteries, adventures, or a long-term goal. Each episode adds development, emotional beats, and new situations that deepen the world.",
+      tone: "The series usually feels comforting, playful, or suspenseful while still being accessible to children, with a focus on relationships, teamwork, and learning through experience."
+    },
+    game: {
+      intro: `${item.title} is ${format} ${sourceText}.`,
+      plot: "The experience is built around exploration, problem-solving, creativity, and progress, whether the player is racing, building, adventuring, or working through a challenge with friends or alone.",
+      tone: "It is designed to be interactive and engaging, with a mix of gentle discovery, playful competition, imaginative worlds, and moments that reward curiosity and cooperation."
+    },
+    book: {
+      intro: `${item.title} is ${format} ${sourceText}.`,
+      plot: "The story develops through a central character or group facing change, mystery, danger, or a personal challenge, and the narrative usually grows around their emotional journey and decisions.",
+      tone: "It tends to be imaginative, reflective, and character-led, with themes of belonging, bravery, friendship, and learning how to deal with fear or uncertainty."
+    },
+    creator: {
+      intro: `${item.title} is ${format} ${sourceText}.`,
+      plot: "This is a creator-led format built around short-form learning, experiments, challenges, or entertainment, where each video focuses on a specific idea, activity, or topic.",
+      tone: "The tone can vary by creator and upload, but it often feels educational, playful, or highly engaging while encouraging curiosity, laughter, and discovery."
+    }
+  };
+  const chosenSummary = summaryByType[item.type] || summaryByType.movie;
+  const tagsLine = item.tags.length ? `The guide highlights ${item.tags.join(", ")}.` : "";
+  const ageLine = item.age && item.age <= 5 ? "This is written for younger children who benefit from clear, reassuring storytelling and less intense conflict." : item.age && item.age <= 9 ? "This is aimed at children who can handle moderate stakes, emotional beats, and more layered character development." : item.age && item.age <= 12 ? "This usually suits children who are ready for more complexity, bigger choices, and stronger emotional or dramatic tension." : "This is better suited to older children or teens because it often deals with more intense conflict, deeper themes, or heavier emotional material.";
+  return `${chosenSummary.intro} ${chosenSummary.plot} ${chosenSummary.tone} ${tagsLine} ${ageLine}`;
 }
 
 function getReviews(item) {
@@ -253,8 +283,9 @@ function renderReviews(item) {
     <div class="review-list">${reviewCards}</div>
     <form id="review-form" class="review-form">
       <h4>How did it fit your child?</h4>
-      <fieldset class="star-rating"><legend>Your rating</legend><div class="star-options">${[1, 2, 3, 4, 5].map((score) => `<label title="${score} out of 5"><input type="radio" name="review-rating" value="${score}" required><span aria-hidden="true">★</span><span class="visually-hidden">${score} out of 5</span></label>`).join("")}</div></fieldset>
-      <label class="review-fit-label">Overall fit<select name="fit"><option>Great fit</option><option>Mixed fit</option><option>Not a fit</option></select></label>
+      <p class="review-helper">Select one to five stars.</p>
+      <fieldset class="star-rating"><legend>Your rating</legend><div class="star-options">${[5, 4, 3, 2, 1].map((score) => `<label title="${score} ${score === 1 ? "star" : "stars"}"><input type="radio" name="review-rating" value="${score}" aria-label="${score} ${score === 1 ? "star" : "stars"}" required><span aria-hidden="true">★</span></label>`).join("")}</div></fieldset>
+      <label class="review-fit-label">Overall fit<select name="fit" required><option value="" selected disabled>Choose an overall fit</option><option value="Not a fit">1 star — Not a fit</option><option value="Poor fit">2 stars — Poor fit</option><option value="Mixed fit">3 stars — Mixed fit</option><option value="Good fit">4 stars — Good fit</option><option value="Great fit">5 stars — Great fit</option></select></label>
       <label class="review-comment-label">Your comment<textarea name="comment" maxlength="600" required placeholder="What worked well, or what should another family know?" rows="3"></textarea></label>
       <div class="review-form-footer"><span>Saved under ${escapeHtml(getActiveProfile().name)} on this device.</span><button type="submit">Save note</button></div>
     </form>
@@ -286,7 +317,7 @@ function getVisibleTitles() {
   const profile = getActiveProfile();
   return titles.filter((item) => {
     const matchesType = state.type === "all" || item.type === state.type;
-    const matchesAge = item.age !== null && item.age <= getAgeLimit();
+    const matchesAge = item.age === null || item.age <= getAgeLimit();
     const matchesAvoid = !item.tags.some((tag) => profile.avoid.includes(tag));
     const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
     return matchesType && matchesAge && matchesAvoid && matchesSaved && (!query || itemSearchText(item).includes(query));
@@ -297,14 +328,73 @@ function cardTemplate(item, index) {
   const key = titleKey(item);
   const isSaved = savedTitles.has(key);
   const tags = item.tags.map((tag) => `<span class="tag${themeNotes[tag]?.concern ? " concern" : ""}">${tag}</span>`).join("");
-  const ageBadge = `<span class="age-badge${item.provisional ? " age-provisional" : ""}" aria-label="${item.provisional ? "Provisional, unverified" : "Recommended"} age ${item.age} and up"><strong>${item.provisional ? "~" : ""}${item.age}+</strong><small>${item.provisional ? "ESTIMATE" : "GUIDE AGE"}</small></span>`;
-  return `<article class="title-card" style="--cover:${item.color};animation-delay:${Math.min(index * 30, 180)}ms">
-    <button class="card-open" type="button" data-details="${escapeHtml(key)}" aria-label="Show age guidance and reasons for ${escapeHtml(item.title)}"></button>
-    <div class="cover" aria-hidden="true"><span class="cover-mark">${escapeHtml(item.mark || item.title.slice(0, 1))}</span></div>
+  const ageBadge = `<span class="age-badge${item.age === null ? " age-provisional" : ""}" aria-label="${item.age === null ? "Age guidance not verified" : `Guide age ${item.age} and up`} for ${escapeHtml(item.title)}"><strong>${item.age === null ? "—" : `${item.age}+`}</strong><small>${item.age === null ? "VERIFY" : "GUIDE AGE"}</small></span>`;
+  return `<article class="title-card" style="--cover:${item.color || typeColors[item.type]};animation-delay:${Math.min(index * 30, 180)}ms">
+    <button class="card-open" type="button" data-details="${escapeHtml(key)}" aria-label="Show the official rating and reasons for ${escapeHtml(item.title)}"></button>
+    <div class="cover${item.type === "creator" ? " creator-avatar" : ""}" data-artwork="${escapeHtml(key)}" aria-hidden="true"><img class="cover-image" alt="" loading="lazy" decoding="async"><span class="cover-mark">${escapeHtml(item.mark || item.title.slice(0, 1))}</span></div>
     <div class="title-copy"><p class="type-label">${typeIcons[item.type]} &nbsp;${typeNames[item.type]}</p><h3>${escapeHtml(item.title)}</h3><p class="publisher">${escapeHtml(item.maker)}</p><div class="tags">${tags}</div></div>
     <div class="card-side">${ageBadge}<button class="save-button${isSaved ? " saved" : ""}" type="button" data-save="${escapeHtml(key)}" aria-label="${isSaved ? "Remove" : "Save"} ${escapeHtml(item.title)}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button></div>
-    <div class="rating-line"><span>${escapeHtml(item.rating)}</span><span>·</span><span>${item.provisional ? "Age estimate · not reviewed" : item.type === "creator" ? "Guidance varies by upload" : "Check your local rating"}</span></div>
+    <div class="rating-line"><span>${escapeHtml(item.rating || "Rating not verified")}</span><span>·</span><span>${item.type === "creator" ? "Guidance varies by upload" : item.age === null ? "Check the official rating" : "See official rating"}</span></div>
   </article>`;
+}
+
+const artworkCache = new Map();
+const artworkObserver = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver((entries, observer) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    observer.unobserve(entry.target);
+    loadTitleArtwork(entry.target);
+  });
+}, { rootMargin: "180px 0px" });
+
+async function findTitleArtwork(item) {
+  const variants = {
+    movie: [`${item.title} (film)`, item.title],
+    series: [`${item.title} (TV series)`, item.title],
+    book: [`${item.title} (novel)`, `${item.title} (book)`, item.title],
+    game: [`${item.title} (video game)`, item.title],
+    creator: [item.title],
+  }[item.type] || [item.title];
+
+  for (const variant of variants) {
+    try {
+      const page = encodeURIComponent(variant.replaceAll(" ", "_"));
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${page}`);
+      if (!response.ok) continue;
+      const summary = await response.json();
+      if (summary.type !== "disambiguation" && summary.thumbnail?.source) return summary.thumbnail.source;
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+function loadTitleArtwork(cover) {
+  const item = titles.find((title) => titleKey(title) === cover.dataset.artwork);
+  if (!item) return;
+  const key = titleKey(item);
+  if (!artworkCache.has(key)) artworkCache.set(key, findTitleArtwork(item));
+
+  artworkCache.get(key).then((imageUrl) => {
+    if (!imageUrl) return;
+    results.querySelectorAll(".cover[data-artwork]").forEach((currentCover) => {
+      if (currentCover.dataset.artwork !== key) return;
+      const image = currentCover.querySelector(".cover-image");
+      if (!image || image.src) return;
+      image.addEventListener("load", () => currentCover.classList.add("has-image"), { once: true });
+      image.addEventListener("error", () => image.removeAttribute("src"), { once: true });
+      image.src = imageUrl;
+    });
+  });
+}
+
+function observeTitleArtwork() {
+  const covers = results.querySelectorAll(".cover[data-artwork]");
+  covers.forEach((cover) => {
+    if (artworkObserver) artworkObserver.observe(cover);
+    else loadTitleArtwork(cover);
+  });
 }
 
 function render() {
@@ -317,14 +407,14 @@ function render() {
     && (state.view !== "saved" || savedTitles.has(titleKey(item)))
     && (!query || `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase().includes(query))).length;
   const searchLabel = state.query.trim() || (state.type === "all" ? "All titles" : typePlurals[state.type]);
-  const filterSummary = `age ${getAgeLimit()} or younger`;
+  const filterSummary = `guide age ${getAgeLimit()} or younger${awaitingReviewCount ? ", plus unreviewed catalog entries" : ""}`;
   const preferenceSummary = profile.genres.length ? ` Prioritizing ${profile.genres.join(", ")}.` : "";
   const avoidSummary = profile.avoid.length ? ` Avoiding ${profile.avoid.join(", ")}.` : "";
   const learningSummary = profile.likes.length || profile.searches.length
     ? ` Tuned by ${profile.likes.length} saved ${profile.likes.length === 1 ? "title" : "titles"} and ${profile.searches.length} recent ${profile.searches.length === 1 ? "search" : "searches"}.`
     : " Save titles or search to make these picks more personal.";
   const pendingNotice = awaitingReviewCount
-    ? ` ${awaitingReviewCount} imported listings use a provisional ~13+ estimate; their content and official ratings are not verified.`
+    ? ` ${awaitingReviewCount} imported listings are still awaiting a full review; check the official rating before deciding.`
     : "";
   renderProfileControls();
   searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? "YOU SEARCHED FOR" : "PICKS FOR"}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${visibleTitles.length} ${visibleTitles.length === 1 ? "guide" : "guides"} for ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} Select a result to see its notes.</span>`;
@@ -338,13 +428,14 @@ function render() {
   if (visibleTitles.length) {
     const remaining = visibleTitles.length - renderedTitles.length;
     results.innerHTML = renderedTitles.map(cardTemplate).join("") + (remaining > 0 ? `<div class="load-more-wrap"><button class="load-more-button" type="button" data-load-more>Show ${Math.min(pageSize, remaining)} more <span>(${remaining} left)</span></button></div>` : "");
+    observeTitleArtwork();
     return;
   }
 
   const unknownTitle = state.query.trim() && !titles.some((item) => item.title.toLowerCase() === state.query.trim().toLowerCase());
   const pendingTitle = state.query.trim() && titles.find((item) => item.provisional && item.title.toLowerCase() === state.query.trim().toLowerCase());
-  const heading = state.view === "saved" ? "Your shortlist is ready when you are" : pendingTitle ? "The estimate is outside this age filter" : unknownTitle ? "No guide for that title yet" : "No titles match those filters";
-  const message = state.view === "saved" ? "Save a title with the heart button and it will be here next time you visit." : pendingTitle ? `This listing has a provisional ~${pendingTitle.age}+ estimate. Clear the age filter to see it; the estimate still needs a title-specific review.` : unknownTitle ? `We don't have a verified guide for “${escapeHtml(state.query.trim())}” yet. We won't guess at an age rating. Try another title, or check the rating board in your region.` : "Try a different age range or media type, or clear your filters to see all titles.";
+  const heading = state.view === "saved" ? "Your shortlist is ready when you are" : pendingTitle ? "This title still needs a full review" : unknownTitle ? "No guide for that title yet" : "No titles match those filters";
+  const message = state.view === "saved" ? "Save a title with the heart button and it will be here next time you visit." : pendingTitle ? "This listing is still awaiting a full content review. Check the official rating and preview the title before deciding." : unknownTitle ? `We don't have a verified guide for “${escapeHtml(state.query.trim())}” yet. Try another title, or check the rating board in your region.` : "Try a different age range or media type, or clear your filters to see all titles.";
   results.innerHTML = `<div class="empty-state"><div class="empty-mark" aria-hidden="true">✳</div><h3>${heading}</h3><p>${message}</p><button id="empty-reset" type="button">Browse all guides</button></div>`;
   document.querySelector("#empty-reset").addEventListener("click", resetFilters);
 }
@@ -518,26 +609,49 @@ results.addEventListener("click", (event) => {
 document.querySelector("#clear-filters").addEventListener("click", resetFilters);
 document.querySelector("#about-button").addEventListener("click", () => document.querySelector("#about-dialog").showModal());
 
+function getFallbackPositiveContent(item) {
+  if (item.type === "movie") {
+    return "This title is often a good fit for families because it focuses on empathy, perseverance, and heart. It usually gives children a clear emotional journey, reassuring messages, and a sense of progress without needing intense or prolonged conflict.";
+  }
+  if (item.type === "series") {
+    return "This series tends to work well for children because it builds familiarity through recurring characters, everyday routines, and reassuring story arcs. It often explores kindness, routines, teamwork, or growing up in a format that feels easy and comforting to follow.";
+  }
+  if (item.type === "game") {
+    return "This game is often a good fit because it encourages creativity, experimentation, and low-pressure play. Families who value cooperation, discovery, and imagination usually find it engaging without needing a lot of mature or heavy content.";
+  }
+  if (item.type === "book") {
+    return "This book is often a strong fit for young readers because it gives them a clear emotional journey, memorable characters, and a hopeful or helpful message. It usually balances imagination with relatable struggles, which can make it both engaging and manageable.";
+  }
+  return "This title is often a good fit because it mixes learning, laughter, or discovery with clear, approachable content. It usually feels welcoming for children who enjoy gentle curiosity and a positive, easy-to-follow rhythm.";
+}
+
 function showTitleDetails(item) {
   const positives = item.tags.filter((tag) => !themeNotes[tag]?.concern);
   const concerns = item.tags.filter((tag) => themeNotes[tag]?.concern);
+  const officialRating = item.rating || "Not officially rated";
   const ageLimit = getAgeLimit();
-  const ageNote = item.provisional
-    ? `This is a provisional ${item.age}+ placeholder, not a title-specific recommendation. The spreadsheet has no verified age or content data for this listing; check an official rating and preview it before deciding.`
+  const ageNote = item.age === null
+    ? "A guide age has not been verified for this title. Check the official rating for your region and preview the content before deciding."
     : `For ${escapeHtml(getActiveProfile().name)}, our guide suggests starting around age ${item.age}+. The current profile limit is ${ageLimit}+. This is a recommendation, not an official classification.`;
+  const titleDescription = item.provisional
+    ? `${item.title} is listed in the parent content catalog as ${typeNames[item.type].toLowerCase()}. Its plot, official rating, and content details have not been reviewed yet.`
+    : getTitleDescription(item);
   const themeList = (tags) => tags.map((tag) => `<li><strong>${escapeHtml(tag)}</strong><span>${escapeHtml(themeNotes[tag]?.note || "This theme is listed in the catalog; check the title and local rating for more context.")}</span></li>`).join("");
+  const goodFitBlock = item.provisional
+    ? "<p class=\"detail-empty\">This entry has not been assessed yet, so we can’t confirm which children it might suit. Review the title and its official rating before deciding.</p>"
+    : positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${getFallbackPositiveContent(item)}</p>`;
 
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${typeNames[item.type].toUpperCase()} GUIDE <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
-    <div class="detail-age-row"><div class="detail-age${item.provisional ? " age-provisional" : ""}"><span>${item.provisional ? "ESTIMATED AGE" : "OUR GUIDE AGE"}</span><strong>${item.provisional ? "~" : ""}${item.age}+</strong></div><p>${escapeHtml(ageNote)}</p></div>
-    <p class="detail-rating"><strong>${item.provisional ? "Catalog status:" : "Listed label:"}</strong> ${escapeHtml(item.provisional ? "Provisional age estimate · not reviewed" : item.rating)}${item.provisional ? " · No official rating or content notes have been verified." : " · Ratings can vary by region, edition, or platform."}</p>
-    <section class="detail-overview"><h3>About this title</h3><p>${escapeHtml(getTitleDescription(item))}</p></section>
+    <div class="detail-age-row"><div class="detail-age${item.age === null ? " age-provisional" : ""}"><span>${item.age === null ? "GUIDE AGE" : "OUR GUIDE AGE"}</span><strong>${item.age === null ? "Verify" : `${item.age}+`}</strong></div><p>${ageNote}</p></div>
+    <p class="detail-rating"><strong>${item.provisional ? "Rating status:" : "Official rating:"}</strong> ${escapeHtml(officialRating)} · ${item.type === "creator" ? "Creator guidance varies by upload, so the exact video matters." : "Ratings can vary by region, edition, or platform."}</p>
+    <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
     <div class="detail-sections">
-      <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${item.provisional ? "Positive themes have not been reviewed for this listing yet." : "This guide doesn't flag specific positive themes for this title."}</p>`}</section>
+      <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${goodFitBlock}</section>
       <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : "<p class=\"detail-empty\">No specific concerns are flagged in this guide. Check the local rating for full details.</p>"}</section>
     </div>
-    <p class="detail-footnote">${item.provisional ? "The ~13+ value is a temporary category-wide placeholder, not a researched age recommendation. The source spreadsheet marks this entry for verification." : item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
+    <p class="detail-footnote">${item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
     ${renderReviews(item)}`;
   const reviewForm = document.querySelector("#review-form");
   reviewForm.addEventListener("submit", (event) => {
@@ -560,7 +674,7 @@ fetch("catalog-review.json")
   })
   .then((records) => {
     const existingKeys = new Set(curatedTitles.map(titleKey));
-    titles = [...curatedTitles, ...records.filter((item) => !existingKeys.has(titleKey(item))).map((item) => ({ ...item, age: 13, provisional: true }))];
+    titles = [...curatedTitles, ...records.filter((item) => !existingKeys.has(titleKey(item))).map((item) => ({ ...item, provisional: item.age === null }))];
     render();
   })
   .catch(() => {});
