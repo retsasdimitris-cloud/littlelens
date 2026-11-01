@@ -72,10 +72,144 @@ const curatedTitles = [
 ];
 
 let titles = [...curatedTitles];
-let visibleLimit = 36;
-const pageSize = 36;
-const typeNames = { movie: "Film", series: "Series", game: "Game", book: "Book", creator: "Creator" };
-const typePlurals = { movie: "Films", series: "Series", game: "Games", book: "Books", creator: "Creators" };
+const pageSize = 40;
+const interfaceMessages = {
+  en: {
+    family: "YOUR FAMILY", discover: "Discover", profile: "My profile", saved: "Saved", everyFamily: "Every family has its own lens.", familyNote: "Use our guide as a starting point, then decide what feels right for yours.", peaceOfMind: "A little more peace of mind", familyGuide: "FAMILY GUIDE", aboutGuide: "About our guide", showingPicks: "SHOWING PICKS FOR", preferences: "Preferences", manageProfiles: "Manage profiles", welcomeEyebrow: "MAKE ROOM FOR THE GOOD STUFF", welcomeTitle: "A clearer way<br />to <span>choose.</span>", welcomeCopy: "A little context goes a long way. Find the right next watch, read, or play for your family.", welcomeArt: "A warm, quiet corner with a book, film and game for family time", artCaption: "GOOD STORIES<br />GROW WITH THEM", searchLabel: "WHAT ARE YOU CURIOUS ABOUT?", searchHint: "Try a title or a topic", searchPlaceholder: "Search a film, series, game, book, or creator...", findGuide: "Find a guide", everything: "Everything", films: "Films", series: "Series", games: "Games", books: "Books", creators: "Creators", ageUpTo: "AGE UP TO", childAge: "Child's age", resultsKicker: "A FEW GOOD PLACES TO START", popularTitles: "Popular with families", clearFilters: "Clear filters", ageFootnote: "Age guidance is a starting point, not a rulebook. Ratings vary by country, and every kid is different.", aboutTitle: "A NOTE FROM US", aboutHeading: "Helpful context.<br /><span>Your call.</span>", aboutParagraph1: "Little Lens is a small, hand-curated guide to common titles. Ages are recommendations, not guarantees, and a title's official rating can vary by country, edition, or platform.", aboutParagraph2: "We call out common themes to help you decide what fits your child. We don't have a verified guide for every title yet; when we don't, we'll say so rather than guess.", aboutParagraph3: "When there is no verified Greek/PEGI rating, Little Lens uses a title-specific recommendation when a source is available or a Little Lens estimate based on the choice itself. Estimates are not official ratings, and creator channels can vary from video to video.", aboutLast: "You know your kid best. That's the lens that matters.", gotIt: "Got it", close: "Close", closeDetails: "Close title details", profileDialogEyebrow: "A LENS FOR EVERY KID", childProfiles: "Child profiles", profiles: "Profiles", addChild: "+ Add a child", childName: "Child's name", age: "Age", genresPrioritize: "Genres to prioritize", genresHint: "We'll bring these closer to the top.", themesAvoid: "Themes to avoid", avoidHint: "Titles with these content notes won't appear in this child's picks.", deleteProfile: "Delete profile", clearLearning: "Clear learned interests", saveProfile: "Save profile", childNamePlaceholder: "e.g. Alex", all: "All", prev: "Prev", next: "Next", goTo: "Go to", language: "Language", profileYourLens: "YOUR LENS", profile: "My profile", profileLabel: "PROFILE", savedTitles: "saved titles", likes: "likes", saved: "Saved", genres: "Genres", avoid: "Avoid", favoriteGenres: "Favorite genres", noFavoriteGenres: "No favorite genres yet", noThemesFiltered: "No themes are being filtered out", recentSearches: "Recent searches", clear: "Clear", familyAccounts: "Family accounts", active: "Active", switch: "Switch", profilePreferences: "Preferences", profileEdit: "Edit", titlesFor: "Ideas for {name}", savedTitleHeading: "Your saved titles", guideMatches: "Guide matches", guides: "guides", guide: "guide", resultFor: "for", prioritizeSummary: " Prioritizing {genres}.", avoidSummary: " Avoiding {themes}.", learningSummary: " Tuned by {likes} saved {titleWord} and {searches} recent {searchWord}.", learningEmpty: " Save titles or search to make these picks more personal.", pendingNotice: " {count} imported listings are still awaiting a full review; check the official rating before deciding.", searchContext: "Select a result to see its notes.", youSearched: "YOU SEARCHED FOR", picksFor: "PICKS FOR", noResultsSaved: "Your shortlist is ready when you are", noResultsTitle: "No guide for that title yet", noResultsReview: "This title still needs a full review", noResultsFilters: "No titles match those filters", noResultsSavedCopy: "Save a title with the heart button and it will be here next time you visit.", noResultsReviewCopy: "This listing is still awaiting a full content review. Check the official rating and preview the title before deciding.", noResultsSearchCopy: "We don't have a verified guide for “{query}” yet. Try another title, or check the rating board in your region.", noResultsFiltersCopy: "Try a different age range or media type, or clear your filters to see all titles.", browseAll: "Browse all guides", yourLens: "YOUR LENS", profileFor: "Profile for {name}", ageSavedLikes: "Age {age} • {saved} saved titles • {likes} likes", noProfileSearches: "No recent searches yet", familyExperiences: "FAMILY EXPERIENCES", ratingsNotes: "Ratings & notes", noRatings: "No ratings yet", reviewPrivacy: "These notes are saved in this browser only. They are not shared with other families.", noFamilyNotes: "No family notes for this title yet. Add the first one for {name}.", reviewPrompt: "How did it fit your child?", selectStars: "Select one to five stars.", yourRating: "Your rating", overallFit: "Overall fit", chooseFit: "Choose an overall fit", notFit: "Not a fit", poorFit: "Poor fit", mixedFit: "Mixed fit", goodFit: "Good fit", greatFit: "Great fit", commentLabel: "Your comment", commentPlaceholder: "What worked well, or what should another family know?", savedOnDevice: "Saved under {name} on this device.", saveNote: "Save note", oneStar: "star", manyStars: "stars", closeGuide: "Close guide", typeGuide: "{type} GUIDE", officialRating: "OFFICIAL RATING", ageStatus: "AGE STATUS", suggestedAge: "SUGGESTED AGE", description: "Description", themesFit: "Themes & why it might be a good fit", consider: "Things to consider", research: "Review", allAges: "All", ageNeedsResearch: "Age needs title-specific research", estimatedAge: "Estimated age {age} and up", officialAge: "{rating}, age {age} and up", remove: "Remove", save: "Save", showRatingReasons: "Show the official rating and reasons for {title}", searchGuideAge: "guide age {age} or younger", priority: "Prioritizing", avoidLabel: "Avoiding", officialRatingMissing: "Greek official rating not verified", ratingStatuses: "Greek official rating not verified", saveContext: "Saved", estimate: "ESTIMATE", researchLabel: "RESEARCH", profileKicker: "PERSONALIZED FOR {name}", savedKicker: "KEPT CLOSE FOR LATER", searchKicker: "HERE'S WHAT WE FOUND", discoverTitle: "A clearer way<br />to <span>choose.</span>", savedTitle: "Your family's<br /><span>shortlist.</span>", noFavoriteThemes: "No themes are being filtered out", titleSpecificPending: "Title-specific age research needed", officialGreecePegi: "Official Greece/PEGI rating", estimateSource: "Little Lens estimate", estimatedAgeLabel: "ESTIMATE", awaitingReview: "Awaiting review", exploreAll: "All titles", closeButtonLabel: "Close", greekLanguage: "Greek", englishLanguage: "English"
+  },
+  el: {
+    family: "Η ΟΙΚΟΓΕΝΕΙΑ ΣΑΣ", discover: "Ανακάλυψη", profile: "Το προφίλ μου", saved: "Αποθηκευμένα", everyFamily: "Κάθε οικογένεια βλέπει τον κόσμο με τον δικό της φακό.", familyNote: "Χρησιμοποιήστε τον οδηγό ως αφετηρία και αποφασίστε τι ταιριάζει στη δική σας οικογένεια.", peaceOfMind: "Λίγη περισσότερη σιγουριά", familyGuide: "ΟΙΚΟΓΕΝΕΙΑΚΟΣ ΟΔΗΓΟΣ", aboutGuide: "Σχετικά με τον οδηγό", showingPicks: "ΠΡΟΤΑΣΕΙΣ ΓΙΑ", preferences: "Προτιμήσεις", manageProfiles: "Διαχείριση προφίλ", welcomeEyebrow: "ΧΩΡΟΣ ΓΙΑ Ο,ΤΙ ΑΞΙΖΕΙ", welcomeTitle: "Ένας πιο καθαρός<br />τρόπος να <span>επιλέξετε.</span>", welcomeCopy: "Λίγο πλαίσιο βοηθά πολύ. Βρείτε την επόμενη ταινία, σειρά, ανάγνωση ή παιχνίδι για την οικογένειά σας.", welcomeArt: "Μια ζεστή, ήσυχη γωνιά με βιβλίο, ταινία και παιχνίδι για την οικογένεια", artCaption: "ΟΙ ΟΜΟΡΦΕΣ ΙΣΤΟΡΙΕΣ<br />ΜΕΓΑΛΩΝΟΥΝ ΜΑΖΙ ΤΟΥΣ", searchLabel: "ΤΙ ΘΑ ΘΕΛΑΤΕ ΝΑ ΑΝΑΚΑΛΥΨΕΤΕ;", searchHint: "Δοκιμάστε έναν τίτλο ή θέμα", searchPlaceholder: "Αναζητήστε ταινία, σειρά, παιχνίδι, βιβλίο ή δημιουργό...", findGuide: "Βρείτε οδηγό", everything: "Όλα", films: "Ταινίες", series: "Σειρές", games: "Παιχνίδια", books: "Βιβλία", creators: "Δημιουργοί", ageUpTo: "ΗΛΙΚΙΑ ΕΩΣ", childAge: "Ηλικία παιδιού", resultsKicker: "ΜΕΡΙΚΕΣ ΚΑΛΕΣ ΙΔΕΕΣ ΓΙΑ ΑΡΧΗ", popularTitles: "Αγαπημένα των οικογενειών", clearFilters: "Καθαρισμός φίλτρων", ageFootnote: "Οι ηλικιακές προτάσεις είναι αφετηρία, όχι κανόνας. Οι αξιολογήσεις διαφέρουν ανά χώρα και κάθε παιδί είναι διαφορετικό.", aboutTitle: "ΛΙΓΑ ΛΟΓΙΑ ΑΠΟ ΕΜΑΣ", aboutHeading: "Χρήσιμες πληροφορίες.<br /><span>Η επιλογή δική σας.</span>", aboutParagraph1: "Το Little Lens είναι ένας μικρός, επιμελημένος οδηγός για γνωστούς τίτλους. Οι ηλικίες είναι προτάσεις, όχι εγγυήσεις, και η επίσημη αξιολόγηση μπορεί να διαφέρει ανά χώρα, έκδοση ή πλατφόρμα.", aboutParagraph2: "Επισημαίνουμε συχνά θέματα για να σας βοηθήσουμε να κρίνετε τι ταιριάζει στο παιδί σας. Δεν έχουμε ακόμη επιβεβαιωμένο οδηγό για κάθε τίτλο· όταν δεν έχουμε, το λέμε αντί να μαντεύουμε.", aboutParagraph3: "Όταν δεν υπάρχει επιβεβαιωμένη ελληνική αξιολόγηση ή PEGI, το Little Lens χρησιμοποιεί ειδική πρόταση για τον τίτλο, όταν υπάρχει πηγή, ή δική του εκτίμηση. Οι εκτιμήσεις δεν είναι επίσημες αξιολογήσεις και το περιεχόμενο των δημιουργών μπορεί να διαφέρει από βίντεο σε βίντεο.", aboutLast: "Εσείς γνωρίζετε καλύτερα το παιδί σας. Αυτός είναι ο σημαντικότερος φακός.", gotIt: "Εντάξει", close: "Κλείσιμο", closeDetails: "Κλείσιμο λεπτομερειών τίτλου", profileDialogEyebrow: "ΕΝΑΣ ΦΑΚΟΣ ΓΙΑ ΚΑΘΕ ΠΑΙΔΙ", childProfiles: "Προφίλ παιδιών", profiles: "Προφίλ", addChild: "+ Προσθήκη παιδιού", childName: "Όνομα παιδιού", age: "Ηλικία", genresPrioritize: "Προτεραιότητα σε είδη", genresHint: "Θα τα φέρνουμε πιο ψηλά στις προτάσεις.", themesAvoid: "Θέματα προς αποφυγή", avoidHint: "Τίτλοι με αυτές τις σημειώσεις δεν θα εμφανίζονται στις προτάσεις αυτού του παιδιού.", deleteProfile: "Διαγραφή προφίλ", clearLearning: "Εκκαθάριση ενδιαφερόντων", saveProfile: "Αποθήκευση προφίλ", childNamePlaceholder: "π.χ. Αλέξης", all: "Όλα", prev: "Προηγούμενη", next: "Επόμενη", goTo: "Μετάβαση", language: "Γλώσσα", profileYourLens: "Ο ΔΙΚΟΣ ΣΑΣ ΦΑΚΟΣ", profileLabel: "ΠΡΟΦΙΛ", savedTitles: "αποθηκευμένοι τίτλοι", likes: "μου αρέσουν", genres: "Είδη", avoid: "Αποφυγή", favoriteGenres: "Αγαπημένα είδη", noFavoriteGenres: "Δεν έχουν επιλεγεί αγαπημένα είδη", noThemesFiltered: "Δεν αποκλείονται θέματα", recentSearches: "Πρόσφατες αναζητήσεις", clear: "Εκκαθάριση", familyAccounts: "Οικογενειακοί λογαριασμοί", active: "Ενεργό", switch: "Εναλλαγή", profilePreferences: "Προτιμήσεις", profileEdit: "Επεξεργασία", titlesFor: "Ιδέες για {name}", savedTitleHeading: "Οι αποθηκευμένοι τίτλοι σας", guideMatches: "Αποτελέσματα οδηγού", guides: "οδηγοί", guide: "οδηγός", resultFor: "για", prioritizeSummary: " Με προτεραιότητα στα {genres}.", avoidSummary: " Με αποφυγή των θεμάτων: {themes}.", learningSummary: " Προσαρμοσμένο από {likes} αποθηκευμένους τίτλους και {searches} πρόσφατες αναζητήσεις.", learningEmpty: " Αποθηκεύστε τίτλους ή αναζητήστε για πιο προσωπικές προτάσεις.", pendingNotice: " {count} εισαγόμενες καταχωρίσεις χρειάζονται ακόμη πλήρη αξιολόγηση· ελέγξτε την επίσημη ηλικιακή ένδειξη πριν αποφασίσετε.", searchContext: "Επιλέξτε έναν τίτλο για να δείτε τις σημειώσεις του.", youSearched: "ΑΝΑΖΗΤΗΣΑΤΕ", picksFor: "ΠΡΟΤΑΣΕΙΣ ΓΙΑ", noResultsSaved: "Η λίστα σας θα σας περιμένει εδώ", noResultsTitle: "Δεν υπάρχει ακόμη οδηγός για αυτόν τον τίτλο", noResultsReview: "Αυτός ο τίτλος χρειάζεται πλήρη αξιολόγηση", noResultsFilters: "Κανένας τίτλος δεν ταιριάζει στα φίλτρα", noResultsSavedCopy: "Αποθηκεύστε έναν τίτλο με το εικονίδιο καρδιάς για να εμφανιστεί εδώ.", noResultsReviewCopy: "Αυτή η καταχώριση δεν έχει ακόμη πλήρη αξιολόγηση περιεχομένου. Ελέγξτε την επίσημη ένδειξη και δείτε τον τίτλο πριν αποφασίσετε.", noResultsSearchCopy: "Δεν έχουμε επιβεβαιωμένο οδηγό για «{query}» ακόμη. Δοκιμάστε άλλον τίτλο ή ελέγξτε την αρμόδια αρχή αξιολόγησης της περιοχής σας.", noResultsFiltersCopy: "Δοκιμάστε άλλη ηλικία ή κατηγορία ή καθαρίστε τα φίλτρα για να δείτε όλους τους τίτλους.", browseAll: "Περιήγηση σε όλους τους οδηγούς", yourLens: "Ο ΔΙΚΟΣ ΣΑΣ ΦΑΚΟΣ", profileFor: "Προφίλ για {name}", ageSavedLikes: "Ηλικία {age} • {saved} αποθηκευμένοι τίτλοι • {likes} αγαπημένοι", noProfileSearches: "Δεν υπάρχουν πρόσφατες αναζητήσεις", familyExperiences: "ΕΜΠΕΙΡΙΕΣ ΟΙΚΟΓΕΝΕΙΩΝ", ratingsNotes: "Αξιολογήσεις & σημειώσεις", noRatings: "Δεν υπάρχουν αξιολογήσεις", reviewPrivacy: "Οι σημειώσεις αποθηκεύονται μόνο σε αυτό το πρόγραμμα περιήγησης. Δεν κοινοποιούνται σε άλλες οικογένειες.", noFamilyNotes: "Δεν υπάρχουν ακόμη οικογενειακές σημειώσεις για αυτόν τον τίτλο. Προσθέστε την πρώτη για τον/την {name}.", reviewPrompt: "Πόσο ταίριαξε στο παιδί σας;", selectStars: "Επιλέξτε από ένα έως πέντε αστέρια.", yourRating: "Η αξιολόγησή σας", overallFit: "Συνολική καταλληλότητα", chooseFit: "Επιλέξτε καταλληλότητα", notFit: "Δεν ταίριαξε", poorFit: "Ταίριαξε λίγο", mixedFit: "Μέτρια", goodFit: "Ταίριαξε καλά", greatFit: "Ταίριαξε πολύ", commentLabel: "Το σχόλιό σας", commentPlaceholder: "Τι λειτούργησε καλά ή τι θα ήταν χρήσιμο να γνωρίζει μια άλλη οικογένεια;", savedOnDevice: "Αποθηκεύτηκε για τον/την {name} σε αυτή τη συσκευή.", saveNote: "Αποθήκευση σημείωσης", oneStar: "αστέρι", manyStars: "αστέρια", closeGuide: "Κλείσιμο οδηγού", typeGuide: "ΟΔΗΓΟΣ {type}", officialRating: "ΕΠΙΣΗΜΗ ΑΞΙΟΛΟΓΗΣΗ", ageStatus: "ΗΛΙΚΙΑΚΗ ΕΝΔΕΙΞΗ", suggestedAge: "ΠΡΟΤΕΙΝΟΜΕΝΗ ΗΛΙΚΙΑ", description: "Περιγραφή", themesFit: "Θέματα και λόγοι καταλληλότητας", consider: "Τι να λάβετε υπόψη", research: "Έλεγχος", allAges: "Όλες", ageNeedsResearch: "Χρειάζεται ειδική έρευνα ηλικίας για τον τίτλο", estimatedAge: "Εκτιμώμενη ηλικία {age}+", officialAge: "{rating}, ηλικία {age}+", remove: "Αφαίρεση", save: "Αποθήκευση", showRatingReasons: "Δείτε την επίσημη αξιολόγηση και τους λόγους για το {title}", searchGuideAge: "οδηγός για ηλικία {age} ή μικρότερη", priority: "Με προτεραιότητα", avoidLabel: "Με αποφυγή", officialRatingMissing: "Δεν έχει επιβεβαιωθεί επίσημη ελληνική αξιολόγηση", ratingStatuses: "Δεν έχει επιβεβαιωθεί επίσημη ελληνική αξιολόγηση", saveContext: "Αποθηκευμένα", estimate: "ΕΚΤΙΜΗΣΗ", researchLabel: "ΕΛΕΓΧΟΣ", profileKicker: "ΠΡΟΣΑΡΜΟΣΜΕΝΑ ΓΙΑ {name}", savedKicker: "ΑΠΟΘΗΚΕΥΜΕΝΑ ΓΙΑ ΑΡΓΟΤΕΡΑ", searchKicker: "ΑΥΤΑ ΒΡΗΚΑΜΕ", discoverTitle: "Ένας πιο καθαρός<br />τρόπος να <span>επιλέξετε.</span>", savedTitle: "Η οικογενειακή σας<br /><span>λίστα.</span>", noFavoriteThemes: "Δεν αποκλείονται θέματα", titleSpecificPending: "Χρειάζεται ειδική έρευνα ηλικίας για τον τίτλο", officialGreecePegi: "Επίσημη αξιολόγηση Ελλάδας/PEGI", estimateSource: "Εκτίμηση Little Lens", estimatedAgeLabel: "ΕΚΤΙΜΗΣΗ", awaitingReview: "Σε αναμονή αξιολόγησης", exploreAll: "Όλοι οι τίτλοι", closeButtonLabel: "Κλείσιμο", greekLanguage: "Ελληνικά", englishLanguage: "Αγγλικά"
+  }
+};
+let currentLanguage = readStoredJson("little-lens-language", "en");
+if (!interfaceMessages[currentLanguage]) currentLanguage = "en";
+Object.assign(interfaceMessages.en, {
+  film: "Film", book: "Book", creator: "Creator", titleOpenStart: "A clearer way", titleOpenEnd: "choose.", noFavoriteGenres: "No favorite genres yet", savedOnDevice: "Saved under {name} on this device.", footerDisclaimer: "Age guidance is a starting point, not a rulebook. Ratings vary by country, and every kid is different.", discoverWord: "Discover", resultGuide: "guide", resultGuides: "guides", starLabel: "{count} out of 5 stars", ageProfile: "Child's age", titleDialogClose: "Close title details", iconLanguage: "Language", pagination: "Pagination", pageNumber: "Page number", goToPage: "Go to page {page}", familyProfileTitle: "Your family<br /><span>profile.</span>", shortlistTitle: "Your family's<br /><span>shortlist.</span>", discoverTitleHtml: "A clearer way<br />to <span>choose.</span>", profileViewLabel: "PROFILE", profileViewKicker: "YOUR LENS", clearProfileSearches: "Clear", titleResultsKicker: "A FEW GOOD PLACES TO START", titleResultsHeading: "Popular with families", guideLabel: "guide", guidesLabel: "guides", titleDetailKicker: "FAMILY EXPERIENCES", titleDescriptionLabel: "Description", titleConsider: "Things to consider", firstProfile: "My child", ratingMovie: "Greek film classification not verified", ratingSeries: "Greek series rating not verified", ratingGame: "PEGI rating not verified", ratingBook: "No standard official book age rating", ratingCreator: "No channel-wide official rating", noTags: "No specific concerns are flagged in this guide. Check the local rating for full details.", profileAgeSummary: "Age {age} • {saved} saved titles • {likes} likes", searchAgeSummary: "guide age {age} or younger", searchResultIntro: "{count} {guideWord} for {name}.", profileAgeOption: "{age} · age {number}"
+});
+Object.assign(interfaceMessages.el, {
+  film: "Ταινία", book: "Βιβλίο", creator: "Δημιουργός", titleOpenStart: "Ένας πιο καθαρός τρόπος", titleOpenEnd: "να επιλέξετε.", noFavoriteGenres: "Δεν έχουν επιλεγεί αγαπημένα είδη", savedOnDevice: "Αποθηκεύτηκε για τον/την {name} σε αυτή τη συσκευή.", footerDisclaimer: "Οι ηλικιακές προτάσεις είναι αφετηρία, όχι κανόνας. Οι αξιολογήσεις διαφέρουν ανά χώρα και κάθε παιδί είναι διαφορετικό.", discoverWord: "Ανακάλυψη", resultGuide: "οδηγός", resultGuides: "οδηγοί", starLabel: "{count} από 5 αστέρια", ageProfile: "Ηλικία παιδιού", titleDialogClose: "Κλείσιμο λεπτομερειών τίτλου", iconLanguage: "Γλώσσα", pagination: "Σελιδοποίηση", pageNumber: "Αριθμός σελίδας", goToPage: "Μετάβαση στη σελίδα {page}", familyProfileTitle: "Η οικογένειά σας<br /><span>με τον δικό της φακό.</span>", shortlistTitle: "Η οικογενειακή σας<br /><span>λίστα.</span>", discoverTitleHtml: "Ένας πιο καθαρός<br />τρόπος να <span>επιλέξετε.</span>", profileViewLabel: "ΠΡΟΦΙΛ", profileViewKicker: "Ο ΔΙΚΟΣ ΣΑΣ ΦΑΚΟΣ", clearProfileSearches: "Εκκαθάριση", titleResultsKicker: "ΜΕΡΙΚΕΣ ΚΑΛΕΣ ΙΔΕΕΣ ΓΙΑ ΑΡΧΗ", titleResultsHeading: "Αγαπημένα των οικογενειών", guideLabel: "οδηγός", guidesLabel: "οδηγοί", titleDetailKicker: "ΕΜΠΕΙΡΙΕΣ ΟΙΚΟΓΕΝΕΙΩΝ", titleDescriptionLabel: "Περιγραφή", titleConsider: "Τι να λάβετε υπόψη", firstProfile: "Το παιδί μου", ratingMovie: "Δεν έχει επιβεβαιωθεί ελληνική κινηματογραφική κατάταξη", ratingSeries: "Δεν έχει επιβεβαιωθεί ελληνική αξιολόγηση σειράς", ratingGame: "Δεν έχει επιβεβαιωθεί αξιολόγηση PEGI", ratingBook: "Δεν υπάρχει ενιαία επίσημη ηλικιακή αξιολόγηση βιβλίων", ratingCreator: "Δεν υπάρχει επίσημη αξιολόγηση για όλο το κανάλι", noTags: "Δεν επισημαίνονται συγκεκριμένες ανησυχίες σε αυτόν τον οδηγό. Ελέγξτε την τοπική αξιολόγηση για λεπτομέρειες.", profileAgeSummary: "Ηλικία {age} • {saved} αποθηκευμένοι τίτλοι • {likes} αγαπημένοι", searchAgeSummary: "οδηγός για ηλικία {age} ή μικρότερη", searchResultIntro: "{count} {guideWord} για {name}.", profileAgeOption: "{age} · ηλικία {number}"
+});
+function t(key, values = {}) {
+  let message = interfaceMessages[currentLanguage][key] || interfaceMessages.en[key] || key;
+  Object.entries(values).forEach(([name, value]) => { message = message.replaceAll(`{${name}}`, value); });
+  return message;
+}
+const greekTerms = {
+  "Animation": "Κινούμενα σχέδια", "Fantasy": "Φαντασία", "Adventure": "Περιπέτεια", "Comedy": "Κωμωδία", "Science & nature": "Επιστήμη και φύση", "Family & friendship": "Οικογένεια και φιλία", "Puzzles & building": "Γρίφοι και κατασκευές", "Sports & competition": "Αθλητισμός και ανταγωνισμός", "Mystery & spooky": "Μυστήριο και αγωνία", "Action": "Δράση",
+  "Action violence": "Βία δράσης", "Animal peril": "Κίνδυνος για ζώα", "Anxiety": "Άγχος", "Belonging": "Αίσθηση του ανήκειν", "Cartoon action": "Κινούμενη δράση", "Cartoon combat": "Χιουμοριστικές μάχες", "Co-op play": "Συνεργατικό παιχνίδι", "Competition": "Ανταγωνισμός", "Creativity": "Δημιουργικότητα", "Creepy imagery": "Ανατριχιαστικές εικόνες", "Family": "Οικογένεια", "Family life": "Οικογενειακή ζωή", "Family pressure": "Οικογενειακή πίεση", "Family separation": "Οικογενειακός αποχωρισμός", "Family themes": "Οικογενειακά θέματα", "Fantasy action": "Φανταστική δράση", "Fantasy battles": "Φανταστικές μάχες", "Fantasy combat": "Φανταστικές συγκρούσεις", "Fantasy peril": "Φανταστικός κίνδυνος", "Fantasy violence": "Φανταστική βία", "Friendly competition": "Φιλικός ανταγωνισμός", "Friendship": "Φιλία", "Gentle humor": "Ήπιο χιούμορ", "Growing up": "Μεγαλώνοντας", "Horror": "Τρόμος", "Horror imagery": "Εικόνες τρόμου", "Intense peril": "Έντονος κίνδυνος", "Kindness": "Καλοσύνη", "Life themes": "Θέματα ζωής", "Loss": "Απώλεια", "Magic": "Μαγεία", "Mild language": "Ήπια γλώσσα", "Mild peril": "Ήπιος κίνδυνος", "Mythical violence": "Μυθολογική βία", "Ocean peril": "Θαλάσσιος κίνδυνος", "Online chat": "Διαδικτυακή συνομιλία", "Online features": "Διαδικτυακές λειτουργίες", "Online interactions": "Διαδικτυακές αλληλεπιδράσεις", "Online play": "Διαδικτυακό παιχνίδι", "Peril": "Κίνδυνος", "Sacrifice": "Θυσία", "Scary scenes": "Τρομακτικές σκηνές", "Survival themes": "Θέματα επιβίωσης", "Bullying": "Εκφοβισμός", "Awaiting review": "Σε αναμονή αξιολόγησης", "Difficult themes": "Δύσκολα θέματα", "Gentle learning": "Ήπια μάθηση", "Physical stunts": "Σωματικά ακροβατικά", "Science and engineering": "Επιστήμη και μηχανική", "Science topics": "Επιστημονικά θέματα", "Sponsored segments": "Χορηγούμενα τμήματα", "Varies by upload": "Διαφέρει ανά βίντεο", "Wildlife encounters": "Συναντήσεις με άγρια ζώα", "Violence": "Βία", "Not a fit": "Δεν ταίριαξε", "Poor fit": "Ταίριαξε λίγο", "Mixed fit": "Μέτρια", "Good fit": "Ταίριαξε καλά", "Great fit": "Ταίριαξε πολύ"
+};
+const greekThemeNotes = {
+  "Action violence": "Οι υπερηρωικές μάχες και οι σκηνές δράσης περιλαμβάνουν πιο έντονη σωματική σύγκρουση.",
+  "Animal peril": "Ζώα αντιμετωπίζουν κίνδυνο, κάτι που μπορεί να αναστατώσει παιδιά ευαίσθητα σε τέτοιες ιστορίες.",
+  "Anxiety": "Η ιστορία πραγματεύεται το άγχος και περιλαμβάνει στιγμές συναισθηματικής έντασης.",
+  "Belonging": "Η σύνδεση με άλλους και η εύρεση μιας θέσης ανήκουν στα βασικά θετικά θέματα.",
+  "Cartoon action": "Η δράση είναι υπερβολική και παιχνιδιάρικη, όχι ρεαλιστική.",
+  "Cartoon combat": "Οι χαρακτήρες μάχονται με στυλιζαρισμένο, μη ρεαλιστικό τρόπο.",
+  "Co-op play": "Το συνεργατικό παιχνίδι δίνει στα παιδιά την ευκαιρία να δουλέψουν μαζί.",
+  "Competition": "Η εκπομπή περιστρέφεται γύρω από έναν διαγωνισμό, συνήθως σε ανάλαφρο τόνο.",
+  "Creativity": "Το ελεύθερο παιχνίδι ενθαρρύνει τις κατασκευές, τη διακόσμηση και τη φαντασία.",
+  "Creepy imagery": "Οι αλλόκοτες εικόνες και ιδέες μπορεί να αναστατώσουν ευαίσθητους αναγνώστες.",
+  "Family": "Οι οικογενειακοί δεσμοί και οι σχέσεις έχουν σημαντικό ρόλο στην ιστορία.",
+  "Family life": "Η καθημερινότητα και οι οικογενειακές σχέσεις βρίσκονται στο επίκεντρο της σειράς.",
+  "Family pressure": "Οι χαρακτήρες βιώνουν πίεση και συγκρούσεις μέσα στην οικογένειά τους.",
+  "Family separation": "Ένας γονέας και ένα παιδί αποχωρίζονται, κάτι που μπορεί να προκαλέσει στενοχώρια.",
+  "Family themes": "Η ιστορία εξερευνά τις οικογενειακές σχέσεις, την ταυτότητα και τις προσδοκίες.",
+  "Fantasy action": "Υπάρχουν μάχες και κίνδυνοι σε έναν φανταστικό κόσμο.",
+  "Fantasy battles": "Πλάσματα μάχονται σε ένα πολύχρωμο, φανταστικό περιβάλλον.",
+  "Fantasy combat": "Οι παίκτες μάχονται με φανταστικά πλάσματα· η δράση δεν είναι ρεαλιστική.",
+  "Fantasy peril": "Οι χαρακτήρες αντιμετωπίζουν μαγικές απειλές και στιγμές κινδύνου.",
+  "Fantasy violence": "Οι συγκρούσεις εκτυλίσσονται σε φανταστικό κόσμο και μπορεί να περιλαμβάνουν μάχες.",
+  "Friendly competition": "Οι αγώνες έχουν παιχνιδιάρικο χαρακτήρα και βασίζονται στον φιλικό ανταγωνισμό.",
+  "Friendship": "Η υποστηρικτική φιλία και η αλληλοβοήθεια αποτελούν θετικά στοιχεία της ιστορίας.",
+  "Gentle humor": "Το χιούμορ είναι ήπιο και συνήθως καλοπροαίρετο.",
+  "Growing up": "Οι χαρακτήρες διαχειρίζονται αλλαγές στα συναισθήματα, στις φιλίες ή στις ευθύνες τους.",
+  "Horror": "Υπερφυσικός τρόμος και τρομακτικές σκηνές μπορεί να είναι έντονες για μικρότερα παιδιά.",
+  "Horror imagery": "Μακάβριες και υπερφυσικές εικόνες μπορεί να φοβίσουν ορισμένους θεατές.",
+  "Intense peril": "Οι χαρακτήρες αντιμετωπίζουν παρατεταμένο κίνδυνο και έντονες σκηνές καταδίωξης.",
+  "Kindness": "Η ενσυναίσθηση, η καλοσύνη και η φροντίδα για τους άλλους επανέρχονται συχνά.",
+  "Life themes": "Μέρος της εμπειρίας αποτελούν καθημερινές ευθύνες και σχέσεις.",
+  "Loss": "Η ιστορία περιλαμβάνει πένθος και απώλεια αγαπημένων προσώπων.",
+  "Magic": "Η μαγεία και τα ξόρκια αποτελούν μέρος ενός φανταστικού κόσμου.",
+  "Mild language": "Υπάρχουν ήπιες βωμολοχίες· ελέγξτε τις λεπτομέρειες αξιολόγησης αν σας απασχολεί.",
+  "Mild peril": "Υπάρχουν σύντομες στιγμές κινδύνου, που αντιμετωπίζονται σχετικά ήπια.",
+  "Mythical violence": "Ήρωες μάχονται με μυθολογικά τέρατα σε ένα φανταστικό περιβάλλον.",
+  "Ocean peril": "Οι χαρακτήρες αντιμετωπίζουν καταιγίδες, θαλάσσια πλάσματα και άλλους κινδύνους στη θάλασσα.",
+  "Online chat": "Το διαδικτυακό παιχνίδι μπορεί να περιλαμβάνει συνομιλία· ελέγξτε τις ρυθμίσεις επικοινωνίας.",
+  "Online features": "Ορισμένες λειτουργίες συνδέονται με άλλους παίκτες· ελέγξτε τις ρυθμίσεις απορρήτου.",
+  "Online interactions": "Οι διαδικτυακές επισκέψεις επιτρέπουν αλληλεπίδραση με άλλους παίκτες· χρησιμοποιήστε τις ρυθμίσεις απορρήτου.",
+  "Online play": "Το παιχνίδι πολλών παικτών μπορεί να συνδέσει παίκτες· ελέγξτε ποιοι μπορούν να συμμετέχουν και να επικοινωνούν με το παιδί.",
+  "Peril": "Οι χαρακτήρες αντιμετωπίζουν κίνδυνο και αγωνία σε ορισμένα σημεία της ιστορίας.",
+  "Sacrifice": "Ένας σημαντικός χαρακτήρας κάνει μια θυσία, κάτι που μπορεί να προκαλέσει λύπη ή συζήτηση.",
+  "Scary scenes": "Ορισμένες σκηνές έχουν σχεδιαστεί ώστε να προκαλούν φόβο ή αγωνία.",
+  "Survival themes": "Η ιστορία πραγματεύεται την επιβίωση σε επικίνδυνες συνθήκες υψηλού ρίσκου.",
+  "Bullying": "Η ιστορία παρουσιάζει τον εκφοβισμό και τις επιπτώσεις του σε ένα παιδί και τους συνομηλίκους του.",
+  "Awaiting review": "Η καταχώριση δεν έχει ακόμη ελεγχθεί πλήρως ως προς την ηλικία, την επίσημη αξιολόγηση και τα θέματα περιεχομένου.",
+  "Difficult themes": "Ορισμένα θέματα μπορεί να είναι συναισθηματικά σύνθετα· δείτε το περιεχόμενο ή συζητήστε το μαζί.",
+  "Gentle learning": "Τραγούδια, επανάληψη ή απλές εξηγήσεις εισάγουν ιδέες πρώιμης μάθησης.",
+  "Physical stunts": "Τα βίντεο μπορεί να περιλαμβάνουν ακροβατικά· τονίστε ότι δεν πρέπει να τα μιμούνται στο σπίτι.",
+  "Science and engineering": "Πειράματα και κατασκευές μπορούν να κεντρίσουν την περιέργεια· δείτε πρώτα τις οδηγίες.",
+  "Science topics": "Τα εκπαιδευτικά βίντεο εξερευνούν επιστήμη και φύση· ορισμένα θέματα μπορεί να είναι σύνθετα.",
+  "Sponsored segments": "Ορισμένα βίντεο μπορεί να περιλαμβάνουν συνεργασίες με εταιρείες, προώθηση προϊόντων ή έπαθλα.",
+  "Varies by upload": "Ο τόνος και τα θέματα ενός δημιουργού μπορεί να αλλάζουν από βίντεο σε βίντεο· δεν πρόκειται για συνολική αξιολόγηση.",
+  "Wildlife encounters": "Τα βίντεο δείχνουν πραγματικά ζώα· κοντινά πλάνα μπορεί να αναστατώσουν ή να μην είναι ασφαλές να μιμηθούν.",
+  "Violence": "Η βία αποτελεί σημαντικό μέρος της ιστορίας· η έντασή της μπορεί να διαφέρει ανά επεισόδιο ή σκηνή."
+};
+function localizeTerm(value) {
+  return currentLanguage === "el" ? greekTerms[value] || value : value;
+}
+function applyTranslations(root = document.body) {
+  document.documentElement.lang = currentLanguage;
+  const source = currentLanguage === "el" ? interfaceMessages.en : interfaceMessages.el;
+  const target = currentLanguage === "el" ? interfaceMessages.el : interfaceMessages.en;
+  const translations = new Map(Object.keys(source).map((key) => [source[key], target[key] || source[key]]));
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    const text = node.nodeValue.trim();
+    if (translations.has(text)) node.nodeValue = node.nodeValue.replace(text, translations.get(text));
+  }
+  root.querySelectorAll?.("[aria-label], [placeholder], [title]").forEach((element) => {
+    ["aria-label", "placeholder", "title"].forEach((attribute) => {
+      const value = element.getAttribute(attribute);
+      if (translations.has(value)) element.setAttribute(attribute, translations.get(value));
+    });
+  });
+  document.querySelectorAll(".language-switch").forEach((element) => element.setAttribute("aria-label", t("language")));
+  document.querySelectorAll("[data-language]").forEach((button) => {
+    const selected = button.dataset.language === currentLanguage;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  const pageTitle = document.querySelector("#page-title");
+  if (pageTitle) {
+    pageTitle.innerHTML = state.view === "profile" ? t("familyProfileTitle") : state.view === "saved" ? t("shortlistTitle") : t("discoverTitleHtml");
+  }
+  const breadcrumbCurrent = document.querySelector("#breadcrumb-current");
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = state.view === "profile" ? t("profileLabel") : state.view === "saved" ? t("saved").toUpperCase() : t("discover").toUpperCase();
+  const resultsKicker = document.querySelector("#results-kicker");
+  if (resultsKicker) {
+    resultsKicker.textContent = state.view === "profile" ? t("profileViewKicker") : state.view === "saved" ? t("savedKicker") : state.query ? t("searchKicker") : t("titleResultsKicker");
+  }
+  const resultsTitle = document.querySelector("#results-title");
+  if (resultsTitle?.childNodes[0]) {
+    resultsTitle.childNodes[0].textContent = state.view === "profile"
+      ? t("profileFor", { name: getActiveProfile().name })
+      : state.view === "saved" ? `${t("savedTitleHeading")} ` : state.query ? `${t("guideMatches")} ` : `${t("titlesFor", { name: getActiveProfile().name })} `;
+  }
+  const artCaption = document.querySelector(".art-caption");
+  if (artCaption) artCaption.innerHTML = t("artCaption");
+  const welcomeArt = document.querySelector(".welcome-art");
+  if (welcomeArt) welcomeArt.setAttribute("aria-label", t("welcomeArt"));
+  const aboutHeading = document.querySelector(".about-dialog h2");
+  if (aboutHeading) aboutHeading.innerHTML = t("aboutHeading");
+  document.title = currentLanguage === "el" ? "Little Lens | Ένας πιο καθαρός τρόπος επιλογής" : "Little Lens | A clearer way to choose";
+  const description = document.querySelector('meta[name="description"]');
+  description.content = currentLanguage === "el"
+    ? "Ένας προσεγμένος οδηγός για παιχνίδια, ταινίες, σειρές και βιβλία για την οικογένειά σας."
+    : "A thoughtful guide to games, films, series and books for your family.";
+}
+const typeNames = { get movie() { return t("film"); }, get series() { return t("series"); }, get game() { return t("game"); }, get book() { return t("book"); }, get creator() { return t("creator"); } };
+const typePlurals = { get movie() { return t("films"); }, get series() { return t("series"); }, get game() { return t("games"); }, get book() { return t("books"); }, get creator() { return t("creators"); } };
 const typeIcons = { movie: "▻", series: "▤", game: "⌘", book: "▧", creator: "◉" };
 const typeColors = { movie: "#4e9ba7", series: "#76a99d", game: "#db7052", book: "#84986c", creator: "#d2a54f" };
 const themeNotes = {
@@ -169,7 +303,7 @@ profiles = profiles.map((profile, index) => ({
 }));
 let activeProfileId = readStoredJson("little-lens-active-profile", profiles[0].id);
 if (!profiles.some((profile) => profile.id === activeProfileId)) activeProfileId = profiles[0].id;
-const state = { query: "", type: "all", age: "profile", view: "discover" };
+const state = { query: "", type: "all", age: "profile", view: "discover", page: 1 };
 const savedTitles = new Set(readStoredJson("little-lens-saved", []));
 const titleReviews = readStoredJson("little-lens-reviews", {});
 
@@ -215,13 +349,8 @@ function getAgeInfo(item) {
 }
 
 function getGreekRatingStatus(item) {
-  return {
-    movie: "Greek film classification not verified",
-    series: "Greek series rating not verified",
-    game: "PEGI rating not verified",
-    book: "No standard official book age rating",
-    creator: "No channel-wide official rating",
-  }[item.type] || "Greek official rating not verified";
+  const messageKeys = { movie: "ratingMovie", series: "ratingSeries", game: "ratingGame", book: "ratingBook", creator: "ratingCreator" };
+  return t(messageKeys[item.type] || "ratingStatuses");
 }
 
 function persistProfiles() {
@@ -253,7 +382,7 @@ function recommendationScore(item) {
 
 function renderProfileControls() {
   const select = document.querySelector("#profile-select");
-  select.innerHTML = profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.name)} · age ${profile.age}</option>`).join("");
+  select.innerHTML = profiles.map((profile) => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.name)} · ${currentLanguage === "el" ? "ηλικία" : "age"} ${profile.age}</option>`).join("");
   select.value = activeProfileId;
 }
 
@@ -265,6 +394,19 @@ function getTitleDescription(item) {
   const catalogDetails = item.maker.split("·").map((part) => part.trim());
   const source = catalogDetails[0];
   const descriptor = catalogDetails[1];
+  if (currentLanguage === "el") {
+    const summaries = {
+      movie: ["Η ιστορία ακολουθεί συνήθως έναν χαρακτήρα ή μια οικογένεια που αντιμετωπίζει μια πρόκληση, ένα ταξίδι ή μια σημαντική συναισθηματική στιγμή.", "Η αφήγηση μπορεί να είναι ζεστή, αστεία ή περιπετειώδης, με έμφαση στην ενσυναίσθηση και το θάρρος."],
+      series: ["Η πλοκή εξελίσσεται σε επεισόδια και ακολουθεί τους ίδιους χαρακτήρες στην καθημερινότητα, στις φιλίες, στα μυστήρια ή στις περιπέτειές τους.", "Η σειρά συνδυάζει οικείες στιγμές, σχέσεις και συνεργασία με νέες εμπειρίες και μαθήματα."],
+      game: ["Το παιχνίδι βασίζεται στην εξερεύνηση, την επίλυση προβλημάτων, τη δημιουργικότητα και την πρόοδο, είτε πρόκειται για αγώνες, κατασκευές ή περιπέτεια.", "Προσφέρει διαδραστική εμπειρία με ανακάλυψη, φαντασία και ευκαιρίες για συνεργασία."],
+      book: ["Η ιστορία ακολουθεί έναν χαρακτήρα ή μια ομάδα που αντιμετωπίζει αλλαγές, μυστήριο, κίνδυνο ή μια προσωπική πρόκληση.", "Συνήθως είναι φανταστική και εστιάζει στους χαρακτήρες, με θέματα όπως η φιλία, το θάρρος και το ανήκειν."],
+      creator: ["Το περιεχόμενο αποτελείται από σύντομα βίντεο μάθησης, πειράματα, προκλήσεις ή ψυχαγωγία, με διαφορετικό θέμα σε κάθε ανάρτηση.", "Ο τόνος και τα θέματα μπορεί να διαφέρουν ανά δημιουργό και βίντεο· δείτε το συγκεκριμένο περιεχόμενο πριν το επιλέξετε."]
+    };
+    const [plot, tone] = summaries[item.type] || summaries.movie;
+    const tagsLine = item.tags.length ? `Ο οδηγός επισημαίνει θέματα όπως: ${item.tags.map(localizeTerm).join(", ")}.` : "";
+    const ageLine = item.age === null || item.age === undefined ? "" : item.age <= 5 ? "Απευθύνεται σε μικρότερα παιδιά που ωφελούνται από ξεκάθαρες, καθησυχαστικές ιστορίες και ήπια σύγκρουση." : item.age <= 9 ? "Ταιριάζει συνήθως σε παιδιά που μπορούν να διαχειριστούν μέτρια ένταση και πιο σύνθετους χαρακτήρες." : item.age <= 12 ? "Ταιριάζει σε παιδιά που είναι έτοιμα για περισσότερη πολυπλοκότητα και εντονότερα συναισθήματα." : "Απευθύνεται περισσότερο σε μεγαλύτερα παιδιά ή εφήβους λόγω της έντασης ή των πιο σύνθετων θεμάτων.";
+    return `Ο τίτλος «${item.title}» είναι ${typeNames[item.type].toLowerCase()} από ${source}. ${plot} ${tone} ${tagsLine} ${ageLine}`;
+  }
   const typeLabel = typeNames[item.type] || "Title";
   const format = item.type === "book" && descriptor ? `a ${descriptor.toLowerCase()}` : `a ${typeNames[item.type].toLowerCase()}`;
   const sourceText = item.type === "book" ? `by ${source}` : `from ${source}`;
@@ -310,18 +452,18 @@ function renderReviews(item) {
   const reviews = getReviews(item);
   const average = reviews.length ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) : null;
   const reviewCards = reviews.length
-    ? reviews.slice().reverse().map((review) => `<article class="family-review"><div class="review-heading"><strong>${escapeHtml(review.profileName)}</strong><span class="review-stars" aria-label="${review.score} out of 5 stars">${"★".repeat(review.score)}${"☆".repeat(5 - review.score)}</span></div><p class="review-fit">${escapeHtml(review.fit)}</p><p class="review-comment">${escapeHtml(review.comment)}</p><time>${escapeHtml(new Date(review.createdAt).toLocaleDateString())}</time></article>`).join("")
-    : `<p class="reviews-empty">No family notes for this title yet. Add the first one for ${escapeHtml(getActiveProfile().name)}.</p>`;
+    ? reviews.slice().reverse().map((review) => `<article class="family-review"><div class="review-heading"><strong>${escapeHtml(review.profileName)}</strong><span class="review-stars" aria-label="${currentLanguage === "el" ? `${review.score} από 5 αστέρια` : `${review.score} out of 5 stars`}">${"★".repeat(review.score)}${"☆".repeat(5 - review.score)}</span></div><p class="review-fit">${escapeHtml(localizeTerm(review.fit))}</p><p class="review-comment">${escapeHtml(review.comment)}</p><time>${escapeHtml(new Date(review.createdAt).toLocaleDateString(currentLanguage === "el" ? "el-GR" : "en-US"))}</time></article>`).join("")
+    : `<p class="reviews-empty">${t("noFamilyNotes", { name: escapeHtml(getActiveProfile().name) })}</p>`;
 
   return `<section class="review-section" aria-labelledby="reviews-title">
-    <div class="review-section-heading"><div><p class="eyebrow">FAMILY EXPERIENCES</p><h3 id="reviews-title">Ratings &amp; notes</h3></div><p class="review-average">${average ? `<strong>${average}</strong><span class="review-stars" aria-label="Average ${average} out of 5 stars">${"★".repeat(Math.round(Number(average)))}${"☆".repeat(5 - Math.round(Number(average)))}</span><small>${reviews.length} ${reviews.length === 1 ? "note" : "notes"}</small>` : "No ratings yet"}</p></div>
+    <div class="review-section-heading"><div><p class="eyebrow">${t("familyExperiences")}</p><h3 id="reviews-title">${t("ratingsNotes")}</h3></div><p class="review-average">${average ? `<strong>${average}</strong><span class="review-stars" aria-label="${currentLanguage === "el" ? `Μέσος όρος ${average} από 5 αστέρια` : `Average ${average} out of 5 stars`}">${"★".repeat(Math.round(Number(average)))}${"☆".repeat(5 - Math.round(Number(average)))}</span><small>${reviews.length} ${currentLanguage === "el" ? "σημειώσεις" : reviews.length === 1 ? "note" : "notes"}</small>` : t("noRatings")}</p></div>
     <p class="review-privacy-note">These notes are saved in this browser only. They are not shared with other families.</p>
     <div class="review-list">${reviewCards}</div>
     <form id="review-form" class="review-form">
       <h4>How did it fit your child?</h4>
       <p class="review-helper">Select one to five stars.</p>
       <fieldset class="star-rating"><legend>Your rating</legend><div class="star-options">${[5, 4, 3, 2, 1].map((score) => `<label title="${score} ${score === 1 ? "star" : "stars"}"><input type="radio" name="review-rating" value="${score}" aria-label="${score} ${score === 1 ? "star" : "stars"}" required><span aria-hidden="true">★</span></label>`).join("")}</div></fieldset>
-      <label class="review-fit-label">Overall fit<select name="fit" required><option value="" selected disabled>Choose an overall fit</option><option value="Not a fit">1 star — Not a fit</option><option value="Poor fit">2 stars — Poor fit</option><option value="Mixed fit">3 stars — Mixed fit</option><option value="Good fit">4 stars — Good fit</option><option value="Great fit">5 stars — Great fit</option></select></label>
+      <label class="review-fit-label">${t("overallFit")}<select name="fit" required><option value="" selected disabled>${t("chooseFit")}</option><option value="Not a fit">1 ${t("oneStar")} — ${t("notFit")}</option><option value="Poor fit">2 ${t("manyStars")} — ${t("poorFit")}</option><option value="Mixed fit">3 ${t("manyStars")} — ${t("mixedFit")}</option><option value="Good fit">4 ${t("manyStars")} — ${t("goodFit")}</option><option value="Great fit">5 ${t("manyStars")} — ${t("greatFit")}</option></select></label>
       <label class="review-comment-label">Your comment<textarea name="comment" maxlength="600" required placeholder="What worked well, or what should another family know?" rows="3"></textarea></label>
       <div class="review-form-footer"><span>Saved under ${escapeHtml(getActiveProfile().name)} on this device.</span><button type="submit">Save note</button></div>
     </form>
@@ -365,16 +507,16 @@ function cardTemplate(item, index) {
   const key = titleKey(item);
   const isSaved = savedTitles.has(key);
   const ageInfo = getAgeInfo(item);
-  const tags = item.tags.map((tag) => `<span class="tag${themeNotes[tag]?.concern ? " concern" : ""}">${tag}</span>`).join("");
-    const ageText = ageInfo.age === null ? "—" : ageInfo.age === 0 ? "All" : `${ageInfo.age}+`;
-    const ageBadgeLabel = ageInfo.age === null ? "Age needs title-specific research" : ageInfo.isEstimated ? `Estimated age ${ageInfo.age} and up` : `${ageInfo.officialRating.label}, age ${ageInfo.age} and up`;
-    const ageBadge = `<span class="age-badge${ageInfo.isEstimated ? " age-provisional" : ""}" aria-label="${ageBadgeLabel} for ${escapeHtml(item.title)}"><strong>${ageText}</strong><small>${ageInfo.age === null ? "RESEARCH" : ageInfo.isEstimated ? "ESTIMATE" : escapeHtml(ageInfo.officialRating.label)}</small></span>`;
+  const tags = item.tags.map((tag) => `<span class="tag${themeNotes[tag]?.concern ? " concern" : ""}">${escapeHtml(localizeTerm(tag))}</span>`).join("");
+  const ageText = ageInfo.age === null ? "—" : ageInfo.age === 0 ? t("allAges") : `${ageInfo.age}+`;
+  const ageBadgeLabel = ageInfo.age === null ? t("ageNeedsResearch") : ageInfo.isEstimated ? t("estimatedAge", { age: ageInfo.age }) : t("officialAge", { rating: ageInfo.officialRating.label, age: ageInfo.age });
+  const ageBadge = `<span class="age-badge${ageInfo.isEstimated ? " age-provisional" : ""}" aria-label="${ageBadgeLabel} ${escapeHtml(item.title)}"><strong>${ageText}</strong><small>${ageInfo.age === null ? t("researchLabel") : ageInfo.isEstimated ? t("estimatedAgeLabel") : escapeHtml(ageInfo.officialRating.label)}</small></span>`;
   return `<article class="title-card" style="--cover:${item.color || typeColors[item.type]};animation-delay:${Math.min(index * 30, 180)}ms">
-    <button class="card-open" type="button" data-details="${escapeHtml(key)}" aria-label="Show the official rating and reasons for ${escapeHtml(item.title)}"></button>
-    <div class="cover${item.type === "creator" ? " creator-avatar" : ""}" data-artwork="${escapeHtml(key)}" aria-hidden="true"><img class="cover-image" alt="" loading="lazy" decoding="async"><span class="cover-mark">${escapeHtml(item.mark || item.title.slice(0, 1))}</span></div>
+    <button class="card-open" type="button" data-details="${escapeHtml(key)}" aria-label="${t("showRatingReasons", { title: escapeHtml(item.title) })}"></button>
+    <div class="cover${item.type === "creator" ? " creator-avatar" : ""}" data-artwork="${escapeHtml(key)}" aria-hidden="true"><img class="cover-image" alt="" loading="lazy" decoding="async"><span class="cover-symbol">${typeIcons[item.type]}</span><span class="cover-mark">${escapeHtml(item.mark || item.title.slice(0, 1))}</span><span class="cover-title">${escapeHtml(item.title)}</span></div>
     <div class="title-copy"><p class="type-label">${typeIcons[item.type]} &nbsp;${typeNames[item.type]}</p><h3>${escapeHtml(item.title)}</h3><p class="publisher">${escapeHtml(item.maker)}</p><div class="tags">${tags}</div></div>
-    <div class="card-side">${ageBadge}<button class="save-button${isSaved ? " saved" : ""}" type="button" data-save="${escapeHtml(key)}" aria-label="${isSaved ? "Remove" : "Save"} ${escapeHtml(item.title)}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button></div>
-    <div class="rating-line"><span>${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}</span><span>·</span><span>${ageInfo.isEstimated ? "Little Lens estimate" : ageInfo.age === null ? "Title-specific age research needed" : "Official Greece/PEGI rating"}</span></div>
+    <div class="card-side">${ageBadge}<button class="save-button${isSaved ? " saved" : ""}" type="button" data-save="${escapeHtml(key)}" aria-label="${isSaved ? t("remove") : t("save")} ${escapeHtml(item.title)}" aria-pressed="${isSaved}">${isSaved ? "♥" : "♡"}</button></div>
+    <div class="rating-line"><span>${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}</span><span>·</span><span>${ageInfo.isEstimated ? t("estimateSource") : ageInfo.age === null ? t("titleSpecificPending") : t("officialGreecePegi")}</span></div>
   </article>`;
 }
 
@@ -388,6 +530,39 @@ const artworkObserver = typeof IntersectionObserver === "undefined" ? null : new
 }, { rootMargin: "180px 0px" });
 
 async function findTitleArtwork(item) {
+  const expectedDescription = {
+    movie: /\b(film|movie)\b/i,
+    series: /\b(series|television|tv)\b/i,
+    book: /\b(book|novel|comic|comics)\b/i,
+    game: /\b(video game|game)\b/i,
+    creator: /\b(creator|youtuber|youtube channel|streamer|internet personality|content creator)\b/i,
+  }[item.type];
+  const normalizeTitle = (value) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const matchesPage = (page) => {
+    const summaryTitle = (page.title || "").replace(/\s+\([^)]*\)$/, "");
+    const description = page.description || page.terms?.description?.[0] || "";
+    return page.type !== "disambiguation"
+      && normalizeTitle(summaryTitle) === normalizeTitle(item.title)
+      && expectedDescription?.test(description);
+  };
+  const specificPages = {
+    "movie:Sing": ["Sing (2016 American film)"],
+    "movie:Coco": ["Coco (2017 film)"],
+    "series:Hilda": ["Hilda (TV series)"],
+  }[titleKey(item)] || [];
+  if (item.type === "series") {
+    try {
+      const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(item.title)}`);
+      if (response.ok) {
+        const matches = await response.json();
+        const exactMatch = matches.find(({ show }) => normalizeTitle(show.name) === normalizeTitle(item.title) && (show.image?.original || show.image?.medium));
+        const showImage = exactMatch?.show.image?.original || exactMatch?.show.image?.medium;
+        if (showImage) return showImage;
+      }
+    } catch {
+      // Continue with the Wikipedia sources if TVMaze is unavailable.
+    }
+  }
   const variants = {
     movie: [`${item.title} (film)`, item.title],
     series: [`${item.title} (TV series)`, item.title],
@@ -396,16 +571,60 @@ async function findTitleArtwork(item) {
     creator: [item.title],
   }[item.type] || [item.title];
 
-  for (const variant of variants) {
+  for (const variant of [...specificPages, ...variants]) {
     try {
       const page = encodeURIComponent(variant.replaceAll(" ", "_"));
       const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${page}`);
       if (!response.ok) continue;
       const summary = await response.json();
-      if (summary.type !== "disambiguation" && summary.thumbnail?.source) return summary.thumbnail.source;
+      if (matchesPage(summary) && summary.thumbnail?.source) return summary.thumbnail.source;
     } catch {
       continue;
     }
+  }
+
+  try {
+    const mediaTerms = { movie: "film", series: "television series", book: "book", game: "video game", creator: "YouTube creator" };
+    const params = new URLSearchParams({ action: "query", generator: "search", gsrsearch: `${item.title} ${mediaTerms[item.type] || ""}`, gsrlimit: "6", prop: "pageimages|description", piprop: "thumbnail", pithumbsize: "400", format: "json", origin: "*" });
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${params}`);
+    if (response.ok) {
+      const data = await response.json();
+      const matchingPages = Object.values(data.query?.pages || {}).filter(matchesPage);
+      const matchingPage = matchingPages.find((page) => page.thumbnail?.source);
+      if (matchingPage) return matchingPage.thumbnail.source;
+
+      const articlePage = matchingPages.find((page) => page.pageid);
+      if (articlePage) {
+        const imageListParams = new URLSearchParams({ action: "query", pageids: String(articlePage.pageid), prop: "images", imlimit: "50", format: "json", origin: "*" });
+        const imageListResponse = await fetch(`https://en.wikipedia.org/w/api.php?${imageListParams}`);
+        if (imageListResponse.ok) {
+          const imageListData = await imageListResponse.json();
+          const images = Object.values(imageListData.query?.pages || {}).flatMap((page) => page.images || []);
+          const titleToken = normalizeTitle(item.title);
+          const matchingFiles = images.filter((image) => {
+            const fileName = image.title.split(":").slice(1).join(":");
+            return normalizeTitle(fileName).includes(titleToken);
+          }).sort((first, second) => {
+            const rankFile = (file) => /poster|cover|key.?art/i.test(file.title) ? 0 : /logo/i.test(file.title) ? 1 : 2;
+            return rankFile(first) - rankFile(second);
+          });
+          for (const image of matchingFiles) {
+            const imageInfoParams = new URLSearchParams({ action: "query", titles: image.title, prop: "imageinfo", iiprop: "url", iiurlwidth: "400", format: "json", origin: "*" });
+            const imageInfoResponse = await fetch(`https://en.wikipedia.org/w/api.php?${imageInfoParams}`);
+            if (!imageInfoResponse.ok) continue;
+            const imageInfoData = await imageInfoResponse.json();
+            const imageInfo = Object.values(imageInfoData.query?.pages || {})[0]?.imageinfo?.[0];
+            if (imageInfo?.thumburl || imageInfo?.url) return imageInfo.thumburl || imageInfo.url;
+          }
+        }
+      }
+    }
+  } catch {
+    // Keep the designed fallback if the search API is unavailable.
+  }
+
+  if (item.type === "book") {
+    return `https://covers.openlibrary.org/b/title/${encodeURIComponent(item.title)}-M.jpg?default=false`;
   }
   return null;
 }
@@ -437,27 +656,171 @@ function observeTitleArtwork() {
   });
 }
 
+function getPageWindow(page, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (page <= 3) {
+    return [1, 2, 3, 4, 5, "ellipsis", totalPages - 1, totalPages];
+  }
+
+  if (page >= totalPages - 2) {
+    return [1, 2, "ellipsis", totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [page - 1, page, page + 1, "ellipsis", totalPages - 1, totalPages];
+}
+
+function renderSquirrelAcorn() {
+  const label = isAtBottom ? "Back to top" : "Go to bottom";
+  return `<div class="squirrel-acorn${isAtBottom ? " is-bottom" : ""}" id="squirrel-acorn" aria-live="polite">
+    <div class="squirrel-scene" aria-hidden="true">
+      <svg class="squirrel-art" viewBox="0 0 150 140" role="img" aria-label="An orange squirrel hugging an acorn">
+        <g stroke="#71320f" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+          <path class="squirrel-tail-art" d="M58 120C34 126 12 110 11 84 9 59 18 31 39 23c17-7 35 3 37 19 2 14-8 23-20 21-8-1-12-7-10-13 1-4 5-6 9-5-2-8-12-10-19-3-10 9-12 25-7 40 5 15 17 22 31 18l9-5 8 17Z" fill="#ed6418"/>
+          <path d="M42 104c-7-13-6-28 2-39 6-8 16-10 23-5 5 4 4 11-1 14-4 2-8 1-10-2-4 8-2 17 4 24Z" fill="#bd4913"/>
+          <path d="M46 81c-2-18 7-39 24-43 13-4 27 8 30 25l8 49c2 13-7 21-20 21H66c-13 0-21-9-20-23Z" fill="#f07820"/>
+          <path d="M59 86c8-8 22-9 31-2l8 30c2 7-2 12-10 12H70c-9 0-14-6-12-14Z" fill="#ffd5a1" stroke="none"/>
+          <path d="M53 51c-5-5-8-13-6-21 2-8 10-10 15-3l10 14Z" fill="#f07820"/>
+          <path d="M84 43c2-9 9-14 15-9 5 4 4 12 0 19Z" fill="#f07820"/>
+          <path d="M52 51c-2-6 0-12 4-15l8 11ZM88 48c2-6 5-9 9-9l-1 13Z" fill="#f59b83" stroke="none"/>
+          <path d="M49 61c0-17 11-29 26-28 16 1 28 14 27 30-1 14-11 24-27 24-15 0-26-10-26-26Z" fill="#f47b20"/>
+          <path d="M54 68c4-11 13-17 24-16 12 1 20 9 21 18-3 12-13 20-26 20-11 0-18-8-19-22Z" fill="#ffe0ad" stroke="none"/>
+          <ellipse cx="68" cy="61" rx="4" ry="7" fill="#432516" stroke="none"/><ellipse cx="91" cy="61" rx="4" ry="7" fill="#432516" stroke="none"/>
+          <circle cx="69" cy="59" r="1.5" fill="white" stroke="none"/><circle cx="92" cy="59" r="1.5" fill="white" stroke="none"/>
+          <ellipse cx="81" cy="75" rx="12" ry="8" fill="#fff0d6" stroke="none"/>
+          <path d="M78 70q4-5 8 0-2 5-5 5-3-1-3-5Z" fill="#71320f" stroke="none"/><path d="M75 81q6 5 12 0" fill="none"/>
+          <path d="M62 102c8-12 20-13 29-5l12 12c4 4 2 10-3 12-4 1-7-1-11-5l-8-5c-6 4-13 4-19-1Z" fill="#f47b20"/>
+          <path d="M70 128q-13 4-24-2-6-4-3-8 3-4 8-1 7 4 17 0Z" fill="#f47b20"/>
+        </g>
+        <path d="M25 47c5-9 13-14 20-14" fill="none" stroke="#ffad54" stroke-width="4" stroke-linecap="round"/>
+        <ellipse cx="58" cy="83" rx="5" ry="3" fill="#f8a276"/><ellipse cx="99" cy="83" rx="5" ry="3" fill="#f8a276"/>
+      </svg>
+    </div>
+    <button id="acorn-button" class="acorn-button" type="button" aria-label="${label}"><span class="acorn-text">${label}</span></button>
+  </div>`;
+}
+
+function renderPageButtons(totalPages) {
+  if (totalPages <= 1) return "";
+
+  const buttons = getPageWindow(state.page, totalPages);
+  const pageButtons = buttons.map((item) => {
+    if (item === "ellipsis") {
+      return '<span class="page-ellipsis" aria-hidden="true">…</span>';
+    }
+
+    return `<button class="page-button${state.page === item ? " active" : ""}" type="button" data-page="${item}" aria-label="${t("goToPage", { page: item })}">${item}</button>`;
+  }).join("");
+
+  return `<div class="pagination-row">
+  <div class="page-controls" aria-label="${t("pagination")}">
+    <button class="page-button page-button-nav" type="button" data-page="${Math.max(1, state.page - 1)}" ${state.page === 1 ? "disabled" : ""}>${t("prev")}</button>
+    ${pageButtons}
+    <button class="page-button page-button-nav" type="button" data-page="${Math.min(totalPages, state.page + 1)}" ${state.page === totalPages ? "disabled" : ""}>${t("next")}</button>
+    <label class="page-jump-label">
+      <span>${t("goTo")}</span>
+      <input class="page-jump-input" type="number" min="1" max="${totalPages}" value="${state.page}" aria-label="${t("pageNumber")}" />
+    </label>
+  </div>
+  ${renderSquirrelAcorn()}
+  </div>`;
+}
+
 function render() {
   const visibleTitles = getVisibleTitles();
-  const renderedTitles = visibleTitles.slice(0, visibleLimit);
+  const totalPages = Math.max(1, Math.ceil(visibleTitles.length / pageSize));
+  if (state.page > totalPages) state.page = totalPages;
+  const startIndex = (state.page - 1) * pageSize;
+  const pageTitles = visibleTitles.slice(startIndex, startIndex + pageSize);
   const profile = getActiveProfile();
   const query = state.query.trim().toLowerCase();
   const awaitingReviewCount = titles.filter((item) => item.provisional
     && (state.type === "all" || item.type === state.type)
     && (state.view !== "saved" || savedTitles.has(titleKey(item)))
     && (!query || `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase().includes(query))).length;
-  const searchLabel = state.query.trim() || (state.type === "all" ? "All titles" : typePlurals[state.type]);
-  const filterSummary = `guide age ${getAgeLimit()} or younger${awaitingReviewCount ? ", plus unreviewed catalog entries" : ""}`;
-  const preferenceSummary = profile.genres.length ? ` Prioritizing ${profile.genres.join(", ")}.` : "";
-  const avoidSummary = profile.avoid.length ? ` Avoiding ${profile.avoid.join(", ")}.` : "";
+  const filterSummary = `${t("searchAgeSummary", { age: getAgeLimit() })}${awaitingReviewCount ? currentLanguage === "el" ? ", μαζί με μη αξιολογημένες καταχωρίσεις" : ", plus unreviewed catalog entries" : ""}`;
+  const preferenceSummary = profile.genres.length ? t("prioritizeSummary", { genres: profile.genres.map(localizeTerm).join(", ") }) : "";
+  const avoidSummary = profile.avoid.length ? t("avoidSummary", { themes: profile.avoid.map(localizeTerm).join(", ") }) : "";
   const learningSummary = profile.likes.length || profile.searches.length
-    ? ` Tuned by ${profile.likes.length} saved ${profile.likes.length === 1 ? "title" : "titles"} and ${profile.searches.length} recent ${profile.searches.length === 1 ? "search" : "searches"}.`
-    : " Save titles or search to make these picks more personal.";
+    ? t("learningSummary", { likes: profile.likes.length, titleWord: currentLanguage === "el" ? "τίτλους" : "titles", searches: profile.searches.length, searchWord: currentLanguage === "el" ? "αναζητήσεις" : "searches" })
+    : t("learningEmpty");
   const pendingNotice = awaitingReviewCount
-    ? ` ${awaitingReviewCount} imported listings are still awaiting a full review; check the official rating before deciding.`
+    ? t("pendingNotice", { count: awaitingReviewCount })
     : "";
   renderProfileControls();
-  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? "YOU SEARCHED FOR" : "PICKS FOR"}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${visibleTitles.length} ${visibleTitles.length === 1 ? "guide" : "guides"} for ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} Select a result to see its notes.</span>`;
+
+  if (state.view === "profile") {
+    const profileAccounts = profiles.map((member) => {
+      const isActive = member.id === activeProfileId;
+      const initials = member.name.trim().slice(0, 1).toUpperCase() || "A";
+      return `<button class="profile-account-card${isActive ? " selected" : ""}" type="button" data-switch-profile="${escapeHtml(member.id)}">
+        <span class="profile-avatar" aria-hidden="true">${escapeHtml(initials)}</span>
+        <span class="profile-card-copy"><strong>${escapeHtml(member.name)}</strong><small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${member.age}</small></span>
+        ${isActive ? `<span class="profile-account-tag">${t("active")}</span>` : `<span class="profile-account-tag muted">${t("switch")}</span>`}
+      </button>`;
+    }).join("");
+    const profileGenres = profile.genres.length ? profile.genres.map((genre) => `<span class="profile-chip">${escapeHtml(localizeTerm(genre))}</span>`).join("") : `<span class="profile-empty">${t("noFavoriteGenres")}</span>`;
+    const avoidedThemes = profile.avoid.length ? profile.avoid.map((theme) => `<span class="profile-chip concern">${escapeHtml(localizeTerm(theme))}</span>`).join("") : `<span class="profile-empty">${t("noThemesFiltered")}</span>`;
+    const recentSearches = profile.searches.length ? profile.searches.slice(0, 4).map((term) => `<li>${escapeHtml(term)}</li>`).join("") : `<li class="profile-empty">${t("noProfileSearches")}</li>`;
+    document.querySelector("#breadcrumb-current").textContent = "PROFILE";
+    document.querySelector("#page-title").innerHTML = `Your family<br /><span>profile.</span>`;
+    document.querySelector("#results-kicker").textContent = "YOUR LENS";
+    document.querySelector("#results-title").childNodes[0].textContent = `Profile for ${profile.name} `;
+    document.querySelector("#saved-count").textContent = savedTitles.size;
+    resultCount.textContent = "";
+    results.innerHTML = `<div class="profile-view">
+      <section class="profile-summary-card">
+        <div class="profile-summary-identity">
+          <span class="profile-summary-avatar" aria-hidden="true">${escapeHtml(profile.name.trim().slice(0, 1).toUpperCase() || "A")}</span>
+          <div>
+            <p class="eyebrow">PROFILE</p>
+            <h3>${escapeHtml(profile.name)}</h3>
+            <p class="profile-summary-meta">${t("profileAgeSummary", { age: profile.age, saved: savedTitles.size, likes: profile.likes.length })}</p>
+          </div>
+        </div>
+        <div class="profile-summary-stats">
+          <div class="profile-stat"><span>Saved</span><strong>${savedTitles.size}</strong></div>
+          <div class="profile-stat"><span>Genres</span><strong>${profile.genres.length}</strong></div>
+          <div class="profile-stat"><span>Avoid</span><strong>${profile.avoid.length}</strong></div>
+        </div>
+      </section>
+      <div class="profile-grid">
+        <section class="profile-panel">
+          <div class="profile-panel-header"><h4>Preferences</h4><button type="button" id="profile-panel-edit-button" class="profile-panel-button">Edit</button></div>
+          <div class="profile-detail-block">
+            <p class="profile-detail-label">Favorite genres</p>
+            <div class="profile-chip-wrap">${profileGenres}</div>
+          </div>
+          <div class="profile-detail-block">
+            <p class="profile-detail-label">Themes to avoid</p>
+            <div class="profile-chip-wrap">${avoidedThemes}</div>
+          </div>
+        </section>
+        <section class="profile-panel">
+          <div class="profile-panel-header"><h4>Recent searches</h4><button type="button" id="profile-panel-clear-button" class="profile-panel-button">Clear</button></div>
+          <ul class="profile-list-compact">${recentSearches}</ul>
+        </section>
+        <section class="profile-panel profile-panel-wide">
+          <div class="profile-panel-header"><h4>Family accounts</h4><button type="button" id="profile-panel-manage-button" class="profile-panel-button">Manage</button></div>
+          <div class="profile-account-grid">${profileAccounts}</div>
+        </section>
+      </div>
+    </div>`;
+    document.querySelector("#profile-panel-edit-button").addEventListener("click", () => openProfileDialog(profile));
+    document.querySelector("#profile-panel-manage-button").addEventListener("click", () => openProfileDialog());
+    document.querySelector("#profile-panel-clear-button").addEventListener("click", () => {
+      profile.searches = [];
+      persistProfiles();
+      render();
+    });
+    applyTranslations();
+    return;
+  }
+
+  const contextCount = t("searchResultIntro", { count: visibleTitles.length, guideWord: visibleTitles.length === 1 ? t("guideLabel") : t("guidesLabel"), name: escapeHtml(state.query.trim() || profile.name) });
+  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? t("youSearched") : t("picksFor")}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${contextCount} ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} ${t("searchContext")}</span>`;
   document.querySelector("#breadcrumb-current").textContent = state.view === "saved" ? "SAVED" : "DISCOVER";
   document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : `A clearer way<br />to <span>choose.</span>`;
   document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : `PERSONALIZED FOR ${profile.name.toUpperCase()}`;
@@ -465,19 +828,28 @@ function render() {
   document.querySelector("#saved-count").textContent = savedTitles.size;
   resultCount.textContent = `(${visibleTitles.length})`;
 
-  if (visibleTitles.length) {
-    const remaining = visibleTitles.length - renderedTitles.length;
-    results.innerHTML = renderedTitles.map(cardTemplate).join("") + (remaining > 0 ? `<div class="load-more-wrap"><button class="load-more-button" type="button" data-load-more>Show ${Math.min(pageSize, remaining)} more <span>(${remaining} left)</span></button></div>` : "");
-    observeTitleArtwork();
+  if (!visibleTitles.length) {
+    const unknownTitle = state.query.trim() && !titles.some((item) => item.title.toLowerCase() === state.query.trim().toLowerCase());
+    const pendingTitle = state.query.trim() && titles.find((item) => item.provisional && item.title.toLowerCase() === state.query.trim().toLowerCase());
+    const heading = state.view === "saved" ? t("noResultsSaved") : pendingTitle ? t("noResultsReview") : unknownTitle ? t("noResultsTitle") : t("noResultsFilters");
+    const message = state.view === "saved" ? t("noResultsSavedCopy") : pendingTitle ? t("noResultsReviewCopy") : unknownTitle ? t("noResultsSearchCopy", { query: escapeHtml(state.query.trim()) }) : t("noResultsFiltersCopy");
+    results.innerHTML = `<div class="empty-state"><div class="empty-mark" aria-hidden="true">✳</div><h3>${heading}</h3><p>${message}</p><button id="empty-reset" type="button">${t("browseAll")}</button></div>`;
+    document.querySelector("#empty-reset").addEventListener("click", resetFilters);
+    applyTranslations();
     return;
   }
 
-  const unknownTitle = state.query.trim() && !titles.some((item) => item.title.toLowerCase() === state.query.trim().toLowerCase());
-  const pendingTitle = state.query.trim() && titles.find((item) => item.provisional && item.title.toLowerCase() === state.query.trim().toLowerCase());
-  const heading = state.view === "saved" ? "Your shortlist is ready when you are" : pendingTitle ? "This title still needs a full review" : unknownTitle ? "No guide for that title yet" : "No titles match those filters";
-  const message = state.view === "saved" ? "Save a title with the heart button and it will be here next time you visit." : pendingTitle ? "This listing is still awaiting a full content review. Check the official rating and preview the title before deciding." : unknownTitle ? `We don't have a verified guide for “${escapeHtml(state.query.trim())}” yet. Try another title, or check the rating board in your region.` : "Try a different age range or media type, or clear your filters to see all titles.";
-  results.innerHTML = `<div class="empty-state"><div class="empty-mark" aria-hidden="true">✳</div><h3>${heading}</h3><p>${message}</p><button id="empty-reset" type="button">Browse all guides</button></div>`;
-  document.querySelector("#empty-reset").addEventListener("click", resetFilters);
+  results.innerHTML = pageTitles.map(cardTemplate).join("") + renderPageButtons(totalPages);
+  applyTranslations();
+  observeTitleArtwork();
+}
+
+function goToPage(nextPage) {
+  const totalPages = Math.max(1, Math.ceil(getVisibleTitles().length / pageSize));
+  const clampedPage = Math.min(Math.max(1, Number(nextPage) || 1), totalPages);
+  state.page = clampedPage;
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function escapeHtml(text) {
@@ -489,6 +861,7 @@ function resetFilters() {
   state.type = "all";
   state.age = "profile";
   state.view = "discover";
+  state.page = 1;
   searchInput.value = "";
   ageFilter.value = "any";
   document.querySelectorAll(".filter-chip").forEach((button) => button.classList.toggle("active", button.dataset.type === "all"));
@@ -500,6 +873,7 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   state.query = searchInput.value;
   state.view = "discover";
+  state.page = 1;
   const query = state.query.trim();
   if (query) {
     const profile = getActiveProfile();
@@ -508,6 +882,25 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
   }
   document.querySelectorAll(".nav-link").forEach((button) => button.classList.toggle("is-active", button.dataset.view === "discover"));
   render();
+});
+
+results.addEventListener("change", (event) => {
+  const input = event.target.closest(".page-jump-input");
+  if (!input) return;
+  const desiredPage = Number(input.value);
+  if (!Number.isNaN(desiredPage)) {
+    goToPage(desiredPage);
+  }
+});
+
+results.addEventListener("keydown", (event) => {
+  const input = event.target.closest(".page-jump-input");
+  if (!input || event.key !== "Enter") return;
+  event.preventDefault();
+  const desiredPage = Number(input.value);
+  if (!Number.isNaN(desiredPage)) {
+    goToPage(desiredPage);
+  }
 });
 
 searchInput.addEventListener("input", () => {
@@ -530,6 +923,7 @@ ageFilter.addEventListener("change", () => {
 
 document.querySelectorAll(".nav-link").forEach((button) => button.addEventListener("click", () => {
   state.view = button.dataset.view;
+  state.page = 1;
   document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("is-active", link === button));
   render();
 }));
@@ -538,7 +932,7 @@ const profileDialog = document.querySelector("#profile-dialog");
 let editingProfileId = activeProfileId;
 
 function renderProfileList() {
-  document.querySelector("#profile-list").innerHTML = profiles.map((profile) => `<button class="profile-list-item${profile.id === editingProfileId ? " selected" : ""}" type="button" data-edit-profile="${escapeHtml(profile.id)}"><span class="profile-avatar" aria-hidden="true">${escapeHtml(profile.name.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(profile.name)}<small>Age ${profile.age}</small></span></button>`).join("");
+  document.querySelector("#profile-list").innerHTML = profiles.map((profile) => `<button class="profile-list-item${profile.id === editingProfileId ? " selected" : ""}" type="button" data-edit-profile="${escapeHtml(profile.id)}"><span class="profile-avatar" aria-hidden="true">${escapeHtml(profile.name.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(profile.name)}<small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${profile.age}</small></span></button>`).join("");
 }
 
 function renderProfileEditor(profile) {
@@ -547,16 +941,18 @@ function renderProfileEditor(profile) {
   form.reset();
   document.querySelector("#profile-name").value = profile?.name || "";
   document.querySelector("#profile-age").value = profile?.age || 8;
-  document.querySelector("#genre-options").innerHTML = Object.keys(genreOptions).map((genre) => `<label class="preference-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${profile?.genres.includes(genre) ? " checked" : ""}><span>${escapeHtml(genre)}</span></label>`).join("");
+  document.querySelector("#genre-options").innerHTML = Object.keys(genreOptions).map((genre) => `<label class="preference-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${profile?.genres.includes(genre) ? " checked" : ""}><span>${escapeHtml(localizeTerm(genre))}</span></label>`).join("");
   const avoidThemes = Object.entries(themeNotes).filter(([, details]) => details.concern).map(([theme]) => theme).sort();
-  document.querySelector("#avoid-options").innerHTML = avoidThemes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(theme)}</span></label>`).join("");
+  document.querySelector("#avoid-options").innerHTML = avoidThemes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(localizeTerm(theme))}</span></label>`).join("");
   document.querySelector("#delete-profile-button").disabled = !profile || profiles.length <= 1;
   document.querySelector("#clear-learning-button").disabled = !profile || (!profile.likes.length && !profile.searches.length);
   renderProfileList();
+  applyTranslations(document.querySelector("#profile-dialog"));
 }
 
 function openProfileDialog(profile = getActiveProfile()) {
   renderProfileEditor(profile);
+  applyTranslations(document.querySelector("#profile-dialog"));
   if (!profileDialog.open) profileDialog.showModal();
 }
 
@@ -617,9 +1013,49 @@ document.querySelector("#clear-learning-button").addEventListener("click", () =>
 });
 
 results.addEventListener("click", (event) => {
-  if (event.target.closest("[data-load-more]")) {
-    visibleLimit += pageSize;
-    render();
+  const acornButton = event.target.closest("#acorn-button");
+  if (acornButton) {
+    const squirrelAcorn = acornButton.closest("#squirrel-acorn");
+    if (isAtBottom) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    squirrelAcorn.classList.add("is-dropping");
+    acornButton.disabled = true;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    window.setTimeout(() => {
+      squirrelAcorn.classList.remove("is-dropping");
+      acornButton.disabled = false;
+      isAtBottom = true;
+      updateAcornButton();
+    }, 900);
+    return;
+  }
+
+  const scrollButton = event.target.closest("[data-scroll-top]");
+  if (scrollButton) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+
+  const pageButton = event.target.closest("[data-page]");
+  if (pageButton) {
+    const nextPage = Number(pageButton.dataset.page);
+    if (!Number.isNaN(nextPage) && nextPage >= 1) {
+      goToPage(nextPage);
+    }
+    return;
+  }
+
+  if (event.target.closest("[data-switch-profile]")) {
+    const targetId = event.target.closest("[data-switch-profile]").dataset.switchProfile;
+    if (targetId) {
+      activeProfileId = targetId;
+      state.page = 1;
+      persistProfiles();
+      render();
+    }
     return;
   }
 
@@ -636,6 +1072,7 @@ results.addEventListener("click", (event) => {
     }
     localStorage.setItem("little-lens-saved", JSON.stringify([...savedTitles]));
     persistProfiles();
+    state.page = Math.min(state.page, Math.max(1, Math.ceil(getVisibleTitles().length / pageSize)));
     render();
     return;
   }
@@ -646,10 +1083,44 @@ results.addEventListener("click", (event) => {
   if (item) showTitleDetails(item);
 });
 
+let isAtBottom = false;
+
+function updateAcornButton() {
+  const acornButton = document.querySelector("#acorn-button");
+  const squirrelAcorn = document.querySelector("#squirrel-acorn");
+  if (!acornButton || !squirrelAcorn) return;
+  const label = isAtBottom ? "Back to top" : "Go to bottom";
+  acornButton.setAttribute("aria-label", label);
+  acornButton.querySelector(".acorn-text").textContent = label;
+  squirrelAcorn.classList.toggle("is-bottom", isAtBottom);
+}
+
+function syncScrollState() {
+  const nearTop = window.scrollY <= 40;
+  const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 40;
+  if (nearBottom && !isAtBottom) {
+    isAtBottom = true;
+    updateAcornButton();
+  } else if (nearTop && isAtBottom) {
+    isAtBottom = false;
+    updateAcornButton();
+  }
+}
+
+window.addEventListener("scroll", syncScrollState, { passive: true });
+updateAcornButton();
+syncScrollState();
 document.querySelector("#clear-filters").addEventListener("click", resetFilters);
 document.querySelector("#about-button").addEventListener("click", () => document.querySelector("#about-dialog").showModal());
 
 function getFallbackPositiveContent(item) {
+  if (currentLanguage === "el") {
+    if (item.type === "movie") return "Η ιστορία μπορεί να προσφέρει στα παιδιά μια ξεκάθαρη συναισθηματική διαδρομή, αξιομνημόνευτους χαρακτήρες και ένα αισιόδοξο μήνυμα, συνδυάζοντας τη φαντασία με γνώριμες προκλήσεις.";
+    if (item.type === "series") return "Οι επαναλαμβανόμενοι χαρακτήρες και οι καθημερινές ιστορίες δημιουργούν ένα οικείο πλαίσιο, συχνά με θέματα καλοσύνης, συνεργασίας και ενηλικίωσης.";
+    if (item.type === "game") return "Το παιχνίδι ενθαρρύνει τη δημιουργικότητα, τον πειραματισμό και την εξερεύνηση, με χαμηλή πίεση και έμφαση στη φαντασία ή τη συνεργασία.";
+    if (item.type === "book") return "Το βιβλίο προσφέρει μια ξεκάθαρη συναισθηματική διαδρομή και αξιομνημόνευτους χαρακτήρες, με θέματα φιλίας, θάρρους και ελπίδας.";
+    return "Ο τίτλος συνδυάζει μάθηση, χιούμορ ή ανακάλυψη με προσιτό περιεχόμενο και ενθαρρύνει την περιέργεια.";
+  }
   if (item.type === "movie") {
     return "This title is often a good fit for families because it focuses on empathy, perseverance, and heart. It usually gives children a clear emotional journey, reassuring messages, and a sense of progress without needing intense or prolonged conflict.";
   }
@@ -670,39 +1141,52 @@ function showTitleDetails(item) {
   const concerns = item.tags.filter((tag) => themeNotes[tag]?.concern);
   const ageInfo = getAgeInfo(item);
   const otherMarketRating = item.rating && !["Not yet reviewed", "Not officially rated", "To be verified"].includes(item.rating) ? item.rating : null;
-  const otherMarketLabel = otherMarketRating && /^(MPA|TV-|ESRB\b)/.test(otherMarketRating) ? "Other market label" : "Existing catalog label";
+  const otherMarketLabel = otherMarketRating && /^(MPA|TV-|ESRB\b)/.test(otherMarketRating) ? currentLanguage === "el" ? "Αξιολόγηση άλλης αγοράς" : "Other market label" : currentLanguage === "el" ? "Υπάρχουσα ένδειξη καταλόγου" : "Existing catalog label";
   const ageLimit = getAgeLimit();
   const ratingSourceLink = ageInfo.officialRating?.source
-    ? ` · <a href="${escapeHtml(ageInfo.officialRating.source)}" target="_blank" rel="noopener noreferrer">PEGI source</a>`
+    ? ` · <a href="${escapeHtml(ageInfo.officialRating.source)}" target="_blank" rel="noopener noreferrer">${currentLanguage === "el" ? "Πηγή PEGI" : "PEGI source"}</a>`
     : "";
   const ageSourceLink = ageInfo.source && !ageInfo.officialRating
-    ? ` · <a href="${escapeHtml(ageInfo.source)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ageInfo.sourceName || "Age guidance source")}</a>`
+    ? ` · <a href="${escapeHtml(ageInfo.source)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ageInfo.sourceName || (currentLanguage === "el" ? "Πηγή ηλικιακών οδηγιών" : "Age guidance source"))}</a>`
     : "";
-  const ageNote = ageInfo.age === null
-    ? "We don't yet have a title-specific age assessment for this choice. No category-wide age has been substituted; check local guidance and preview the content."
-    : ageInfo.isEstimated
-      ? `For ${escapeHtml(getActiveProfile().name)}, Little Lens suggests starting around age ${ageInfo.age}+. This is an estimate, not an official Greek classification; preview the title and check local guidance. The current profile limit is ${ageLimit} y/o.`
-      : `${escapeHtml(ageInfo.officialRating.label)} is the official Greece/PEGI classification listed for this title. The current profile limit is ${ageLimit} y/o.`;
+  const ageNote = currentLanguage === "el"
+    ? ageInfo.age === null
+      ? "Δεν έχουμε ακόμη ειδική ηλικιακή αξιολόγηση για αυτόν τον τίτλο. Δεν χρησιμοποιήσαμε γενική ηλικία κατηγορίας· ελέγξτε τις τοπικές οδηγίες και δείτε το περιεχόμενο."
+      : ageInfo.isEstimated
+        ? `Για τον/την ${escapeHtml(getActiveProfile().name)}, το Little Lens προτείνει ως αφετηρία την ηλικία των ${ageInfo.age}+. Πρόκειται για εκτίμηση, όχι επίσημη ελληνική κατάταξη. Δείτε τον τίτλο και ελέγξτε τις τοπικές οδηγίες. Το όριο του προφίλ είναι ${ageLimit} ετών.`
+        : `Η ένδειξη ${escapeHtml(ageInfo.officialRating.label)} είναι η επίσημη αξιολόγηση Ελλάδας/PEGI που καταγράφεται για αυτόν τον τίτλο. Το όριο του προφίλ είναι ${ageLimit} ετών.`
+    : ageInfo.age === null
+      ? "We don't yet have a title-specific age assessment for this choice. No category-wide age has been substituted; check local guidance and preview the content."
+      : ageInfo.isEstimated
+        ? `For ${escapeHtml(getActiveProfile().name)}, Little Lens suggests starting around age ${ageInfo.age}+. This is an estimate, not an official Greek classification; preview the title and check local guidance. The current profile limit is ${ageLimit} y/o.`
+        : `${escapeHtml(ageInfo.officialRating.label)} is the official Greece/PEGI classification listed for this title. The current profile limit is ${ageLimit} y/o.`;
   const titleDescription = item.provisional
-    ? `${item.title} is listed in the parent content catalog as ${typeNames[item.type].toLowerCase()}. Its plot, official rating, and content details have not been reviewed yet.`
+    ? currentLanguage === "el" ? `Ο τίτλος «${item.title}» καταγράφεται ως ${typeNames[item.type].toLowerCase()}. Η πλοκή, η επίσημη αξιολόγηση και τα στοιχεία περιεχομένου δεν έχουν ακόμη ελεγχθεί.` : `${item.title} is listed in the parent content catalog as ${typeNames[item.type].toLowerCase()}. Its plot, official rating, and content details have not been reviewed yet.`
     : getTitleDescription(item);
-  const themeList = (tags) => tags.map((tag) => `<li><strong>${escapeHtml(tag)}</strong><span>${escapeHtml(themeNotes[tag]?.note || "This theme is listed in the catalog; check the title and local rating for more context.")}</span></li>`).join("");
+  const themeList = (tags) => tags.map((tag) => {
+    const note = currentLanguage === "el"
+      ? greekThemeNotes[tag] || "Το θέμα αναφέρεται στον κατάλογο· ελέγξτε τον τίτλο και την τοπική αξιολόγηση για περισσότερες πληροφορίες."
+      : themeNotes[tag]?.note || "This theme is listed in the catalog; check the title and local rating for more context.";
+    return `<li><strong>${escapeHtml(localizeTerm(tag))}</strong><span>${escapeHtml(note)}</span></li>`;
+  }).join("");
   const goodFitBlock = item.provisional
-    ? "<p class=\"detail-empty\">This entry has not been assessed yet, so we can’t confirm which children it might suit. Review the title and its official rating before deciding.</p>"
+    ? currentLanguage === "el" ? "<p class=\"detail-empty\">Αυτή η καταχώριση δεν έχει αξιολογηθεί ακόμη, επομένως δεν μπορούμε να επιβεβαιώσουμε για ποια παιδιά είναι κατάλληλη. Ελέγξτε τον τίτλο και την επίσημη αξιολόγηση πριν αποφασίσετε.</p>" : "<p class=\"detail-empty\">This entry has not been assessed yet, so we can’t confirm which children it might suit. Review the title and its official rating before deciding.</p>"
     : positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${getFallbackPositiveContent(item)}</p>`;
+  const noConcernsCopy = currentLanguage === "el" ? "Δεν επισημαίνονται συγκεκριμένες ανησυχίες σε αυτόν τον οδηγό. Ελέγξτε την τοπική αξιολόγηση για λεπτομέρειες." : "No specific concerns are flagged in this guide. Check the local rating for full details.";
 
   document.querySelector("#detail-content").innerHTML = `
-    <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${typeNames[item.type].toUpperCase()} GUIDE <span>·</span> ${escapeHtml(item.maker)}</p>
+    <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${t("typeGuide", { type: typeNames[item.type].toUpperCase() })} <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
-    <div class="detail-age-row"><div class="detail-age${ageInfo.isEstimated ? " age-provisional" : ""}"><span>${ageInfo.officialRating ? "OFFICIAL RATING" : ageInfo.age === null ? "AGE STATUS" : "SUGGESTED AGE"}</span><strong>${ageInfo.age === null ? "Review" : ageInfo.age === 0 ? "All" : `${ageInfo.age}+`}</strong>${ageInfo.isEstimated ? "<small class=\"age-estimation-note\">It is Little Lens' estimation</small>" : ageInfo.officialRating ? `<small class="age-estimation-note">${escapeHtml(ageInfo.officialRating.label)}</small>` : ""}</div><p>${ageNote}</p></div>
-    <p class="detail-rating"><strong>${ageInfo.officialRating ? "Greek official rating:" : "Greek rating status:"}</strong> ${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}${ratingSourceLink}${ageSourceLink}${otherMarketRating ? ` · ${otherMarketLabel}: ${escapeHtml(otherMarketRating)}` : ""}${item.type === "creator" ? " · Guidance varies by upload." : ""}</p>
+    <div class="detail-age-row"><div class="detail-age${ageInfo.isEstimated ? " age-provisional" : ""}"><span>${ageInfo.officialRating ? t("officialRating") : ageInfo.age === null ? t("ageStatus") : t("suggestedAge")}</span><strong>${ageInfo.age === null ? t("research") : ageInfo.age === 0 ? t("allAges") : `${ageInfo.age}+`}</strong>${ageInfo.isEstimated ? `<small class="age-estimation-note">${currentLanguage === "el" ? "Εκτίμηση Little Lens" : "It is Little Lens' estimation"}</small>` : ageInfo.officialRating ? `<small class="age-estimation-note">${escapeHtml(ageInfo.officialRating.label)}</small>` : ""}</div><p>${ageNote}</p></div>
+    <p class="detail-rating"><strong>${ageInfo.officialRating ? currentLanguage === "el" ? "Επίσημη αξιολόγηση Ελλάδας:" : "Greek official rating:" : currentLanguage === "el" ? "Κατάσταση ελληνικής αξιολόγησης:" : "Greek rating status:"}</strong> ${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}${ratingSourceLink}${ageSourceLink}${otherMarketRating ? ` · ${otherMarketLabel}: ${escapeHtml(otherMarketRating)}` : ""}${item.type === "creator" ? currentLanguage === "el" ? " · Οι οδηγίες διαφέρουν ανά βίντεο." : " · Guidance varies by upload." : ""}</p>
     <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
     <div class="detail-sections">
       <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${goodFitBlock}</section>
-      <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : "<p class=\"detail-empty\">No specific concerns are flagged in this guide. Check the local rating for full details.</p>"}</section>
+      <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : `<p class="detail-empty">${noConcernsCopy}</p>`}</section>
     </div>
-    <p class="detail-footnote">${item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
+    <p class="detail-footnote">${currentLanguage === "el" ? item.type === "creator" ? "Οι πληροφορίες για δημιουργούς είναι γενικές και δεν αποτελούν αξιολόγηση κάθε βίντεο. Τα θέματα, οι διαφημίσεις και ο τόνος διαφέρουν· δείτε το συγκεκριμένο βίντεο και ελέγξτε την αυτόματη αναπαραγωγή." : "Οι σημειώσεις συνοψίζουν συχνά θέματα και δεν αποτελούν ανάλυση κάθε σκηνής. Λάβετε υπόψη τις ευαισθησίες και την ωριμότητα του παιδιού σας." : item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
     ${renderReviews(item)}`;
+  applyTranslations(document.querySelector("#detail-content"));
   const reviewForm = document.querySelector("#review-form");
   reviewForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -711,6 +1195,15 @@ function showTitleDetails(item) {
   const titleDialog = document.querySelector("#title-dialog");
   if (!titleDialog.open) titleDialog.showModal();
 }
+
+document.querySelectorAll("[data-language]").forEach((button) => {
+  button.addEventListener("click", () => {
+    currentLanguage = button.dataset.language;
+    localStorage.setItem("little-lens-language", JSON.stringify(currentLanguage));
+    render();
+    applyTranslations();
+  });
+});
 
 renderProfileControls();
 renderProfileEditor(getActiveProfile());

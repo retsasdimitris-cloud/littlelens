@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261031-title-ages-complete" />
-    <script src="app.js?v=20261031-title-ages-complete" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261101-profile-menu" />
+    <script src="app.js?v=20261101-profile-menu" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -21,6 +21,7 @@
         </a>
         <p class="sidebar-label">YOUR FAMILY</p>
         <button class="nav-link is-active" data-view="discover" type="button"><span class="nav-icon" aria-hidden="true">⌕</span> Discover</button>
+        <button class="nav-link" data-view="profile" type="button"><span class="nav-icon" aria-hidden="true">◉</span> My profile</button>
         <button class="nav-link" data-view="saved" type="button"><span class="nav-icon nav-heart" aria-hidden="true">♡</span> Saved <span class="saved-count" id="saved-count">0</span></button>
 
         <div class="sidebar-note">
@@ -34,7 +35,17 @@
       <main id="home" class="main-content">
         <header class="topbar">
           <span class="breadcrumb">FAMILY GUIDE <span>/</span> <strong id="breadcrumb-current">DISCOVER</strong></span>
-          <button class="about-button" id="about-button" type="button"><span aria-hidden="true">ⓘ</span> About our guide</button>
+          <div class="topbar-actions">
+            <div class="language-switch" role="group" aria-label="Language">
+              <button class="language-option is-active" type="button" data-language="en" aria-label="English" title="English" aria-pressed="true">
+                <svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#244477"/><path d="M0 0 24 16M24 0 0 16" stroke="#fff" stroke-width="4"/><path d="M0 0 24 16M24 0 0 16" stroke="#c93b4b" stroke-width="1.5"/><path d="M12 0v16M0 8h24" stroke="#fff" stroke-width="6"/><path d="M12 0v16M0 8h24" stroke="#c93b4b" stroke-width="2.5"/></svg>
+              </button>
+              <button class="language-option" type="button" data-language="el" aria-label="Ελληνικά" title="Ελληνικά" aria-pressed="false">
+                <svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#1764a5"/><path d="M0 3h24M0 6h24M0 9h24M0 12h24M0 15h24" stroke="#fff" stroke-width="1.5"/><path d="M0 0h9v9H0Z" fill="#1764a5"/><path d="M4.5 0v9M0 4.5h9" stroke="#fff" stroke-width="2"/></svg>
+              </button>
+            </div>
+            <button class="about-button" id="about-button" type="button"><span aria-hidden="true">ⓘ</span> About our guide</button>
+          </div>
         </header>
 
         <section class="profile-bar" aria-label="Child profile">
@@ -124,5 +135,6 @@
         </form>
       </div>
     </dialog>
+
   </body>
 </html>
