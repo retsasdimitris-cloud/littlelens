@@ -72,6 +72,9 @@ const curatedTitles = [
 ];
 
 let titles = [...curatedTitles];
+const creatorArtworkPromise = fetch("creator-covers.json?v=20261102-local-photos")
+  .then((response) => response.ok ? response.json() : {})
+  .catch(() => ({}));
 const pageSize = 40;
 const interfaceMessages = {
   en: {
@@ -533,16 +536,26 @@ async function findTitleArtwork(item) {
   const expectedDescription = {
     movie: /\b(film|movie)\b/i,
     series: /\b(series|television|tv)\b/i,
-    book: /\b(book|novel|comic|comics)\b/i,
+    book: /\b(book|novel|comic|comics|manga)\b/i,
     game: /\b(video game|game)\b/i,
-    creator: /\b(creator|youtuber|youtube channel|streamer|internet personality|content creator)\b/i,
+    creator: /\b(creator|youtuber|youtube channel|streamer|internet personality|content creator|influencer|entertainer|sports entertainment group|educational channel|video blogger|media personality)\b/i,
   }[item.type];
-  const normalizeTitle = (value) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const normalizeTitle = (value) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\biii\b/g, "3").replace(/\bii\b/g, "2").replace(/\bi\b/g, "1").replace(/[^a-z0-9]/g, "");
+  const titleTerms = (value) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\biii\b/g, "3").replace(/\bii\b/g, "2").replace(/\bi\b/g, "1").match(/[a-z]+|[0-9]+/g)?.filter((term) => !["a", "an", "and", "of", "the"].includes(term) && !/^(19|20)\d{2}$/.test(term)) || [];
+  const titleVariants = [item.title, item.title.split(/[:–—]/).at(-1), item.title.replace(/,?\s*(volume|vol\.?|book)\s*\d+.*$/i, "")];
+  const requestedYear = item.title.match(/\b(?:19|20)\d{2}\b/)?.[0];
+  const matchesTitle = (candidate) => titleVariants.some((variant) => {
+    const expected = titleTerms(variant);
+    const actual = titleTerms(candidate);
+    if (!expected.length || !actual.length) return false;
+    const overlap = actual.filter((term) => expected.includes(term)).length;
+    return overlap / expected.length >= 0.66 && (overlap / actual.length >= 0.66 || expected.length === 1);
+  });
   const matchesPage = (page) => {
-    const summaryTitle = (page.title || "").replace(/\s+\([^)]*\)$/, "");
     const description = page.description || page.terms?.description?.[0] || "";
     return page.type !== "disambiguation"
-      && normalizeTitle(summaryTitle) === normalizeTitle(item.title)
+      && matchesTitle(page.title || "")
+      && (!requestedYear || `${page.title} ${description}`.includes(requestedYear))
       && expectedDescription?.test(description);
   };
   const specificPages = {
@@ -550,6 +563,10 @@ async function findTitleArtwork(item) {
     "movie:Coco": ["Coco (2017 film)"],
     "series:Hilda": ["Hilda (TV series)"],
   }[titleKey(item)] || [];
+  if (item.type === "creator") {
+    const artwork = await creatorArtworkPromise;
+    return artwork[item.title] || null;
+  }
   if (item.type === "series") {
     try {
       const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(item.title)}`);
@@ -589,11 +606,21 @@ async function findTitleArtwork(item) {
     const response = await fetch(`https://en.wikipedia.org/w/api.php?${params}`);
     if (response.ok) {
       const data = await response.json();
-      const matchingPages = Object.values(data.query?.pages || {}).filter(matchesPage);
-      const matchingPage = matchingPages.find((page) => page.thumbnail?.source);
-      if (matchingPage) return matchingPage.thumbnail.source;
+      const matchingPages = Object.values(data.query?.pages || {}).filter((page) => matchesTitle(page.title || ""));
+      for (const page of matchingPages) {
+        try {
+          const summaryResponse = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(page.title.replaceAll(" ", "_"))}`);
+          if (!summaryResponse.ok) continue;
+          const summary = await summaryResponse.json();
+          if (matchesPage(summary) && summary.thumbnail?.source) return summary.thumbnail.source;
+        } catch {
+          continue;
+        }
+      }
 
-      const articlePage = matchingPages.find((page) => page.pageid);
+      const matchingArticlePages = matchingPages.filter((page) => expectedDescription?.test(page.description || "") && (!requestedYear || `${page.title} ${page.description}`.includes(requestedYear)));
+
+      const articlePage = matchingArticlePages.find((page) => page.pageid);
       if (articlePage) {
         const imageListParams = new URLSearchParams({ action: "query", pageids: String(articlePage.pageid), prop: "images", imlimit: "50", format: "json", origin: "*" });
         const imageListResponse = await fetch(`https://en.wikipedia.org/w/api.php?${imageListParams}`);
@@ -624,7 +651,30 @@ async function findTitleArtwork(item) {
   }
 
   if (item.type === "book") {
-    return `https://covers.openlibrary.org/b/title/${encodeURIComponent(item.title)}-M.jpg?default=false`;
+    try {
+      const params = new URLSearchParams({ title: item.title, limit: "10", fields: "title,cover_i" });
+      const response = await fetch(`https://openlibrary.org/search.json?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        const match = data.docs?.find((book) => book.cover_i && matchesTitle(book.title));
+        if (match) return `https://covers.openlibrary.org/b/id/${match.cover_i}-M.jpg`;
+      }
+    } catch {
+      return null;
+    }
+  }
+  if (item.type === "game") {
+    try {
+      const params = new URLSearchParams({ term: item.title, l: "en", cc: "US" });
+      const response = await fetch(`https://store.steampowered.com/api/storesearch/?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        const match = data.items?.find((game) => normalizeTitle(game.name) === normalizeTitle(item.title));
+        if (match) return `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${match.id}/library_600x900.jpg`;
+      }
+    } catch {
+      return null;
+    }
   }
   return null;
 }
