@@ -63,6 +63,8 @@
             <div class="art-window"><div class="window-sun"></div><div class="window-hill hill-one"></div><div class="window-hill hill-two"></div></div>
             <div class="art-shelf"></div><div class="art-book book-one"></div><div class="art-book book-two"></div><div class="art-cup">✳</div>
             <span class="art-caption">GOOD STORIES<br />GROW WITH THEM</span>
+            <div class="art-profile-scene" aria-hidden="true"><span class="art-profile-link"></span><span id="art-parent-avatar" class="art-family-avatar parent-avatar">🦉</span><span id="art-child-avatar" class="art-family-avatar child-avatar">🐶</span><span class="art-profile-spark">✳</span></div>
+            <div class="art-saved-scene" aria-hidden="true"><span class="art-saved-card saved-card-back">★</span><span class="art-saved-card saved-card-middle">♥</span><span class="art-saved-card saved-card-front"><span>★</span><span>♥</span><span>✳</span></span></div>
           </div>
         </section>
 
@@ -86,6 +88,7 @@
         </section>
 
         <section class="results-section" aria-labelledby="results-title">
+          <div id="recommendations-container"></div>
           <div class="results-heading"><div><p class="eyebrow results-eyebrow" id="results-kicker">A FEW GOOD PLACES TO START</p><h2 id="results-title">Popular with families <span class="result-count" id="result-count"></span></h2></div><button id="clear-filters" class="clear-button" type="button">Clear filters <span aria-hidden="true">↺</span></button></div>
           <div class="search-context" id="search-context" aria-live="polite"></div>
           <div id="results" class="results-grid" aria-live="polite"></div>
@@ -122,9 +125,11 @@
         </aside>
         <form id="profile-form" class="profile-form">
           <div class="profile-basics">
+            <label>Parent account name<input id="parent-name" name="parent-name" maxlength="40" placeholder="e.g. Sam Taylor" /></label>
             <label>Child's name<input id="profile-name" name="name" maxlength="32" required placeholder="e.g. Alex" /></label>
             <label>Age<input id="profile-age" name="age" type="number" min="2" max="18" required /></label>
           </div>
+          <fieldset><legend>Profile picture</legend><p class="fieldset-hint">Choose the avatar for this child.</p><div id="avatar-options" class="avatar-grid"></div></fieldset>
           <fieldset><legend>Genres to prioritize</legend><p class="fieldset-hint">We'll bring these closer to the top.</p><div id="genre-options" class="option-grid"></div></fieldset>
           <fieldset><legend>Themes to avoid</legend><p class="fieldset-hint">Titles with these content notes won't appear in this child's picks.</p><div id="avoid-options" class="option-grid avoid-options"></div></fieldset>
           <div class="profile-form-actions">

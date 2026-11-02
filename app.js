@@ -200,9 +200,23 @@ function applyTranslations(root = document.body) {
       : state.view === "saved" ? `${t("savedTitleHeading")} ` : state.query ? `${t("guideMatches")} ` : `${t("titlesFor", { name: getActiveProfile().name })} `;
   }
   const artCaption = document.querySelector(".art-caption");
-  if (artCaption) artCaption.innerHTML = t("artCaption");
+  if (artCaption) {
+    artCaption.innerHTML = state.view === "profile"
+      ? currentLanguage === "el" ? "ΟΙΚΟΓΕΝΕΙΑΚΟΣ<br />ΦΑΚΟΣ" : "A LENS<br />FOR EVERY KID"
+      : state.view === "saved" ? currentLanguage === "el" ? "ΟΙ ΙΣΤΟΡΙΕΣ<br />ΠΟΥ ΚΡΑΤΑΜΕ" : "STORIES<br />KEPT CLOSE"
+        : t("artCaption");
+  }
   const welcomeArt = document.querySelector(".welcome-art");
-  if (welcomeArt) welcomeArt.setAttribute("aria-label", t("welcomeArt"));
+  if (welcomeArt) {
+    welcomeArt.dataset.scene = state.view;
+    welcomeArt.setAttribute("aria-label", currentLanguage === "el"
+      ? state.view === "profile" ? "Εικονογράφηση με τα προφίλ γονέα και παιδιού" : state.view === "saved" ? "Εικονογράφηση με αποθηκευμένες ιστορίες" : t("welcomeArt")
+      : state.view === "profile" ? "Illustration of the parent and child profiles" : state.view === "saved" ? "Illustration of saved stories" : t("welcomeArt"));
+    const parentAvatar = document.querySelector("#art-parent-avatar");
+    const childAvatar = document.querySelector("#art-child-avatar");
+    if (parentAvatar) parentAvatar.textContent = getParentAvatar();
+    if (childAvatar) childAvatar.textContent = getActiveProfile().avatar || defaultProfile.avatar;
+  }
   const aboutHeading = document.querySelector(".about-dialog h2");
   if (aboutHeading) aboutHeading.innerHTML = t("aboutHeading");
   document.title = currentLanguage === "el" ? "Little Lens | Ένας πιο καθαρός τρόπος επιλογής" : "Little Lens | A clearer way to choose";
@@ -283,7 +297,12 @@ const genreOptions = {
   "Mystery & spooky": ["mystery", "horror", "creepy", "scary"],
   "Action": ["action", "combat", "battle", "superhero"],
 };
-const defaultProfile = { id: "child-1", name: "My child", age: 8, genres: [], avoid: [], likes: [], searches: [] };
+const defaultProfile = { id: "child-1", name: "My child", age: 8, avatar: "🐶", genres: [], avoid: [], likes: [], searches: [] };
+const defaultParentAccount = { name: "Your name", avatar: "🦉" };
+const profileAvatarOptions = ["🐶", "🐱", "🐻", "🦊", "🐼", "🐰", "🐴", "🐸", "🐯", "🐵", "🐨", "🐧"];
+const profileAvatarLabels = ["Dog", "Cat", "Bear", "Fox", "Panda", "Rabbit", "Horse", "Frog", "Tiger", "Monkey", "Koala", "Penguin"];
+const parentAvatarOptions = ["🦉", "🦅", "🐺", "🦁", "🐘", "🦒", "🐢", "🐬", "🦌", "🐋", "🦈", "🦚"];
+const parentAvatarLabels = ["Owl", "Eagle", "Wolf", "Lion", "Elephant", "Giraffe", "Turtle", "Dolphin", "Deer", "Whale", "Shark", "Peacock"];
 function readStoredJson(key, fallback) {
   try {
     const stored = localStorage.getItem(key);
@@ -292,6 +311,13 @@ function readStoredJson(key, fallback) {
     return fallback;
   }
 }
+let parentAccount = readStoredJson("little-lens-parent-account", { ...defaultParentAccount });
+parentAccount = {
+  ...defaultParentAccount,
+  ...parentAccount,
+  name: String(parentAccount?.name || "").trim() || defaultParentAccount.name,
+  avatar: parentAvatarOptions.includes(parentAccount?.avatar) ? parentAccount.avatar : defaultParentAccount.avatar,
+};
 let profiles = readStoredJson("little-lens-profiles", [defaultProfile]);
 if (!Array.isArray(profiles) || !profiles.length) profiles = [{ ...defaultProfile }];
 profiles = profiles.map((profile, index) => ({
@@ -299,6 +325,7 @@ profiles = profiles.map((profile, index) => ({
   ...profile,
   id: profile.id || `child-${index + 1}`,
   age: Math.min(18, Math.max(2, Number(profile.age) || 8)),
+  avatar: profileAvatarOptions.includes(profile.avatar) ? profile.avatar : defaultProfile.avatar,
   genres: Array.isArray(profile.genres) ? profile.genres : [],
   avoid: Array.isArray(profile.avoid) ? profile.avoid : [],
   likes: Array.isArray(profile.likes) ? profile.likes : [],
@@ -310,11 +337,34 @@ const state = { query: "", type: "all", age: "profile", view: "discover", page: 
 const savedTitles = new Set(readStoredJson("little-lens-saved", []));
 const titleReviews = readStoredJson("little-lens-reviews", {});
 
+function getParentName() {
+  return String(parentAccount?.name || "").trim() || defaultParentAccount.name;
+}
+
+function getParentAvatar() {
+  return parentAvatarOptions.includes(parentAccount?.avatar) ? parentAccount.avatar : defaultParentAccount.avatar;
+}
+
+function persistParentAccount() {
+  localStorage.setItem("little-lens-parent-account", JSON.stringify(parentAccount));
+}
+
 const results = document.querySelector("#results");
 const searchInput = document.querySelector("#search-input");
+const searchPanel = document.querySelector(".search-panel");
 const ageFilter = document.querySelector("#age-filter");
 const resultCount = document.querySelector("#result-count");
 const searchContext = document.querySelector("#search-context");
+const recommendationsContainer = document.querySelector("#recommendations-container");
+const resultsSection = document.querySelector(".results-section");
+searchContext.addEventListener("click", (event) => {
+  const suggestionButton = event.target.closest("[data-search-suggestion]");
+  if (!suggestionButton) return;
+  state.query = suggestionButton.dataset.searchSuggestion;
+  state.page = 1;
+  searchInput.value = state.query;
+  render();
+});
 
 function getActiveProfile() {
   return profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
@@ -365,6 +415,64 @@ function itemSearchText(item) {
   return `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase();
 }
 
+function normalizeSearchTokens(value) {
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+}
+
+function getEditDistance(first, second) {
+  const matrix = Array.from({ length: first.length + 1 }, () => Array(second.length + 1).fill(0));
+  for (let firstIndex = 0; firstIndex <= first.length; firstIndex += 1) matrix[firstIndex][0] = firstIndex;
+  for (let secondIndex = 0; secondIndex <= second.length; secondIndex += 1) matrix[0][secondIndex] = secondIndex;
+  for (let firstIndex = 1; firstIndex <= first.length; firstIndex += 1) {
+    for (let secondIndex = 1; secondIndex <= second.length; secondIndex += 1) {
+      const substitutionCost = first[firstIndex - 1] === second[secondIndex - 1] ? 0 : 1;
+      matrix[firstIndex][secondIndex] = Math.min(
+        matrix[firstIndex][secondIndex - 1] + 1,
+        matrix[firstIndex - 1][secondIndex] + 1,
+        matrix[firstIndex - 1][secondIndex - 1] + substitutionCost,
+      );
+      if (firstIndex > 1 && secondIndex > 1
+        && first[firstIndex - 1] === second[secondIndex - 2]
+        && first[firstIndex - 2] === second[secondIndex - 1]) {
+        matrix[firstIndex][secondIndex] = Math.min(matrix[firstIndex][secondIndex], matrix[firstIndex - 2][secondIndex - 2] + 1);
+      }
+    }
+  }
+  return matrix[first.length][second.length];
+}
+
+function findTypoSuggestions(query) {
+  const ignoredTerms = new Set(["a", "an", "and", "book", "creator", "film", "game", "of", "series", "the"]);
+  const queryTokens = normalizeSearchTokens(query).filter((token) => !ignoredTerms.has(token));
+  if (!queryTokens.length) return [];
+
+  const normalizedQuery = normalizeSearchTokens(query).join(" ");
+  const hasExactCatalogMatch = titles.some((item) => normalizeSearchTokens(itemSearchText(item)).join(" ").includes(normalizedQuery));
+  if (hasExactCatalogMatch) return [];
+
+  const candidates = new Map();
+  titles.forEach((item) => {
+    const searchableTokens = normalizeSearchTokens(itemSearchText(item));
+    let distance = 0;
+    for (const queryToken of queryTokens) {
+      const maxDistance = queryToken.length < 3 ? 0 : queryToken.length < 4 ? 1 : 2;
+      const bestDistance = Math.min(...searchableTokens.map((token) => getEditDistance(queryToken, token)));
+      if (bestDistance > maxDistance) return;
+      distance += bestDistance;
+    }
+    const current = candidates.get(item.title);
+    if (current === undefined || distance < current) candidates.set(item.title, distance);
+  });
+
+  const sortedCandidates = [...candidates.entries()].sort((first, second) => first[1] - second[1]);
+  if (!sortedCandidates.length) return [];
+  const bestDistance = sortedCandidates[0][1];
+  return sortedCandidates
+    .filter(([, distance]) => distance <= bestDistance + 1)
+    .slice(0, 3)
+    .map(([title]) => title);
+}
+
 function matchesGenre(item, genre) {
   const text = itemSearchText(item);
   return genreOptions[genre].some((keyword) => text.includes(keyword));
@@ -381,6 +489,69 @@ function recommendationScore(item) {
   const searchTerms = profile.searches.flatMap((query) => query.toLowerCase().split(/\s+/)).filter((term) => term.length > 2);
   score += searchTerms.reduce((total, term) => total + (itemSearchText(item).includes(term) ? 1 : 0), 0);
   return score;
+}
+
+function getLikedRecommendations() {
+  const profile = getActiveProfile();
+  const savedTitleKeys = new Set([...savedTitles, ...profile.likes]);
+  const likedTitles = titles.filter((item) => savedTitleKeys.has(titleKey(item)));
+  if (!likedTitles.length) return [];
+
+  const likedTags = new Set(likedTitles.flatMap((item) => item.tags));
+  return titles
+    .filter((item) => {
+      const age = getAgeInfo(item).age;
+      return !savedTitleKeys.has(titleKey(item))
+        && (age === null || age <= getAgeLimit())
+        && !item.tags.some((tag) => profile.avoid.includes(tag))
+        && item.tags.some((tag) => likedTags.has(tag));
+    })
+    .map((item) => ({
+      item,
+      sharedTagCount: item.tags.filter((tag) => likedTags.has(tag)).length,
+    }))
+    .sort((first, second) => second.sharedTagCount - first.sharedTagCount
+      || recommendationScore(second.item) - recommendationScore(first.item))
+    .map(({ item }) => item)
+    .slice(0, 12);
+}
+
+function renderRecommendedSection() {
+  const recommendations = getLikedRecommendations();
+  const title = currentLanguage === "el" ? "Προτεινόμενα για εσάς" : "Recommended for you";
+  if (!recommendations.length) {
+    const emptyMessage = currentLanguage === "el"
+      ? "Αποθηκεύστε τίτλους που σας αρέσουν για να δείτε παρόμοιες προτάσεις."
+      : "Save titles you like to see similar picks here.";
+    return `<section class="recommendations-section" aria-labelledby="recommendations-title"><div class="recommendations-heading"><h2 id="recommendations-title">${title}</h2></div><p class="recommendations-empty">${emptyMessage}</p></section>`;
+  }
+
+  return `<section class="recommendations-section" aria-labelledby="recommendations-title">
+    <div class="recommendations-heading"><h2 id="recommendations-title">${title}</h2>
+      <div class="recommendation-controls">
+        <button type="button" class="recommendation-arrow" data-recommend-scroll="-1" aria-label="${currentLanguage === "el" ? "Κύλιση προτάσεων αριστερά" : "Scroll recommendations left"}" title="${currentLanguage === "el" ? "Αριστερά" : "Scroll left"}">←</button>
+        <button type="button" class="recommendation-arrow" data-recommend-scroll="1" aria-label="${currentLanguage === "el" ? "Κύλιση προτάσεων δεξιά" : "Scroll recommendations right"}" title="${currentLanguage === "el" ? "Δεξιά" : "Scroll right"}">→</button>
+      </div>
+    </div>
+    <div class="recommendation-viewport" id="recommendation-viewport" tabindex="0" aria-label="${currentLanguage === "el" ? "Προτεινόμενοι τίτλοι" : "Recommended titles"}">
+      <div class="recommendation-grid">${recommendations.map(cardTemplate).join("")}</div>
+    </div>
+  </section>`;
+}
+
+function setupRecommendationScroll() {
+  const viewport = document.querySelector("#recommendation-viewport");
+  if (viewport) {
+    const leftButton = document.querySelector('[data-recommend-scroll="-1"]');
+    const rightButton = document.querySelector('[data-recommend-scroll="1"]');
+    const updateButtons = () => {
+      leftButton.disabled = viewport.scrollLeft <= 0;
+      rightButton.disabled = viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 1;
+    };
+    viewport.addEventListener("scroll", updateButtons, { passive: true });
+    updateButtons();
+  }
+  observeTitleArtwork();
 }
 
 function renderProfileControls() {
@@ -455,7 +626,10 @@ function renderReviews(item) {
   const reviews = getReviews(item);
   const average = reviews.length ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1) : null;
   const reviewCards = reviews.length
-    ? reviews.slice().reverse().map((review) => `<article class="family-review"><div class="review-heading"><strong>${escapeHtml(review.profileName)}</strong><span class="review-stars" aria-label="${currentLanguage === "el" ? `${review.score} από 5 αστέρια` : `${review.score} out of 5 stars`}">${"★".repeat(review.score)}${"☆".repeat(5 - review.score)}</span></div><p class="review-fit">${escapeHtml(localizeTerm(review.fit))}</p><p class="review-comment">${escapeHtml(review.comment)}</p><time>${escapeHtml(new Date(review.createdAt).toLocaleDateString(currentLanguage === "el" ? "el-GR" : "en-US"))}</time></article>`).join("")
+    ? reviews.slice().reverse().map((review) => {
+        const reviewAuthorName = review.reviewerName || review.profileName || getParentName();
+        return `<article class="family-review"><div class="review-heading"><strong>${escapeHtml(reviewAuthorName)}</strong><span class="review-stars" aria-label="${currentLanguage === "el" ? `${review.score} από 5 αστέρια` : `${review.score} out of 5 stars`}">${"★".repeat(review.score)}${"☆".repeat(5 - review.score)}</span></div><p class="review-fit">${escapeHtml(localizeTerm(review.fit))}</p><p class="review-comment">${escapeHtml(review.comment)}</p><time>${escapeHtml(new Date(review.createdAt).toLocaleDateString(currentLanguage === "el" ? "el-GR" : "en-US"))}</time></article>`;
+      }).join("")
     : `<p class="reviews-empty">${t("noFamilyNotes", { name: escapeHtml(getActiveProfile().name) })}</p>`;
 
   return `<section class="review-section" aria-labelledby="reviews-title">
@@ -468,7 +642,7 @@ function renderReviews(item) {
       <fieldset class="star-rating"><legend>Your rating</legend><div class="star-options">${[5, 4, 3, 2, 1].map((score) => `<label title="${score} ${score === 1 ? "star" : "stars"}"><input type="radio" name="review-rating" value="${score}" aria-label="${score} ${score === 1 ? "star" : "stars"}" required><span aria-hidden="true">★</span></label>`).join("")}</div></fieldset>
       <label class="review-fit-label">${t("overallFit")}<select name="fit" required><option value="" selected disabled>${t("chooseFit")}</option><option value="Not a fit">1 ${t("oneStar")} — ${t("notFit")}</option><option value="Poor fit">2 ${t("manyStars")} — ${t("poorFit")}</option><option value="Mixed fit">3 ${t("manyStars")} — ${t("mixedFit")}</option><option value="Good fit">4 ${t("manyStars")} — ${t("goodFit")}</option><option value="Great fit">5 ${t("manyStars")} — ${t("greatFit")}</option></select></label>
       <label class="review-comment-label">Your comment<textarea name="comment" maxlength="600" required placeholder="What worked well, or what should another family know?" rows="3"></textarea></label>
-      <div class="review-form-footer"><span>Saved under ${escapeHtml(getActiveProfile().name)} on this device.</span><button type="submit">Save note</button></div>
+      <div class="review-form-footer"><span>Saved under ${escapeHtml(getParentName())} on this device.</span><button type="submit">Save note</button></div>
     </form>
   </section>`;
 }
@@ -483,6 +657,7 @@ function submitReview(item, form) {
   reviews.push({
     profileId: getActiveProfile().id,
     profileName: getActiveProfile().name,
+    reviewerName: getParentName(),
     score,
     fit: String(formData.get("fit")),
     comment,
@@ -493,16 +668,18 @@ function submitReview(item, form) {
   showTitleDetails(item);
 }
 
-function getVisibleTitles() {
+function getVisibleTitles(correctedTitles = []) {
   const query = state.query.trim().toLowerCase();
   const profile = getActiveProfile();
+  const correctedTitleSet = new Set(correctedTitles);
   return titles.filter((item) => {
     const matchesType = state.type === "all" || item.type === state.type;
     const age = getAgeInfo(item).age;
     const matchesAge = age === null || age <= getAgeLimit();
     const matchesAvoid = !item.tags.some((tag) => profile.avoid.includes(tag));
     const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
-    return matchesType && matchesAge && matchesAvoid && matchesSaved && (!query || itemSearchText(item).includes(query));
+    const matchesQuery = !query || itemSearchText(item).includes(query) || correctedTitleSet.has(item.title);
+    return matchesType && matchesAge && matchesAvoid && matchesSaved && matchesQuery;
   }).sort((first, second) => recommendationScore(second) - recommendationScore(first));
 }
 
@@ -700,7 +877,7 @@ function loadTitleArtwork(cover) {
 }
 
 function observeTitleArtwork() {
-  const covers = results.querySelectorAll(".cover[data-artwork]");
+  const covers = resultsSection.querySelectorAll(".cover[data-artwork]");
   covers.forEach((cover) => {
     if (artworkObserver) artworkObserver.observe(cover);
     else loadTitleArtwork(cover);
@@ -780,7 +957,19 @@ function renderPageButtons(totalPages) {
 }
 
 function render() {
-  const visibleTitles = getVisibleTitles();
+  document.querySelector("#home").dataset.view = state.view;
+  let visibleTitles = getVisibleTitles();
+  let typoSuggestions = [];
+  if (!visibleTitles.length && state.view !== "profile" && state.query.trim()) {
+    const suggestions = findTypoSuggestions(state.query);
+    if (suggestions.length) {
+      const suggestedTitles = getVisibleTitles(suggestions);
+      if (suggestedTitles.length) {
+        typoSuggestions = suggestions.filter((title) => suggestedTitles.some((item) => item.title === title));
+        visibleTitles = suggestedTitles;
+      }
+    }
+  }
   const totalPages = Math.max(1, Math.ceil(visibleTitles.length / pageSize));
   if (state.page > totalPages) state.page = totalPages;
   const startIndex = (state.page - 1) * pageSize;
@@ -801,16 +990,27 @@ function render() {
     ? t("pendingNotice", { count: awaitingReviewCount })
     : "";
   renderProfileControls();
+  recommendationsContainer.innerHTML = state.view === "discover" && !state.query.trim() ? renderRecommendedSection() : "";
+
+  if (searchPanel) {
+    searchPanel.style.display = state.view === "profile" ? "none" : "block";
+  }
 
   if (state.view === "profile") {
     const profileAccounts = profiles.map((member) => {
       const isActive = member.id === activeProfileId;
-      const initials = member.name.trim().slice(0, 1).toUpperCase() || "A";
-      return `<button class="profile-account-card${isActive ? " selected" : ""}" type="button" data-switch-profile="${escapeHtml(member.id)}">
-        <span class="profile-avatar" aria-hidden="true">${escapeHtml(initials)}</span>
-        <span class="profile-card-copy"><strong>${escapeHtml(member.name)}</strong><small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${member.age}</small></span>
-        ${isActive ? `<span class="profile-account-tag">${t("active")}</span>` : `<span class="profile-account-tag muted">${t("switch")}</span>`}
-      </button>`;
+      const avatar = member.avatar || defaultProfile.avatar;
+      return `<div class="profile-account-card${isActive ? " selected" : ""}">
+        <button class="profile-account-switch" type="button" data-switch-profile="${escapeHtml(member.id)}">
+          <span class="profile-avatar" aria-hidden="true">${escapeHtml(avatar)}</span>
+          <span class="profile-card-copy"><strong>${escapeHtml(member.name)}</strong><small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${member.age}</small></span>
+          ${isActive ? `<span class="profile-account-tag">${t("active")}</span>` : `<span class="profile-account-tag muted">${t("switch")}</span>`}
+        </button>
+        <div class="child-avatar-controls">
+          <button type="button" class="profile-panel-button" data-child-avatar-toggle aria-expanded="false">Edit avatar</button>
+          <div class="child-avatar-picker" role="group" aria-label="Choose ${escapeHtml(member.name)}'s avatar" hidden>${profileAvatarOptions.map((option, index) => `<button type="button" class="avatar-option${avatar === option ? " selected" : ""}" data-child-avatar-profile="${escapeHtml(member.id)}" data-child-avatar="${escapeHtml(option)}" aria-label="${profileAvatarLabels[index]}" aria-pressed="${avatar === option}">${escapeHtml(option)}</button>`).join("")}</div>
+        </div>
+      </div>`;
     }).join("");
     const profileGenres = profile.genres.length ? profile.genres.map((genre) => `<span class="profile-chip">${escapeHtml(localizeTerm(genre))}</span>`).join("") : `<span class="profile-empty">${t("noFavoriteGenres")}</span>`;
     const avoidedThemes = profile.avoid.length ? profile.avoid.map((theme) => `<span class="profile-chip concern">${escapeHtml(localizeTerm(theme))}</span>`).join("") : `<span class="profile-empty">${t("noThemesFiltered")}</span>`;
@@ -824,16 +1024,20 @@ function render() {
     results.innerHTML = `<div class="profile-view">
       <section class="profile-summary-card">
         <div class="profile-summary-identity">
-          <span class="profile-summary-avatar" aria-hidden="true">${escapeHtml(profile.name.trim().slice(0, 1).toUpperCase() || "A")}</span>
+          <span class="profile-summary-avatar" aria-hidden="true">${escapeHtml(getParentAvatar())}</span>
           <div>
-            <p class="eyebrow">PROFILE</p>
-            <h3>${escapeHtml(profile.name)}</h3>
-            <p class="profile-summary-meta">${t("profileAgeSummary", { age: profile.age, saved: savedTitles.size, likes: profile.likes.length })}</p>
+            <p class="eyebrow">PARENT ACCOUNT</p>
+            <h3>${escapeHtml(getParentName())}</h3>
+            <p class="profile-summary-meta">Child profile: ${escapeHtml(profile.name)} • ${t("profileAgeSummary", { age: profile.age, saved: savedTitles.size, likes: profile.likes.length })}</p>
+            <div class="parent-avatar-controls">
+              <button type="button" id="parent-avatar-edit-button" class="profile-panel-button" aria-expanded="false" aria-controls="parent-avatar-picker">Edit avatar</button>
+              <div id="parent-avatar-picker" class="parent-avatar-picker" role="group" aria-label="Choose parent avatar" hidden>${parentAvatarOptions.map((avatar, index) => `<button type="button" class="avatar-option${getParentAvatar() === avatar ? " selected" : ""}" data-parent-avatar="${escapeHtml(avatar)}" aria-label="${parentAvatarLabels[index]}" aria-pressed="${getParentAvatar() === avatar}">${escapeHtml(avatar)}</button>`).join("")}</div>
+            </div>
           </div>
         </div>
         <div class="profile-summary-stats">
           <div class="profile-stat"><span>Saved</span><strong>${savedTitles.size}</strong></div>
-          <div class="profile-stat"><span>Genres</span><strong>${profile.genres.length}</strong></div>
+          <div class="profile-stat"><span>Profiles</span><strong>${profiles.length}</strong></div>
           <div class="profile-stat"><span>Avoid</span><strong>${profile.avoid.length}</strong></div>
         </div>
       </section>
@@ -854,11 +1058,41 @@ function render() {
           <ul class="profile-list-compact">${recentSearches}</ul>
         </section>
         <section class="profile-panel profile-panel-wide">
-          <div class="profile-panel-header"><h4>Family accounts</h4><button type="button" id="profile-panel-manage-button" class="profile-panel-button">Manage</button></div>
+          <div class="profile-panel-header"><h4>My child's profile</h4><button type="button" id="profile-panel-manage-button" class="profile-panel-button">Manage</button></div>
           <div class="profile-account-grid">${profileAccounts}</div>
         </section>
       </div>
     </div>`;
+    document.querySelector("#parent-avatar-edit-button").addEventListener("click", (event) => {
+      const picker = document.querySelector("#parent-avatar-picker");
+      picker.hidden = !picker.hidden;
+      event.currentTarget.setAttribute("aria-expanded", String(!picker.hidden));
+    });
+    document.querySelector("#parent-avatar-picker").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-parent-avatar]");
+      if (!button) return;
+      parentAccount.avatar = button.dataset.parentAvatar;
+      persistParentAccount();
+      render();
+    });
+    document.querySelectorAll("[data-child-avatar-toggle]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const picker = event.currentTarget.nextElementSibling;
+        picker.hidden = !picker.hidden;
+        event.currentTarget.setAttribute("aria-expanded", String(!picker.hidden));
+      });
+    });
+    document.querySelectorAll(".child-avatar-picker").forEach((picker) => {
+      picker.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-child-avatar-profile]");
+        if (!button) return;
+        const childProfile = profiles.find((member) => member.id === button.dataset.childAvatarProfile);
+        if (!childProfile || !profileAvatarOptions.includes(button.dataset.childAvatar)) return;
+        childProfile.avatar = button.dataset.childAvatar;
+        persistProfiles();
+        render();
+      });
+    });
     document.querySelector("#profile-panel-edit-button").addEventListener("click", () => openProfileDialog(profile));
     document.querySelector("#profile-panel-manage-button").addEventListener("click", () => openProfileDialog());
     document.querySelector("#profile-panel-clear-button").addEventListener("click", () => {
@@ -871,7 +1105,8 @@ function render() {
   }
 
   const contextCount = t("searchResultIntro", { count: visibleTitles.length, guideWord: visibleTitles.length === 1 ? t("guideLabel") : t("guidesLabel"), name: escapeHtml(state.query.trim() || profile.name) });
-  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? t("youSearched") : t("picksFor")}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${contextCount} ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} ${t("searchContext")}</span>`;
+  const suggestionLabel = typoSuggestions.length ? `<span class="did-you-mean">${currentLanguage === "el" ? "Μήπως εννοείτε:" : "Did you mean:"} ${typoSuggestions.map((title) => `<button type="button" data-search-suggestion="${escapeHtml(title)}">${escapeHtml(title)}</button>`).join(" ")}</span>` : "";
+  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? t("youSearched") : t("picksFor")}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${contextCount} ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} ${t("searchContext")}</span>${suggestionLabel}`;
   document.querySelector("#breadcrumb-current").textContent = state.view === "saved" ? "SAVED" : "DISCOVER";
   document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : `A clearer way<br />to <span>choose.</span>`;
   document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : `PERSONALIZED FOR ${profile.name.toUpperCase()}`;
@@ -887,12 +1122,13 @@ function render() {
     results.innerHTML = `<div class="empty-state"><div class="empty-mark" aria-hidden="true">✳</div><h3>${heading}</h3><p>${message}</p><button id="empty-reset" type="button">${t("browseAll")}</button></div>`;
     document.querySelector("#empty-reset").addEventListener("click", resetFilters);
     applyTranslations();
+    setupRecommendationScroll();
     return;
   }
 
   results.innerHTML = pageTitles.map(cardTemplate).join("") + renderPageButtons(totalPages);
   applyTranslations();
-  observeTitleArtwork();
+  setupRecommendationScroll();
 }
 
 function goToPage(nextPage) {
@@ -935,7 +1171,7 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
   render();
 });
 
-results.addEventListener("change", (event) => {
+resultsSection.addEventListener("change", (event) => {
   const input = event.target.closest(".page-jump-input");
   if (!input) return;
   const desiredPage = Number(input.value);
@@ -944,7 +1180,7 @@ results.addEventListener("change", (event) => {
   }
 });
 
-results.addEventListener("keydown", (event) => {
+resultsSection.addEventListener("keydown", (event) => {
   const input = event.target.closest(".page-jump-input");
   if (!input || event.key !== "Enter") return;
   event.preventDefault();
@@ -983,15 +1219,19 @@ const profileDialog = document.querySelector("#profile-dialog");
 let editingProfileId = activeProfileId;
 
 function renderProfileList() {
-  document.querySelector("#profile-list").innerHTML = profiles.map((profile) => `<button class="profile-list-item${profile.id === editingProfileId ? " selected" : ""}" type="button" data-edit-profile="${escapeHtml(profile.id)}"><span class="profile-avatar" aria-hidden="true">${escapeHtml(profile.name.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(profile.name)}<small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${profile.age}</small></span></button>`).join("");
+  document.querySelector("#profile-list").innerHTML = profiles.map((profile) => `<button class="profile-list-item${profile.id === editingProfileId ? " selected" : ""}" type="button" data-edit-profile="${escapeHtml(profile.id)}"><span class="profile-avatar" aria-hidden="true">${escapeHtml(profile.avatar || defaultProfile.avatar)}</span><span>${escapeHtml(profile.name)}<small>${currentLanguage === "el" ? "Ηλικία" : "Age"} ${profile.age}</small></span></button>`).join("");
 }
 
 function renderProfileEditor(profile) {
   editingProfileId = profile?.id || null;
   const form = document.querySelector("#profile-form");
   form.reset();
+  const parentNameInput = document.querySelector("#parent-name");
+  parentNameInput.value = getParentName();
   document.querySelector("#profile-name").value = profile?.name || "";
   document.querySelector("#profile-age").value = profile?.age || 8;
+  const selectedAvatar = profile?.avatar || defaultProfile.avatar;
+  document.querySelector("#avatar-options").innerHTML = profileAvatarOptions.map((avatar) => `<label class="avatar-option${selectedAvatar === avatar ? " selected" : ""}"><input type="radio" name="avatar" value="${escapeHtml(avatar)}" ${selectedAvatar === avatar ? "checked" : ""}><span aria-hidden="true">${escapeHtml(avatar)}</span></label>`).join("");
   document.querySelector("#genre-options").innerHTML = Object.keys(genreOptions).map((genre) => `<label class="preference-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${profile?.genres.includes(genre) ? " checked" : ""}><span>${escapeHtml(localizeTerm(genre))}</span></label>`).join("");
   const avoidThemes = Object.entries(themeNotes).filter(([, details]) => details.concern).map(([theme]) => theme).sort();
   document.querySelector("#avoid-options").innerHTML = avoidThemes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(localizeTerm(theme))}</span></label>`).join("");
@@ -1015,6 +1255,16 @@ document.querySelector("#profile-select").addEventListener("change", (event) => 
   render();
 });
 
+document.querySelector("#parent-name").addEventListener("input", (event) => {
+  const nextName = String(event.target.value || "").trim();
+  parentAccount = {
+    ...parentAccount,
+    name: nextName || defaultParentAccount.name,
+    avatar: getParentAvatar(),
+  };
+  persistParentAccount();
+});
+
 document.querySelector("#profile-edit-button").addEventListener("click", () => openProfileDialog());
 document.querySelector("#profile-manage-button").addEventListener("click", () => openProfileDialog());
 document.querySelector("#add-profile-button").addEventListener("click", () => renderProfileEditor(null));
@@ -1026,11 +1276,18 @@ document.querySelector("#profile-list").addEventListener("click", (event) => {
 
 document.querySelector("#profile-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  parentAccount = {
+    ...parentAccount,
+    name: document.querySelector("#parent-name").value.trim() || defaultParentAccount.name,
+  };
+  persistParentAccount();
+  const selectedAvatar = [...document.querySelectorAll("input[name='avatar']")].find((input) => input.checked)?.value || defaultProfile.avatar;
   const profile = profiles.find((item) => item.id === editingProfileId);
   const updatedProfile = {
     ...(profile || { id: `child-${Date.now()}`, likes: [], searches: [] }),
     name: document.querySelector("#profile-name").value.trim(),
     age: Math.min(18, Math.max(2, Number(document.querySelector("#profile-age").value))),
+    avatar: selectedAvatar,
     genres: [...document.querySelectorAll("input[name='genres']:checked")].map((input) => input.value),
     avoid: [...document.querySelectorAll("input[name='avoid']:checked")].map((input) => input.value),
   };
@@ -1063,7 +1320,14 @@ document.querySelector("#clear-learning-button").addEventListener("click", () =>
   renderProfileEditor(profile);
 });
 
-results.addEventListener("click", (event) => {
+resultsSection.addEventListener("click", (event) => {
+  const recommendationArrow = event.target.closest("[data-recommend-scroll]");
+  if (recommendationArrow) {
+    const viewport = document.querySelector("#recommendation-viewport");
+    if (viewport) viewport.scrollBy({ left: Number(recommendationArrow.dataset.recommendScroll) * viewport.clientWidth, behavior: "smooth" });
+    return;
+  }
+
   const acornButton = event.target.closest("#acorn-button");
   if (acornButton) {
     const squirrelAcorn = acornButton.closest("#squirrel-acorn");
