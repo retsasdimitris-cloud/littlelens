@@ -687,13 +687,14 @@ function loadTitleArtwork(cover) {
 
   artworkCache.get(key).then((imageUrl) => {
     if (!imageUrl) return;
-    results.querySelectorAll(".cover[data-artwork]").forEach((currentCover) => {
+    document.querySelectorAll(".cover[data-artwork], .detail-artwork[data-artwork]").forEach((currentCover) => {
       if (currentCover.dataset.artwork !== key) return;
       const image = currentCover.querySelector(".cover-image");
       if (!image || image.src) return;
       image.addEventListener("load", () => currentCover.classList.add("has-image"), { once: true });
       image.addEventListener("error", () => image.removeAttribute("src"), { once: true });
       image.src = imageUrl;
+      if (image.complete && image.naturalWidth > 0) currentCover.classList.add("has-image");
     });
   });
 }
@@ -1227,9 +1228,12 @@ function showTitleDetails(item) {
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${t("typeGuide", { type: typeNames[item.type].toUpperCase() })} <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
+    <div class="detail-lead">
+      <figure class="detail-artwork" data-artwork="${escapeHtml(titleKey(item))}"><img class="cover-image" alt="${escapeHtml(item.title)}" loading="eager" decoding="async" /></figure>
+      <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
+    </div>
     <div class="detail-age-row"><div class="detail-age${ageInfo.isEstimated ? " age-provisional" : ""}"><span>${ageInfo.officialRating ? t("officialRating") : ageInfo.age === null ? t("ageStatus") : t("suggestedAge")}</span><strong>${ageInfo.age === null ? t("research") : ageInfo.age === 0 ? t("allAges") : `${ageInfo.age}+`}</strong>${ageInfo.isEstimated ? `<small class="age-estimation-note">${currentLanguage === "el" ? "Εκτίμηση Little Lens" : "It is Little Lens' estimation"}</small>` : ageInfo.officialRating ? `<small class="age-estimation-note">${escapeHtml(ageInfo.officialRating.label)}</small>` : ""}</div><p>${ageNote}</p></div>
     <p class="detail-rating"><strong>${ageInfo.officialRating ? currentLanguage === "el" ? "Επίσημη αξιολόγηση Ελλάδας:" : "Greek official rating:" : currentLanguage === "el" ? "Κατάσταση ελληνικής αξιολόγησης:" : "Greek rating status:"}</strong> ${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}${ratingSourceLink}${ageSourceLink}${otherMarketRating ? ` · ${otherMarketLabel}: ${escapeHtml(otherMarketRating)}` : ""}${item.type === "creator" ? currentLanguage === "el" ? " · Οι οδηγίες διαφέρουν ανά βίντεο." : " · Guidance varies by upload." : ""}</p>
-    <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
     <div class="detail-sections">
       <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${goodFitBlock}</section>
       <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : `<p class="detail-empty">${noConcernsCopy}</p>`}</section>
@@ -1244,6 +1248,16 @@ function showTitleDetails(item) {
   });
   const titleDialog = document.querySelector("#title-dialog");
   if (!titleDialog.open) titleDialog.showModal();
+  document.querySelector("#title-close-button").onclick = () => titleDialog.close();
+  const detailArtwork = document.querySelector(".detail-artwork[data-artwork]");
+  const cardArtwork = [...results.querySelectorAll(".cover[data-artwork]")].find((cover) => cover.dataset.artwork === titleKey(item));
+  const cardImage = cardArtwork?.querySelector(".cover-image");
+  const detailImage = detailArtwork?.querySelector(".cover-image");
+  if (cardImage?.complete && cardImage.naturalWidth > 0 && detailImage) {
+    detailImage.src = cardImage.currentSrc || cardImage.src;
+    detailArtwork.classList.add("has-image");
+  }
+  if (detailArtwork) loadTitleArtwork(detailArtwork);
 }
 
 document.querySelectorAll("[data-language]").forEach((button) => {
