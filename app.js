@@ -75,6 +75,12 @@ let titles = [...curatedTitles];
 const creatorArtworkPromise = fetch("creator-covers.json?v=20261102-local-photos")
   .then((response) => response.ok ? response.json() : {})
   .catch(() => ({}));
+const titleArtworkPromise = fetch("title-covers.json?v=20261103-new-photos")
+  .then((response) => response.ok ? response.json() : {})
+  .catch(() => ({}));
+const titleContentPromise = fetch("title-content.json?v=20261103-bilingual-content")
+  .then((response) => response.ok ? response.json() : {})
+  .catch(() => ({}));
 const pageSize = 40;
 const interfaceMessages = {
   en: {
@@ -274,7 +280,6 @@ const themeNotes = {
   "Scary scenes": { concern: true, note: "Some scenes are designed to feel frightening or suspenseful." },
   "Survival themes": { concern: true, note: "The story deals with survival under dangerous, high-stakes circumstances." },
   "Bullying": { concern: true, note: "The story depicts bullying and its effects on a child and their peers." },
-  "Awaiting review": { concern: true, note: "This listing came from the supplied catalog, but its age recommendation, official rating, and content notes have not been reviewed." },
   "Difficult themes": { concern: true, note: "Some topics may be emotionally complex; preview the specific episode or discuss it together." },
   "Gentle learning": { note: "Songs, repetition, or simple explanations introduce early-learning ideas." },
   "Physical stunts": { concern: true, note: "Videos may feature physical tricks; make clear these should not be copied at home." },
@@ -565,6 +570,8 @@ function titleKey(item) {
 }
 
 function getTitleDescription(item) {
+  if (currentLanguage === "el" && item.descriptionEl) return item.descriptionEl;
+  if (item.description) return item.description;
   const catalogDetails = item.maker.split("·").map((part) => part.trim());
   const source = catalogDetails[0];
   const descriptor = catalogDetails[1];
@@ -670,8 +677,20 @@ function submitReview(item, form) {
 
 function getVisibleTitles(correctedTitles = []) {
   const query = state.query.trim().toLowerCase();
+  const queryTokens = normalizeSearchTokens(query);
+  const normalizedQuery = queryTokens.join(" ");
   const profile = getActiveProfile();
   const correctedTitleSet = new Set(correctedTitles);
+  const titleMatchRank = (item) => {
+    if (!normalizedQuery) return 0;
+    const titleTokens = normalizeSearchTokens(item.title);
+    const normalizedTitle = titleTokens.join(" ");
+    if (normalizedTitle === normalizedQuery) return 4;
+    if (normalizedTitle.startsWith(normalizedQuery)) return 3;
+    if (normalizedTitle.includes(normalizedQuery)) return 2;
+    if (correctedTitleSet.has(item.title) || queryTokens.every((token) => titleTokens.some((titleToken) => titleToken.startsWith(token)))) return 1;
+    return 0;
+  };
   return titles.filter((item) => {
     const matchesType = state.type === "all" || item.type === state.type;
     const age = getAgeInfo(item).age;
@@ -680,7 +699,7 @@ function getVisibleTitles(correctedTitles = []) {
     const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
     const matchesQuery = !query || itemSearchText(item).includes(query) || correctedTitleSet.has(item.title);
     return matchesType && matchesAge && matchesAvoid && matchesSaved && matchesQuery;
-  }).sort((first, second) => recommendationScore(second) - recommendationScore(first));
+  }).sort((first, second) => titleMatchRank(second) - titleMatchRank(first) || recommendationScore(second) - recommendationScore(first));
 }
 
 function cardTemplate(item, index) {
@@ -710,6 +729,9 @@ const artworkObserver = typeof IntersectionObserver === "undefined" ? null : new
 }, { rootMargin: "180px 0px" });
 
 async function findTitleArtwork(item) {
+  const localArtwork = await titleArtworkPromise;
+  if (localArtwork[titleKey(item)]) return localArtwork[titleKey(item)];
+  if (localArtwork[item.title]) return localArtwork[item.title];
   const expectedDescription = {
     movie: /\b(film|movie)\b/i,
     series: /\b(series|television|tv)\b/i,
@@ -976,19 +998,12 @@ function render() {
   const pageTitles = visibleTitles.slice(startIndex, startIndex + pageSize);
   const profile = getActiveProfile();
   const query = state.query.trim().toLowerCase();
-  const awaitingReviewCount = titles.filter((item) => item.provisional
-    && (state.type === "all" || item.type === state.type)
-    && (state.view !== "saved" || savedTitles.has(titleKey(item)))
-    && (!query || `${item.title} ${item.type} ${item.maker} ${item.tags.join(" ")}`.toLowerCase().includes(query))).length;
-  const filterSummary = `${t("searchAgeSummary", { age: getAgeLimit() })}${awaitingReviewCount ? currentLanguage === "el" ? ", μαζί με μη αξιολογημένες καταχωρίσεις" : ", plus unreviewed catalog entries" : ""}`;
+  const filterSummary = t("searchAgeSummary", { age: getAgeLimit() });
   const preferenceSummary = profile.genres.length ? t("prioritizeSummary", { genres: profile.genres.map(localizeTerm).join(", ") }) : "";
   const avoidSummary = profile.avoid.length ? t("avoidSummary", { themes: profile.avoid.map(localizeTerm).join(", ") }) : "";
   const learningSummary = profile.likes.length || profile.searches.length
     ? t("learningSummary", { likes: profile.likes.length, titleWord: currentLanguage === "el" ? "τίτλους" : "titles", searches: profile.searches.length, searchWord: currentLanguage === "el" ? "αναζητήσεις" : "searches" })
     : t("learningEmpty");
-  const pendingNotice = awaitingReviewCount
-    ? t("pendingNotice", { count: awaitingReviewCount })
-    : "";
   renderProfileControls();
   recommendationsContainer.innerHTML = state.view === "discover" && !state.query.trim() ? renderRecommendedSection() : "";
 
@@ -1106,7 +1121,7 @@ function render() {
 
   const contextCount = t("searchResultIntro", { count: visibleTitles.length, guideWord: visibleTitles.length === 1 ? t("guideLabel") : t("guidesLabel"), name: escapeHtml(state.query.trim() || profile.name) });
   const suggestionLabel = typoSuggestions.length ? `<span class="did-you-mean">${currentLanguage === "el" ? "Μήπως εννοείτε:" : "Did you mean:"} ${typoSuggestions.map((title) => `<button type="button" data-search-suggestion="${escapeHtml(title)}">${escapeHtml(title)}</button>`).join(" ")}</span>` : "";
-  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? t("youSearched") : t("picksFor")}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${contextCount} ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary}${pendingNotice} ${t("searchContext")}</span>${suggestionLabel}`;
+  searchContext.innerHTML = `<span class="context-label">${state.query.trim() ? t("youSearched") : t("picksFor")}</span><strong>${escapeHtml(state.query.trim() || profile.name)}</strong><span>${contextCount} ${filterSummary}.${preferenceSummary}${avoidSummary}${learningSummary} ${t("searchContext")}</span>${suggestionLabel}`;
   document.querySelector("#breadcrumb-current").textContent = state.view === "saved" ? "SAVED" : "DISCOVER";
   document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : `A clearer way<br />to <span>choose.</span>`;
   document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : `PERSONALIZED FOR ${profile.name.toUpperCase()}`;
@@ -1116,9 +1131,8 @@ function render() {
 
   if (!visibleTitles.length) {
     const unknownTitle = state.query.trim() && !titles.some((item) => item.title.toLowerCase() === state.query.trim().toLowerCase());
-    const pendingTitle = state.query.trim() && titles.find((item) => item.provisional && item.title.toLowerCase() === state.query.trim().toLowerCase());
-    const heading = state.view === "saved" ? t("noResultsSaved") : pendingTitle ? t("noResultsReview") : unknownTitle ? t("noResultsTitle") : t("noResultsFilters");
-    const message = state.view === "saved" ? t("noResultsSavedCopy") : pendingTitle ? t("noResultsReviewCopy") : unknownTitle ? t("noResultsSearchCopy", { query: escapeHtml(state.query.trim()) }) : t("noResultsFiltersCopy");
+    const heading = state.view === "saved" ? t("noResultsSaved") : unknownTitle ? t("noResultsTitle") : t("noResultsFilters");
+    const message = state.view === "saved" ? t("noResultsSavedCopy") : unknownTitle ? t("noResultsSearchCopy", { query: escapeHtml(state.query.trim()) }) : t("noResultsFiltersCopy");
     results.innerHTML = `<div class="empty-state"><div class="empty-mark" aria-hidden="true">✳</div><h3>${heading}</h3><p>${message}</p><button id="empty-reset" type="button">${t("browseAll")}</button></div>`;
     document.querySelector("#empty-reset").addEventListener("click", resetFilters);
     applyTranslations();
@@ -1159,7 +1173,6 @@ function resetFilters() {
 document.querySelector("#search-form").addEventListener("submit", (event) => {
   event.preventDefault();
   state.query = searchInput.value;
-  state.view = "discover";
   state.page = 1;
   const query = state.query.trim();
   if (query) {
@@ -1167,7 +1180,6 @@ document.querySelector("#search-form").addEventListener("submit", (event) => {
     profile.searches = [query, ...profile.searches.filter((search) => search.toLowerCase() !== query.toLowerCase())].slice(0, 8);
     persistProfiles();
   }
-  document.querySelectorAll(".nav-link").forEach((button) => button.classList.toggle("is-active", button.dataset.view === "discover"));
   render();
 });
 
@@ -1451,7 +1463,10 @@ function getFallbackPositiveContent(item) {
   return "This title is often a good fit because it mixes learning, laughter, or discovery with clear, approachable content. It usually feels welcoming for children who enjoy gentle curiosity and a positive, easy-to-follow rhythm.";
 }
 
+let activeTitleDetails = null;
+
 function showTitleDetails(item) {
+  activeTitleDetails = item;
   const positives = item.tags.filter((tag) => !themeNotes[tag]?.concern);
   const concerns = item.tags.filter((tag) => themeNotes[tag]?.concern);
   const ageInfo = getAgeInfo(item);
@@ -1475,32 +1490,53 @@ function showTitleDetails(item) {
       : ageInfo.isEstimated
         ? `For ${escapeHtml(getActiveProfile().name)}, Little Lens suggests starting around age ${ageInfo.age}+. This is an estimate, not an official Greek classification; preview the title and check local guidance. The current profile limit is ${ageLimit} y/o.`
         : `${escapeHtml(ageInfo.officialRating.label)} is the official Greece/PEGI classification listed for this title. The current profile limit is ${ageLimit} y/o.`;
-  const titleDescription = item.provisional
+  const titleDescription = item.provisional && !item.description
     ? currentLanguage === "el" ? `Ο τίτλος «${item.title}» καταγράφεται ως ${typeNames[item.type].toLowerCase()}. Η πλοκή, η επίσημη αξιολόγηση και τα στοιχεία περιεχομένου δεν έχουν ακόμη ελεγχθεί.` : `${item.title} is listed in the parent content catalog as ${typeNames[item.type].toLowerCase()}. Its plot, official rating, and content details have not been reviewed yet.`
     : getTitleDescription(item);
+  const titleGenres = currentLanguage === "el" ? item.genresEl || item.genres : item.genres;
+  const genresLine = titleGenres
+    ? `<p class="detail-genres"><strong>${currentLanguage === "el" ? "Είδη" : "Genres"}:</strong> ${escapeHtml(titleGenres)}</p>`
+    : "";
+  const descriptionSentences = titleDescription.match(/[^.!?]+[.!?]+|[^.!?]+$/gu)?.map((sentence) => sentence.trim()).filter(Boolean) || [];
+  const fitReasonPattern = currentLanguage === "el"
+    ? /εξερευν|αναδεικνύ|προάγ|ενθαρρ|υποστηρ|εισάγ|εμπνέ|διδάσκ|προσφέρ|παρέχ|θετικ.{0,30}μήνυμα|μπορεί να βοηθήσ|μπορεί να ενισχύσ|ευκαιρί|συμβάλλει|καλλιεργεί/iu
+    : /\b(?:explores?|highlights?|promotes?|encourages?|supports?|introduces?|inspires?|teaches?|provides?|offers?|can help|can introduce|can encourage|learning potential|positive message|message emphasizes|useful opportunity|helps children)\b/i;
+  const parentConsiderationPattern = currentLanguage === "el"
+    ? /γονείς|γονέα|ενήλικ|πρέπει να|δεν πρέπει|μην\s|επίβλεψ|να ελέγξ|ελέγξτε|να εξετάσ|να συζητήσ|να λαμβάνετε υπόψη|δεν υποκαθιστά|δεν πρέπει να αντιγραφ|ποικίλλ|διαφέρουν ανά/iu
+    : /\b(?:parents?|adults?|viewers?)\b|\bchildren should\b|\bfamilies should\b|\bshould (?:note|review|consider|discuss|check|be aware|be supervised|not)\b|\bmust not\b|\bnot a substitute\b|\bsupervis(?:ion|ed)\b|\bnot (?:be copied|be imitated|attempted|appropriate to imitate)\b/i;
+  const fitReasons = descriptionSentences.filter((sentence) => fitReasonPattern.test(sentence));
+  const parentConsiderations = descriptionSentences.filter((sentence) => parentConsiderationPattern.test(sentence));
   const themeList = (tags) => tags.map((tag) => {
     const note = currentLanguage === "el"
       ? greekThemeNotes[tag] || "Το θέμα αναφέρεται στον κατάλογο· ελέγξτε τον τίτλο και την τοπική αξιολόγηση για περισσότερες πληροφορίες."
       : themeNotes[tag]?.note || "This theme is listed in the catalog; check the title and local rating for more context.";
     return `<li><strong>${escapeHtml(localizeTerm(tag))}</strong><span>${escapeHtml(note)}</span></li>`;
   }).join("");
-  const goodFitBlock = item.provisional
-    ? currentLanguage === "el" ? "<p class=\"detail-empty\">Αυτή η καταχώριση δεν έχει αξιολογηθεί ακόμη, επομένως δεν μπορούμε να επιβεβαιώσουμε για ποια παιδιά είναι κατάλληλη. Ελέγξτε τον τίτλο και την επίσημη αξιολόγηση πριν αποφασίσετε.</p>" : "<p class=\"detail-empty\">This entry has not been assessed yet, so we can’t confirm which children it might suit. Review the title and its official rating before deciding.</p>"
-    : positives.length ? `<ul>${themeList(positives)}</ul>` : `<p class="detail-empty">${getFallbackPositiveContent(item)}</p>`;
-  const noConcernsCopy = currentLanguage === "el" ? "Δεν επισημαίνονται συγκεκριμένες ανησυχίες σε αυτόν τον οδηγό. Ελέγξτε την τοπική αξιολόγηση για λεπτομέρειες." : "No specific concerns are flagged in this guide. Check the local rating for full details.";
+  const fitReasonList = fitReasons.length ? `<ul>${fitReasons.map((reason) => `<li><span>${escapeHtml(reason)}</span></li>`).join("")}</ul>` : "";
+  const goodFitBlock = `${positives.length ? `<ul>${themeList(positives)}</ul>` : ""}${fitReasonList}${positives.length || fitReasonList ? "" : `<p class="detail-empty">${getFallbackPositiveContent(item)}</p>`}`;
+  const parentCheckCopy = currentLanguage === "el"
+    ? "Ελέγξτε την τοπική ηλικιακή αξιολόγηση και δείτε το περιεχόμενο, λαμβάνοντας υπόψη την ηλικία και τις ευαισθησίες του παιδιού σας."
+    : "Check the local age rating and preview the content, considering your child's age and sensitivities.";
+  const noConcernsCopy = currentLanguage === "el"
+    ? `Δεν αναφέρονται ειδικές προειδοποιήσεις για αυτόν τον τίτλο. ${parentCheckCopy}`
+    : `No title-specific cautions are listed here. ${parentCheckCopy}`;
+  const considerationItems = `${concerns.length ? themeList(concerns) : ""}${parentConsiderations.map((consideration) => `<li><span>${escapeHtml(consideration)}</span></li>`).join("")}`;
+  const considerationsBlock = considerationItems
+    ? `<ul>${considerationItems}</ul><p class="detail-empty">${parentCheckCopy}</p>`
+    : `<p class="detail-empty">${noConcernsCopy}</p>`;
 
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${t("typeGuide", { type: typeNames[item.type].toUpperCase() })} <span>·</span> ${escapeHtml(item.maker)}</p>
     <h2 id="detail-title">${escapeHtml(item.title)}</h2>
     <div class="detail-lead">
       <figure class="detail-artwork" data-artwork="${escapeHtml(titleKey(item))}"><img class="cover-image" alt="${escapeHtml(item.title)}" loading="eager" decoding="async" /></figure>
-      <section class="detail-overview"><h3>Description</h3><p>${escapeHtml(titleDescription)}</p></section>
+      <section class="detail-overview">${genresLine}<h3>${t("titleDescriptionLabel")}</h3><p>${escapeHtml(titleDescription)}</p></section>
     </div>
     <div class="detail-age-row"><div class="detail-age${ageInfo.isEstimated ? " age-provisional" : ""}"><span>${ageInfo.officialRating ? t("officialRating") : ageInfo.age === null ? t("ageStatus") : t("suggestedAge")}</span><strong>${ageInfo.age === null ? t("research") : ageInfo.age === 0 ? t("allAges") : `${ageInfo.age}+`}</strong>${ageInfo.isEstimated ? `<small class="age-estimation-note">${currentLanguage === "el" ? "Εκτίμηση Little Lens" : "It is Little Lens' estimation"}</small>` : ageInfo.officialRating ? `<small class="age-estimation-note">${escapeHtml(ageInfo.officialRating.label)}</small>` : ""}</div><p>${ageNote}</p></div>
     <p class="detail-rating"><strong>${ageInfo.officialRating ? currentLanguage === "el" ? "Επίσημη αξιολόγηση Ελλάδας:" : "Greek official rating:" : currentLanguage === "el" ? "Κατάσταση ελληνικής αξιολόγησης:" : "Greek rating status:"}</strong> ${escapeHtml(ageInfo.officialRating?.label || getGreekRatingStatus(item))}${ratingSourceLink}${ageSourceLink}${otherMarketRating ? ` · ${otherMarketLabel}: ${escapeHtml(otherMarketRating)}` : ""}${item.type === "creator" ? currentLanguage === "el" ? " · Οι οδηγίες διαφέρουν ανά βίντεο." : " · Guidance varies by upload." : ""}</p>
     <div class="detail-sections">
-      <section class="detail-section"><h3>Themes &amp; why it might be a good fit</h3>${goodFitBlock}</section>
-      <section class="detail-section detail-consider"><h3>Things to consider</h3>${concerns.length ? `<ul>${themeList(concerns)}</ul>` : `<p class="detail-empty">${noConcernsCopy}</p>`}</section>
+      <section class="detail-section"><h3>${currentLanguage === "el" ? "Γιατί μπορεί να ταιριάζει" : "Why it might be a good fit"}</h3>${goodFitBlock}</section>
+      <section class="detail-section detail-consider"><h3>${t("titleConsider")}</h3>${considerationsBlock}</section>
     </div>
     <p class="detail-footnote">${currentLanguage === "el" ? item.type === "creator" ? "Οι πληροφορίες για δημιουργούς είναι γενικές και δεν αποτελούν αξιολόγηση κάθε βίντεο. Τα θέματα, οι διαφημίσεις και ο τόνος διαφέρουν· δείτε το συγκεκριμένο βίντεο και ελέγξτε την αυτόματη αναπαραγωγή." : "Οι σημειώσεις συνοψίζουν συχνά θέματα και δεν αποτελούν ανάλυση κάθε σκηνής. Λάβετε υπόψη τις ευαισθησίες και την ωριμότητα του παιδιού σας." : item.type === "creator" ? "Creator guidance is a broad starting point, not a rating for every video. Topics, ads, and tone can change between uploads; preview the exact video and review autoplay recommendations." : "These notes summarize common themes; they aren't a scene-by-scene review. Your child's sensitivities and maturity matter too."}</p>
     ${renderReviews(item)}`;
@@ -1529,6 +1565,8 @@ document.querySelectorAll("[data-language]").forEach((button) => {
     currentLanguage = button.dataset.language;
     localStorage.setItem("little-lens-language", JSON.stringify(currentLanguage));
     render();
+    const titleDialog = document.querySelector("#title-dialog");
+    if (titleDialog.open && activeTitleDetails) showTitleDetails(activeTitleDetails);
     applyTranslations();
   });
 });
@@ -1546,18 +1584,22 @@ Promise.all([
   fetch("pegi-ratings.json").then((response) => response.ok ? response.json() : []).catch(() => []),
   fetch("title-age-guidance.json").then((response) => response.ok ? response.json() : []).catch(() => []),
   fetch("title-age-estimates.json").then((response) => response.ok ? response.json() : []).catch(() => []),
+  titleContentPromise,
 ])
-  .then(([records, ratings, ageGuidance, ageEstimates]) => {
+  .then(([records, ratings, ageGuidance, ageEstimates, titleContent]) => {
     const existingKeys = new Set(curatedTitles.map(titleKey));
     const ratingsByKey = new Map(ratings.map((rating) => [`game:${rating.title}`, rating]));
     const ageGuidanceByKey = new Map(ageGuidance.map((guidance) => [`${guidance.type}:${guidance.title}`, guidance]));
     const ageEstimatesByKey = new Map(ageEstimates.map((estimate) => [`${estimate.type}:${estimate.title}`, estimate]));
+    const titleContentByKey = new Map(Object.entries(titleContent));
     const applyLocalRating = (item) => {
       const rating = ratingsByKey.get(titleKey(item));
       const guidance = ageGuidanceByKey.get(titleKey(item));
       const estimate = ageEstimatesByKey.get(titleKey(item));
       return {
         ...item,
+        tags: (item.tags || []).filter((tag) => tag !== "Awaiting review"),
+        ...(titleContentByKey.get(titleKey(item)) || {}),
         ...(rating ? { pegiRating: rating.pegiRating, ratingSource: rating.source } : {}),
         ...(guidance ? { age: guidance.age, ageSource: guidance.source, ageSourceName: guidance.sourceName } : {}),
         ...(estimate ? { age: estimate.age, ageSourceName: "Little Lens" } : {}),
