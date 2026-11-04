@@ -83,7 +83,6 @@
               <button class="filter-chip" data-type="book" type="button"><span aria-hidden="true">▧</span> Books</button>
               <button class="filter-chip" data-type="creator" type="button"><span aria-hidden="true">◉</span> Creators</button>
             </div>
-            <label class="age-filter">AGE UP TO <select id="age-filter" aria-label="Filter titles by age"><option value="profile">Child's age</option><option value="2">2+</option><option value="3">3+</option><option value="6">6+</option><option value="9">9+</option><option value="12">12+</option><option value="15">15+</option><option value="18">18+</option></select></label>
           </div>
         </section>
 
@@ -131,7 +130,8 @@
           </div>
           <fieldset><legend>Profile picture</legend><p class="fieldset-hint">Choose the avatar for this child.</p><div id="avatar-options" class="avatar-grid"></div></fieldset>
           <fieldset><legend>Genres to prioritize</legend><p class="fieldset-hint">We'll bring these closer to the top.</p><div id="genre-options" class="option-grid"></div></fieldset>
-          <fieldset><legend>Themes to avoid</legend><p class="fieldset-hint">Titles with these content notes won't appear in this child's picks.</p><div id="avoid-options" class="option-grid avoid-options"></div></fieldset>
+          <fieldset><legend>Content Sensitivities</legend><p class="fieldset-hint">What content would you prefer to avoid?</p><div id="avoid-options" class="avoid-theme-groups"></div></fieldset>
+          <fieldset><legend>Learning and Development</legend><p class="fieldset-hint">Choose the skills and strengths you'd like to encourage.</p><div id="learning-options" class="option-grid"></div></fieldset>
           <div class="profile-form-actions">
             <button id="delete-profile-button" class="delete-profile-button" type="button">Delete profile</button>
             <button id="clear-learning-button" class="clear-learning-button" type="button">Clear learned interests</button>

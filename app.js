@@ -103,10 +103,43 @@ function t(key, values = {}) {
   Object.entries(values).forEach(([name, value]) => { message = message.replaceAll(`{${name}}`, value); });
   return message;
 }
+Object.assign(interfaceMessages.en, {
+  contentSensitivities: "Content Sensitivities",
+  avoidPrompt: "What content would you prefer to avoid?",
+  learningDevelopment: "Learning and Development",
+  learningDevelopmentHint: "Choose the skills and strengths you'd like to encourage.",
+});
+Object.assign(interfaceMessages.el, {
+  contentSensitivities: "Ευαισθησίες περιεχομένου",
+  avoidPrompt: "Ποιο περιεχόμενο θα προτιμούσατε να αποφύγετε;",
+  learningDevelopment: "Μάθηση και ανάπτυξη",
+  learningDevelopmentHint: "Επιλέξτε τις δεξιότητες και τα δυνατά σημεία που θέλετε να ενθαρρύνετε.",
+});
 const greekTerms = {
   "Animation": "Κινούμενα σχέδια", "Fantasy": "Φαντασία", "Adventure": "Περιπέτεια", "Comedy": "Κωμωδία", "Science & nature": "Επιστήμη και φύση", "Family & friendship": "Οικογένεια και φιλία", "Puzzles & building": "Γρίφοι και κατασκευές", "Sports & competition": "Αθλητισμός και ανταγωνισμός", "Mystery & spooky": "Μυστήριο και αγωνία", "Action": "Δράση",
   "Action violence": "Βία δράσης", "Animal peril": "Κίνδυνος για ζώα", "Anxiety": "Άγχος", "Belonging": "Αίσθηση του ανήκειν", "Cartoon action": "Κινούμενη δράση", "Cartoon combat": "Χιουμοριστικές μάχες", "Co-op play": "Συνεργατικό παιχνίδι", "Competition": "Ανταγωνισμός", "Creativity": "Δημιουργικότητα", "Creepy imagery": "Ανατριχιαστικές εικόνες", "Family": "Οικογένεια", "Family life": "Οικογενειακή ζωή", "Family pressure": "Οικογενειακή πίεση", "Family separation": "Οικογενειακός αποχωρισμός", "Family themes": "Οικογενειακά θέματα", "Fantasy action": "Φανταστική δράση", "Fantasy battles": "Φανταστικές μάχες", "Fantasy combat": "Φανταστικές συγκρούσεις", "Fantasy peril": "Φανταστικός κίνδυνος", "Fantasy violence": "Φανταστική βία", "Friendly competition": "Φιλικός ανταγωνισμός", "Friendship": "Φιλία", "Gentle humor": "Ήπιο χιούμορ", "Growing up": "Μεγαλώνοντας", "Horror": "Τρόμος", "Horror imagery": "Εικόνες τρόμου", "Intense peril": "Έντονος κίνδυνος", "Kindness": "Καλοσύνη", "Life themes": "Θέματα ζωής", "Loss": "Απώλεια", "Magic": "Μαγεία", "Mild language": "Ήπια γλώσσα", "Mild peril": "Ήπιος κίνδυνος", "Mythical violence": "Μυθολογική βία", "Ocean peril": "Θαλάσσιος κίνδυνος", "Online chat": "Διαδικτυακή συνομιλία", "Online features": "Διαδικτυακές λειτουργίες", "Online interactions": "Διαδικτυακές αλληλεπιδράσεις", "Online play": "Διαδικτυακό παιχνίδι", "Peril": "Κίνδυνος", "Sacrifice": "Θυσία", "Scary scenes": "Τρομακτικές σκηνές", "Survival themes": "Θέματα επιβίωσης", "Bullying": "Εκφοβισμός", "Awaiting review": "Σε αναμονή αξιολόγησης", "Difficult themes": "Δύσκολα θέματα", "Gentle learning": "Ήπια μάθηση", "Physical stunts": "Σωματικά ακροβατικά", "Science and engineering": "Επιστήμη και μηχανική", "Science topics": "Επιστημονικά θέματα", "Sponsored segments": "Χορηγούμενα τμήματα", "Varies by upload": "Διαφέρει ανά βίντεο", "Wildlife encounters": "Συναντήσεις με άγρια ζώα", "Violence": "Βία", "Not a fit": "Δεν ταίριαξε", "Poor fit": "Ταίριαξε λίγο", "Mixed fit": "Μέτρια", "Good fit": "Ταίριαξε καλά", "Great fit": "Ταίριαξε πολύ"
 };
+Object.assign(greekTerms, {
+  "Family": "Οικογένεια", "Books": "Βιβλία", "Film & TV": "Κινηματογράφος και τηλεόραση", "Comedy": "Κωμωδία", "Drama": "Δράμα", "Crime": "Έγκλημα", "Horror": "Τρόμος", "Thriller": "Θρίλερ", "Fantasy": "Φαντασία", "Action": "Δράση", "Adventure": "Περιπέτεια", "Strategy": "Στρατηγική", "RPG": "Παιχνίδια ρόλων", "Arcade": "Παιχνίδια arcade", "Simulation": "Προσομοίωση", "Sports": "Αθλητισμός", "Racing": "Αγώνες ταχύτητας", "Science": "Επιστήμη", "Learning": "Μάθηση", "Technology": "Τεχνολογία", "Art": "Τέχνη", "Music": "Μουσική", "Food": "Φαγητό", "Lifestyle": "Τρόπος ζωής", "Society": "Κοινωνία", "News": "Ειδήσεις", "Business": "Επιχειρήσεις", "Creators": "Δημιουργοί", "Travel": "Ταξίδια", "Gaming": "Βιντεοπαιχνίδια"
+});
+Object.assign(greekTerms, {
+  "Violence & Combat": "Βία και μάχη",
+  "Fear, Horror & Peril": "Φόβος, τρόμος και κίνδυνος",
+  "Emotional & Sensitive Themes": "Συναισθηματικά και ευαίσθητα θέματα",
+  "Online & Digital Content": "Διαδικτυακό και ψηφιακό περιεχόμενο",
+  "Behavior & Social Pressure": "Συμπεριφορά και κοινωνική πίεση",
+  "Language & Content Variability": "Γλώσσα και μεταβλητότητα περιεχομένου",
+  "Critical thinking": "Κριτική σκέψη",
+  "Creativity & imagination": "Δημιουργικότητα και φαντασία",
+  "Problem-solving": "Επίλυση προβλημάτων",
+  "Emotional intelligence": "Συναισθηματική νοημοσύνη",
+  "Social skills & empathy": "Κοινωνικές δεξιότητες και ενσυναίσθηση",
+  "Science & discovery": "Επιστήμη και ανακάλυψη",
+  "Language development": "Γλωσσική ανάπτυξη",
+  "Cultural awareness": "Πολιτισμική ευαισθητοποίηση",
+  "Positive role models": "Θετικά πρότυπα",
+  "Independence & responsibility": "Ανεξαρτησία και υπευθυνότητα",
+});
 const greekThemeNotes = {
   "Action violence": "Οι υπερηρωικές μάχες και οι σκηνές δράσης περιλαμβάνουν πιο έντονη σωματική σύγκρουση.",
   "Animal peril": "Ζώα αντιμετωπίζουν κίνδυνο, κάτι που μπορεί να αναστατώσει παιδιά ευαίσθητα σε τέτοιες ιστορίες.",
@@ -290,19 +323,131 @@ const themeNotes = {
   "Wildlife encounters": { concern: true, note: "Videos show real animals; close-up footage may be unsettling or unsafe to imitate." },
   "Violence": { concern: true, note: "Violence is a notable part of the story; its intensity can vary across episodes or scenes." },
 };
-const genreOptions = {
-  "Animation": ["animation", "animated", "pixar", "dreamworks", "studio ghibli"],
-  "Fantasy": ["fantasy", "magic", "myth", "dragon", "wizard"],
-  "Adventure": ["adventure", "peril", "quest", "exploration"],
-  "Comedy": ["comedy", "humor", "funny", "sitcom"],
-  "Science & nature": ["science", "nature", "documentary", "wildlife", "planet", "engineering"],
-  "Family & friendship": ["family", "friendship", "kindness", "relationships"],
-  "Puzzles & building": ["puzzle", "sandbox", "building", "creativity", "platformer", "simulation"],
-  "Sports & competition": ["sports", "racing", "competition", "football", "soccer"],
-  "Mystery & spooky": ["mystery", "horror", "creepy", "scary"],
-  "Action": ["action", "combat", "battle", "superhero"],
+const previewPositiveSignals = [
+  ["Friendship", /friendship|friends|friendships/i],
+  ["Creativity", /creativ|imagin|invent|invention/i],
+  ["Kindness", /kindness|empathy|compassion|caring/i],
+  ["Family themes", /family relationship|family bond|family themes|parents and children/i],
+  ["Co-op play", /work together|teamwork|cooperat/i],
+  ["Gentle learning", /learning|educational|introduces children|helps children learn/i],
+  ["Growing up", /growing up|grow as|coming of age|maturing/i],
+  ["Science and engineering", /science|experiments|engineering|technology/i],
+  ["Belonging", /belonging|sense of belonging|acceptance/i],
+  ["Gentle humor", /humou?r|comedy|funny|playful/i],
+  ["Life themes", /life lessons|responsibility|everyday childhood/i],
+];
+const previewConcernSignals = [
+  ["Horror", /horror|scary|frightening|frighten|creepy/i],
+  ["Violence", /violence|violent|combat|fighting|battles?/i],
+  ["Peril", /peril|danger|threat|chase|captured|trapped/i],
+  ["Loss", /loss|grief|death|died|dying/i],
+  ["Anxiety", /anxiety|anxious/i],
+  ["Online play", /online play|online features|online interactions|online chat|multiplayer/i],
+  ["Competition", /competition|competitive|contest/i],
+  ["Bullying", /bullying|bullies|bullied/i],
+  ["Family separation", /family separation|separated from (?:a|his|her|their) family/i],
+  ["Mild language", /mild language|profanity|swearing/i],
+  ["Physical stunts", /physical stunts|stunts should not be copied/i],
+  ["Difficult themes", /difficult themes|emotionally complex|emotional distress/i],
+  ["Sponsored segments", /sponsored segments|brand partnerships?|product promotion/i],
+  ["Wildlife encounters", /wildlife encounters|wildlife footage|real animals/i],
+  ["Sacrifice", /sacrifice|sacrifices/i],
+  ["Ocean peril", /ocean dangers?|sea creatures|dangerous ocean/i],
+  ["Animal peril", /animal peril|predators?|animals face danger/i],
+  ["Creepy imagery", /creepy imagery|uncanny images/i],
+];
+const previewFitReasons = {
+  "Belonging": ["Supports belonging", "Ενισχύει το ανήκειν"],
+  "Cartoon action": ["Playful action", "Παιχνιδιάρικη δράση"],
+  "Co-op play": ["Builds teamwork", "Ενθαρρύνει συνεργασία"],
+  "Creativity": ["Sparks creativity", "Κεντρίζει τη δημιουργικότητα"],
+  "Family": ["Family bonds", "Οικογενειακοί δεσμοί"],
+  "Family life": ["Familiar family life", "Οικεία οικογενειακή ζωή"],
+  "Family themes": ["Family relationships", "Οικογενειακές σχέσεις"],
+  "Friendly competition": ["Playful competition", "Παιχνιδιάρικος ανταγωνισμός"],
+  "Friendship": ["Supportive friendship", "Υποστηρικτική φιλία"],
+  "Gentle humor": ["Gentle humor", "Ήπιο χιούμορ"],
+  "Gentle learning": ["Early learning", "Πρώιμη μάθηση"],
+  "Growing up": ["Growing up", "Ενηλικίωση"],
+  "Kindness": ["Empathy and kindness", "Ενσυναίσθηση και καλοσύνη"],
+  "Life themes": ["Everyday life skills", "Δεξιότητες καθημερινής ζωής"],
+  "Magic": ["Sparks imagination", "Κεντρίζει τη φαντασία"],
+  "Science and engineering": ["Science curiosity", "Επιστημονική περιέργεια"],
+  "Science topics": ["Accessible science", "Προσιτή επιστήμη"],
 };
-const defaultProfile = { id: "child-1", name: "My child", age: 8, avatar: "🐶", genres: [], avoid: [], likes: [], searches: [] };
+const genreFitReasons = [
+  [/family|friendship|relationship|social/i, ["Builds connection", "Χτίζει δεσμούς"]],
+  [/science|nature|education|learning/i, ["Sparks curiosity", "Κεντρίζει περιέργεια"]],
+  [/puzzle|strategy|mystery/i, ["Builds problem-solving", "Εξασκεί τη σκέψη"]],
+  [/adventure|exploration|racing|sport|action/i, ["Active skill-building", "Καλλιεργεί δεξιότητες"]],
+  [/fantasy|animation|fiction|book|story/i, ["Imaginative storytelling", "Αφήγηση με φαντασία"]],
+  [/comedy|humor|music/i, ["Humor and creativity", "Χιούμορ και δημιουργικότητα"]],
+  [/art|creative|building|simulation|sandbox|game/i, ["Creative experimentation", "Δημιουργικός πειραματισμός"]],
+];
+const avoidThemeGroups = {
+  "Violence & Combat": ["Action violence", "Cartoon combat", "Fantasy combat", "Fantasy action", "Fantasy battles", "Fantasy violence", "Mythical violence", "Violence"],
+  "Fear, Horror & Peril": ["Creepy imagery", "Horror", "Horror imagery", "Scary scenes", "Peril", "Intense peril", "Mild peril", "Fantasy peril", "Animal peril", "Ocean peril", "Wildlife encounters", "Survival themes"],
+  "Emotional & Sensitive Themes": ["Bullying", "Difficult themes", "Family separation", "Loss", "Anxiety", "Family pressure", "Sacrifice"],
+  "Online & Digital Content": ["Online features", "Online interactions", "Online chat", "Online play"],
+  "Behavior & Social Pressure": ["Competition", "Physical stunts"],
+  "Language & Content Variability": ["Mild language", "Sponsored segments", "Varies by upload"],
+};
+const genreOptions = {
+  "Family": /family|children|childhood|preschool|nursery|family-friendly|pretend play|toy-based|school fiction|school story/i,
+  "Books": /book|literature|literary|fiction|stories|storytelling|manga|graphic novel|memoir|poetry|legendarium|allegory/i,
+  "Film & TV": /film|live action|documentar(y|ies)|anthology|sitcom|mockumentary|scripted drama|period drama|television|animation|anime|stop-motion|visual effects|special effects/i,
+  "Comedy": /comedy|humor|parody|satire|slapstick|improv|sketch|pranks|physical comedy|surreal comedy|internet humor/i,
+  "Drama": /drama|romance|relationship|coming-of-age|slice of life|feel-good|life lessons/i,
+  "Crime": /crime|mystery|detective|investigation|police procedural|heist/i,
+  "Horror": /horror|gothic|paranormal|scary/i,
+  "Thriller": /thriller|spy|post-apocalyptic|dystopian|survival/i,
+  "Fantasy": /fantasy|myth|magical|magic|fairy tale|supernatural/i,
+  "Action": /action|combat|shooter|fighting|brawler|hack-and-slash|martial arts|boxing|military|battle royale|vehicle combat|run-and-gun|hero shooter|soulslike|vigilante|stealth|war$/i,
+  "Adventure": /adventure|exploration|open-world|location-based|road trip|pirate fiction|winter adventure/i,
+  "Strategy": /puzzle|strategy|tactical|turn-based|tower defense|social deduction|critical thinking|4x|card battler/i,
+  "RPG": /rpg|role-playing|narrative|choice-based/i,
+  "Arcade": /platform|arcade|casual|runner|match-three|board game|party game|minigames|point-and-click|boss rush|metroidvania|motion-controlled|\bgame\b/i,
+  "Simulation": /simulation|building|construction|management|base building|city-building|farming|resource management|virtual pet|theme park|sandbox|playset|empire building/i,
+  "Sports": /sport|football|basketball|skateboarding|skiing|snowboarding|wrestling|exercise|fitness|hunting|competition|competitive|esports|trick shots|stunts|vehicular soccer/i,
+  "Racing": /racing|driving|vehicle|motorsport|aviation|flight simulation|demolition derby|kart|time trial/i,
+  "Science": /science|stem|nature|animal|wildlife|environment|biology|chemistry|physics|mathematics|anatomy|geography/i,
+  "Learning": /education|educational|learning|tutorial|informational|explainer|phonics|speech development|experiments|demonstrations|research|language learning/i,
+  "Technology": /technology|engineering|computer|programming|electronics|gadgets|hacking|robotics|invention|innovation|diy|making|pc building/i,
+  "Art": /art|drawing|design|creative|craft|illustration|photography|filmmaking|video editing/i,
+  "Music": /music|dance|musical|performance|acting|celebrity entertainment/i,
+  "Food": /food|cook|culinary|baking|recipes|nutrition/i,
+  "Lifestyle": /lifestyle|health|wellness|beauty|makeup|skincare|personal development|self-help|self-improvement|motivation|inspirational|disability representation|reproductive|women's health|medical|medicine|cleaning|fashion|relaxing|psychology/i,
+  "Society": /social|culture|feminism|philanthropy|debate|opinion|philosoph|personal experiences|personal stories/i,
+  "News": /politic|current affairs|current events|journalism|news|commentary|media theory/i,
+  "Business": /business|finance|economic|entrepreneurship|marketing|consumer|product reviews|wealth|organization/i,
+  "Creators": /vlog|stream|reaction|unboxing|let's plays|commentary|interviews|podcast|variety|group entertainment|entertainment|reviews|online platform|social media|talk show/i,
+  "Travel": /histor|travel|nautical|western|space opera|space simulation/i,
+  "Gaming": /activities|among us|atmospheric|augmented reality|biography|call of duty|challenges|collection|cooperative multiplayer|cosmetics|cozy mmo|creativity|creature collection|crossover|disney|epic|first-person|fortnite|gacha|gaming|indie|lego|\bmoba\b|movement|multiplayer|pokémon|remastered collection|school$|superhero|toys-to-life|transformation-based gameplay|user-generated content|valorant|virtual world|young adult/i,
+};
+const learningGoalOptions = {
+  "Critical thinking": /critical thinking|reasoning|logic|deduction|investigat|analy[sz]|decision making|strateg(y|ic)|debate|mystery/i,
+  "Creativity & imagination": /creativ|imagin|invent|design|\bart(?:work|istic)?\b|craft|build|make|pretend|fantasy|storytelling/i,
+  "Problem-solving": /problem.solv|solve|solution|puzzle|overcome|figure out|plan|strategy|challenge/i,
+  "Emotional intelligence": /emotion|feelings|self.awareness|anxiety|resilien|self.acceptance|compassion|kindness|empathy/i,
+  "Social skills & empathy": /friendship|teamwork|cooperation|relationship|community|empathy|compassion|kindness|communication|support/i,
+  "Science & discovery": /science|scientific|nature|explor|discover|experiment|engineering|technology|animal|wildlife|planet|space|environment/i,
+  "Language development": /language|reading|literacy|vocabulary|phonics|communication|writing|words|dialogue/i,
+  "Cultural awareness": /culture|cultural|histor|geography|tradition|diversity|community|society|mythology|customs/i,
+  "Positive role models": /role model|positive example|kindness|courage|bravery|responsibility|leadership|persever|compassion|helping others/i,
+  "Independence & responsibility": /independen|responsib|decision|self.reliance|confidence|matur|take charge|problem.solv|autonomy/i,
+};
+const legacyGenrePreferences = {
+  "Animation": ["Film & TV"],
+  "Science & nature": ["Science", "Learning", "Technology"],
+  "Family & friendship": ["Family", "Drama"],
+  "Puzzles & building": ["Strategy", "Simulation", "Arcade"],
+  "Sports & competition": ["Sports", "Racing"],
+  "Mystery & spooky": ["Crime", "Horror", "Thriller"],
+};
+function migrateGenrePreferences(genres) {
+  return [...new Set((Array.isArray(genres) ? genres : []).flatMap((genre) => genreOptions[genre] ? [genre] : legacyGenrePreferences[genre] || []))];
+}
+const defaultProfile = { id: "child-1", name: "My child", age: 8, avatar: "🐶", genres: [], avoid: [], learning: [], likes: [], searches: [] };
 const defaultParentAccount = { name: "Your name", avatar: "🦉" };
 const profileAvatarOptions = ["🐶", "🐱", "🐻", "🦊", "🐼", "🐰", "🐴", "🐸", "🐯", "🐵", "🐨", "🐧"];
 const profileAvatarLabels = ["Dog", "Cat", "Bear", "Fox", "Panda", "Rabbit", "Horse", "Frog", "Tiger", "Monkey", "Koala", "Penguin"];
@@ -331,14 +476,15 @@ profiles = profiles.map((profile, index) => ({
   id: profile.id || `child-${index + 1}`,
   age: Math.min(18, Math.max(2, Number(profile.age) || 8)),
   avatar: profileAvatarOptions.includes(profile.avatar) ? profile.avatar : defaultProfile.avatar,
-  genres: Array.isArray(profile.genres) ? profile.genres : [],
+  genres: migrateGenrePreferences(profile.genres),
   avoid: Array.isArray(profile.avoid) ? profile.avoid : [],
+  learning: Array.isArray(profile.learning) ? profile.learning.filter((goal) => learningGoalOptions[goal]) : [],
   likes: Array.isArray(profile.likes) ? profile.likes : [],
   searches: Array.isArray(profile.searches) ? profile.searches : [],
 }));
 let activeProfileId = readStoredJson("little-lens-active-profile", profiles[0].id);
 if (!profiles.some((profile) => profile.id === activeProfileId)) activeProfileId = profiles[0].id;
-const state = { query: "", type: "all", age: "profile", view: "discover", page: 1 };
+const state = { query: "", type: "all", view: "discover", page: 1 };
 const savedTitles = new Set(readStoredJson("little-lens-saved", []));
 const titleReviews = readStoredJson("little-lens-reviews", {});
 
@@ -357,7 +503,6 @@ function persistParentAccount() {
 const results = document.querySelector("#results");
 const searchInput = document.querySelector("#search-input");
 const searchPanel = document.querySelector(".search-panel");
-const ageFilter = document.querySelector("#age-filter");
 const resultCount = document.querySelector("#result-count");
 const searchContext = document.querySelector("#search-context");
 const recommendationsContainer = document.querySelector("#recommendations-container");
@@ -376,8 +521,7 @@ function getActiveProfile() {
 }
 
 function getAgeLimit() {
-  const profileAge = getActiveProfile().age;
-  return state.age === "profile" ? profileAge : Math.min(profileAge, Number(state.age));
+  return getActiveProfile().age;
 }
 
 function getGreekRatingInfo(item) {
@@ -479,13 +623,23 @@ function findTypoSuggestions(query) {
 }
 
 function matchesGenre(item, genre) {
-  const text = itemSearchText(item);
-  return genreOptions[genre].some((keyword) => text.includes(keyword));
+  const matcher = genreOptions[genre];
+  if (!matcher) return false;
+  const detailedGenres = (item.genres || "").split(",").map((itemGenre) => itemGenre.trim());
+  return detailedGenres.some((itemGenre) => matcher.test(itemGenre)) || matcher.test(itemSearchText(item));
+}
+
+function matchesLearningGoal(item, goal) {
+  const matcher = learningGoalOptions[goal];
+  if (!matcher) return false;
+  const text = `${item.genres || ""} ${item.description || ""} ${(item.tags || []).join(" ")}`;
+  return matcher.test(text);
 }
 
 function recommendationScore(item) {
   const profile = getActiveProfile();
   let score = profile.genres.reduce((total, genre) => total + (matchesGenre(item, genre) ? 4 : 0), 0);
+  score += profile.learning.reduce((total, goal) => total + (matchesLearningGoal(item, goal) ? 2 : 0), 0);
   const likedTags = profile.likes
     .map((key) => titles.find((title) => titleKey(title) === key))
     .filter(Boolean)
@@ -702,11 +856,34 @@ function getVisibleTitles(correctedTitles = []) {
   }).sort((first, second) => titleMatchRank(second) - titleMatchRank(first) || recommendationScore(second) - recommendationScore(first));
 }
 
+function getCardPreviewCues(item) {
+  const text = `${item.description || ""} ${item.descriptionEl || ""}`;
+  const itemTags = Array.isArray(item.tags) ? item.tags : [];
+  const fitTag = itemTags.find((tag) => !themeNotes[tag]?.concern && previewFitReasons[tag])
+    || previewPositiveSignals.find(([tag, pattern]) => previewFitReasons[tag] && pattern.test(text))?.[0];
+  const considerFromTags = itemTags.find((tag) => themeNotes[tag]?.concern);
+  const considerFromDescription = previewConcernSignals.find(([, pattern]) => pattern.test(text))?.[0];
+  const languageIndex = currentLanguage === "el" ? 1 : 0;
+  const genreText = `${item.genres || ""} ${item.type || ""}`;
+  const genreFitReason = genreFitReasons.find(([pattern]) => pattern.test(genreText))?.[1][languageIndex]
+    || (currentLanguage === "el" ? "Κεντρίζει την ανακάλυψη" : "Sparks discovery");
+  return {
+    fit: fitTag ? previewFitReasons[fitTag][languageIndex] : genreFitReason,
+    consider: considerFromTags || considerFromDescription
+      ? localizeTerm(considerFromTags || considerFromDescription)
+      : null,
+  };
+}
+
 function cardTemplate(item, index) {
   const key = titleKey(item);
   const isSaved = savedTitles.has(key);
   const ageInfo = getAgeInfo(item);
-  const tags = item.tags.map((tag) => `<span class="tag${themeNotes[tag]?.concern ? " concern" : ""}">${escapeHtml(localizeTerm(tag))}</span>`).join("");
+  const previewCues = getCardPreviewCues(item);
+  const tags = [
+    `<span class="tag">${escapeHtml(previewCues.fit)}</span>`,
+    ...(previewCues.consider ? [`<span class="tag concern">${escapeHtml(previewCues.consider)}</span>`] : []),
+  ].join("");
   const ageText = ageInfo.age === null ? "—" : ageInfo.age === 0 ? t("allAges") : `${ageInfo.age}+`;
   const ageBadgeLabel = ageInfo.age === null ? t("ageNeedsResearch") : ageInfo.isEstimated ? t("estimatedAge", { age: ageInfo.age }) : t("officialAge", { rating: ageInfo.officialRating.label, age: ageInfo.age });
   const ageBadge = `<span class="age-badge${ageInfo.isEstimated ? " age-provisional" : ""}" aria-label="${ageBadgeLabel} ${escapeHtml(item.title)}"><strong>${ageText}</strong><small>${ageInfo.age === null ? t("researchLabel") : ageInfo.isEstimated ? t("estimatedAgeLabel") : escapeHtml(ageInfo.officialRating.label)}</small></span>`;
@@ -1160,11 +1337,9 @@ function escapeHtml(text) {
 function resetFilters() {
   state.query = "";
   state.type = "all";
-  state.age = "profile";
   state.view = "discover";
   state.page = 1;
   searchInput.value = "";
-  ageFilter.value = "any";
   document.querySelectorAll(".filter-chip").forEach((button) => button.classList.toggle("active", button.dataset.type === "all"));
   document.querySelectorAll(".nav-link").forEach((button) => button.classList.toggle("is-active", button.dataset.view === "discover"));
   render();
@@ -1215,11 +1390,6 @@ document.querySelectorAll(".filter-chip").forEach((button) => button.addEventLis
   render();
 }));
 
-ageFilter.addEventListener("change", () => {
-  state.age = ageFilter.value;
-  render();
-});
-
 document.querySelectorAll(".nav-link").forEach((button) => button.addEventListener("click", () => {
   state.view = button.dataset.view;
   state.page = 1;
@@ -1245,8 +1415,11 @@ function renderProfileEditor(profile) {
   const selectedAvatar = profile?.avatar || defaultProfile.avatar;
   document.querySelector("#avatar-options").innerHTML = profileAvatarOptions.map((avatar) => `<label class="avatar-option${selectedAvatar === avatar ? " selected" : ""}"><input type="radio" name="avatar" value="${escapeHtml(avatar)}" ${selectedAvatar === avatar ? "checked" : ""}><span aria-hidden="true">${escapeHtml(avatar)}</span></label>`).join("");
   document.querySelector("#genre-options").innerHTML = Object.keys(genreOptions).map((genre) => `<label class="preference-option"><input type="checkbox" name="genres" value="${escapeHtml(genre)}"${profile?.genres.includes(genre) ? " checked" : ""}><span>${escapeHtml(localizeTerm(genre))}</span></label>`).join("");
-  const avoidThemes = Object.entries(themeNotes).filter(([, details]) => details.concern).map(([theme]) => theme).sort();
-  document.querySelector("#avoid-options").innerHTML = avoidThemes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(localizeTerm(theme))}</span></label>`).join("");
+  document.querySelector("#avoid-options").innerHTML = Object.entries(avoidThemeGroups).map(([group, themes]) => {
+    const options = themes.map((theme) => `<label class="preference-option"><input type="checkbox" name="avoid" value="${escapeHtml(theme)}"${profile?.avoid.includes(theme) ? " checked" : ""}><span>${escapeHtml(localizeTerm(theme))}</span></label>`).join("");
+    return `<section class="avoid-theme-group"><h3>${escapeHtml(localizeTerm(group))}</h3><div class="option-grid">${options}</div></section>`;
+  }).join("");
+  document.querySelector("#learning-options").innerHTML = Object.keys(learningGoalOptions).map((goal) => `<label class="preference-option"><input type="checkbox" name="learning" value="${escapeHtml(goal)}"${profile?.learning?.includes(goal) ? " checked" : ""}><span>${escapeHtml(localizeTerm(goal))}</span></label>`).join("");
   document.querySelector("#delete-profile-button").disabled = !profile || profiles.length <= 1;
   document.querySelector("#clear-learning-button").disabled = !profile || (!profile.likes.length && !profile.searches.length);
   renderProfileList();
@@ -1261,8 +1434,6 @@ function openProfileDialog(profile = getActiveProfile()) {
 
 document.querySelector("#profile-select").addEventListener("change", (event) => {
   activeProfileId = event.target.value;
-  state.age = "profile";
-  ageFilter.value = "profile";
   persistProfiles();
   render();
 });
@@ -1302,12 +1473,11 @@ document.querySelector("#profile-form").addEventListener("submit", (event) => {
     avatar: selectedAvatar,
     genres: [...document.querySelectorAll("input[name='genres']:checked")].map((input) => input.value),
     avoid: [...document.querySelectorAll("input[name='avoid']:checked")].map((input) => input.value),
+    learning: [...document.querySelectorAll("input[name='learning']:checked")].map((input) => input.value),
   };
   if (profile) profiles = profiles.map((item) => item.id === profile.id ? updatedProfile : item);
   else profiles.push(updatedProfile);
   activeProfileId = updatedProfile.id;
-  state.age = "profile";
-  ageFilter.value = "profile";
   persistProfiles();
   profileDialog.close();
   render();
@@ -1440,27 +1610,33 @@ syncScrollState();
 document.querySelector("#clear-filters").addEventListener("click", resetFilters);
 document.querySelector("#about-button").addEventListener("click", () => document.querySelector("#about-dialog").showModal());
 
-function getFallbackPositiveContent(item) {
+function getFallbackPositiveContent(item, description) {
+  if (item.provisional && !item.description) {
+    return currentLanguage === "el"
+      ? "Δεν υπάρχουν ακόμη αρκετές επαληθευμένες πληροφορίες για εξατομικευμένο λόγο καταλληλότητας. Ελέγξτε την περιγραφή και την αξιολόγηση όταν γίνουν διαθέσιμες."
+      : "There is not enough verified information yet to give a title-specific fit reason. Check the guide again when its description and rating have been reviewed.";
+  }
+  const genres = currentLanguage === "el" ? item.genresEl || item.genres : item.genres;
+  const summary = (description.match(/[^.!?]+[.!?]+|[^.!?]+$/gu) || [])
+    .map((sentence) => sentence.trim())
+    .find((sentence) => sentence.length > 35);
   if (currentLanguage === "el") {
-    if (item.type === "movie") return "Η ιστορία μπορεί να προσφέρει στα παιδιά μια ξεκάθαρη συναισθηματική διαδρομή, αξιομνημόνευτους χαρακτήρες και ένα αισιόδοξο μήνυμα, συνδυάζοντας τη φαντασία με γνώριμες προκλήσεις.";
-    if (item.type === "series") return "Οι επαναλαμβανόμενοι χαρακτήρες και οι καθημερινές ιστορίες δημιουργούν ένα οικείο πλαίσιο, συχνά με θέματα καλοσύνης, συνεργασίας και ενηλικίωσης.";
-    if (item.type === "game") return "Το παιχνίδι ενθαρρύνει τη δημιουργικότητα, τον πειραματισμό και την εξερεύνηση, με χαμηλή πίεση και έμφαση στη φαντασία ή τη συνεργασία.";
-    if (item.type === "book") return "Το βιβλίο προσφέρει μια ξεκάθαρη συναισθηματική διαδρομή και αξιομνημόνευτους χαρακτήρες, με θέματα φιλίας, θάρρους και ελπίδας.";
-    return "Ο τίτλος συνδυάζει μάθηση, χιούμορ ή ανακάλυψη με προσιτό περιεχόμενο και ενθαρρύνει την περιέργεια.";
+    const genreReason = genres ? `Μπορεί να ενδιαφέρει παιδιά που αγαπούν τα είδη ${escapeHtml(genres)}.` : "Μπορεί να ενδιαφέρει παιδιά που αγαπούν αυτό το είδος περιεχομένου.";
+    return `${genreReason}${summary ? ` Ο οδηγός περιγράφει: ${escapeHtml(summary)}` : " Ελέγξτε την περιγραφή και την αξιολόγηση για να δείτε αν ταιριάζει στο παιδί σας."}`;
   }
-  if (item.type === "movie") {
-    return "This title is often a good fit for families because it focuses on empathy, perseverance, and heart. It usually gives children a clear emotional journey, reassuring messages, and a sense of progress without needing intense or prolonged conflict.";
+  const genreReason = genres ? `It may appeal to children who enjoy ${escapeHtml(genres)}.` : "It may appeal to children who enjoy this type of content.";
+  return `${genreReason}${summary ? ` The guide describes: ${escapeHtml(summary)}` : " Review the description and rating to decide whether it suits your child."}`;
+}
+
+function getFallbackConsideration(item, description) {
+  if (item.provisional && !item.description) {
+    return currentLanguage === "el"
+      ? `Η καταχώριση για το «${item.title}» δεν έχει ελεγχθεί πλήρως, επομένως οι λεπτομέρειες πλοκής και περιεχομένου μπορεί να μην είναι διαθέσιμες.`
+      : `${item.title} has not been fully reviewed, so plot and content details may not yet be available.`;
   }
-  if (item.type === "series") {
-    return "This series tends to work well for children because it builds familiarity through recurring characters, everyday routines, and reassuring story arcs. It often explores kindness, routines, teamwork, or growing up in a format that feels easy and comforting to follow.";
-  }
-  if (item.type === "game") {
-    return "This game is often a good fit because it encourages creativity, experimentation, and low-pressure play. Families who value cooperation, discovery, and imagination usually find it engaging without needing a lot of mature or heavy content.";
-  }
-  if (item.type === "book") {
-    return "This book is often a strong fit for young readers because it gives them a clear emotional journey, memorable characters, and a hopeful or helpful message. It usually balances imagination with relatable struggles, which can make it both engaging and manageable.";
-  }
-  return "This title is often a good fit because it mixes learning, laughter, or discovery with clear, approachable content. It usually feels welcoming for children who enjoy gentle curiosity and a positive, easy-to-follow rhythm.";
+  return currentLanguage === "el"
+    ? "Δεν υπάρχει συνδεδεμένος εξωτερικός οδηγός περιεχομένου για αυτόν τον τίτλο. Ελέγξτε την τοπική αξιολόγηση και τις διαθέσιμες πληροφορίες πριν αποφασίσετε."
+    : "No external content guide is linked for this title. Check the local rating and available title information before deciding.";
 }
 
 let activeTitleDetails = null;
@@ -1502,7 +1678,7 @@ function showTitleDetails(item) {
     ? /εξερευν|αναδεικνύ|προάγ|ενθαρρ|υποστηρ|εισάγ|εμπνέ|διδάσκ|προσφέρ|παρέχ|θετικ.{0,30}μήνυμα|μπορεί να βοηθήσ|μπορεί να ενισχύσ|ευκαιρί|συμβάλλει|καλλιεργεί/iu
     : /\b(?:explores?|highlights?|promotes?|encourages?|supports?|introduces?|inspires?|teaches?|provides?|offers?|can help|can introduce|can encourage|learning potential|positive message|message emphasizes|useful opportunity|helps children)\b/i;
   const parentConsiderationPattern = currentLanguage === "el"
-    ? /γονείς|γονέα|ενήλικ|πρέπει να|δεν πρέπει|μην\s|επίβλεψ|να ελέγξ|ελέγξτε|να εξετάσ|να συζητήσ|να λαμβάνετε υπόψη|δεν υποκαθιστά|δεν πρέπει να αντιγραφ|ποικίλλ|διαφέρουν ανά/iu
+    ? /γονείς|γονέα|ενήλικ|δεν πρέπει να αντιγραφ|δεν πρέπει να μιμηθ|δεν υποκαθιστά|ποικίλλ|διαφέρουν ανά βίντεο|διαφέρουν ανά επεισόδιο/iu
     : /\b(?:parents?|adults?|viewers?)\b|\bchildren should\b|\bfamilies should\b|\bshould (?:note|review|consider|discuss|check|be aware|be supervised|not)\b|\bmust not\b|\bnot a substitute\b|\bsupervis(?:ion|ed)\b|\bnot (?:be copied|be imitated|attempted|appropriate to imitate)\b/i;
   const fitReasons = descriptionSentences.filter((sentence) => fitReasonPattern.test(sentence));
   const parentConsiderations = descriptionSentences.filter((sentence) => parentConsiderationPattern.test(sentence));
@@ -1513,17 +1689,36 @@ function showTitleDetails(item) {
     return `<li><strong>${escapeHtml(localizeTerm(tag))}</strong><span>${escapeHtml(note)}</span></li>`;
   }).join("");
   const fitReasonList = fitReasons.length ? `<ul>${fitReasons.map((reason) => `<li><span>${escapeHtml(reason)}</span></li>`).join("")}</ul>` : "";
-  const goodFitBlock = `${positives.length ? `<ul>${themeList(positives)}</ul>` : ""}${fitReasonList}${positives.length || fitReasonList ? "" : `<p class="detail-empty">${getFallbackPositiveContent(item)}</p>`}`;
+  const goodFitBlock = `${positives.length ? `<ul>${themeList(positives)}</ul>` : ""}${fitReasonList}${positives.length || fitReasonList ? "" : `<p class="detail-empty">${getFallbackPositiveContent(item, titleDescription)}</p>`}`;
   const parentCheckCopy = currentLanguage === "el"
     ? "Ελέγξτε την τοπική ηλικιακή αξιολόγηση και δείτε το περιεχόμενο, λαμβάνοντας υπόψη την ηλικία και τις ευαισθησίες του παιδιού σας."
     : "Check the local age rating and preview the content, considering your child's age and sensitivities.";
-  const noConcernsCopy = currentLanguage === "el"
-    ? `Δεν αναφέρονται ειδικές προειδοποιήσεις για αυτόν τον τίτλο. ${parentCheckCopy}`
-    : `No title-specific cautions are listed here. ${parentCheckCopy}`;
-  const considerationItems = `${concerns.length ? themeList(concerns) : ""}${parentConsiderations.map((consideration) => `<li><span>${escapeHtml(consideration)}</span></li>`).join("")}`;
+  const fallbackConsideration = getFallbackConsideration(item, titleDescription);
+  const sourceConcernLabels = {
+    violence: currentLanguage === "el" ? "Βία και τρομακτικές σκηνές" : "Violence & scariness",
+    sex: currentLanguage === "el" ? "Σεξ, ρομαντισμός και γυμνό" : "Sex, romance & nudity",
+    language: currentLanguage === "el" ? "Γλώσσα" : "Language",
+    consumerism: currentLanguage === "el" ? "Προϊόντα και αγορές" : "Products & purchases",
+    drugs: currentLanguage === "el" ? "Αλκοόλ, ναρκωτικά και κάπνισμα" : "Drinking, drugs & smoking",
+  };
+  const sourceConcernKeys = Object.entries(item.considerationRatings || {}).filter(([, score]) => Number(score) > 0).map(([key]) => key);
+  const sourceConcernDescription = currentLanguage === "el"
+    ? `${escapeHtml(item.considerationSourceName || "Η πηγή")} περιλαμβάνει αυτή την κατηγορία στις αξιολογήσεις περιεχομένου του τίτλου.`
+    : `${escapeHtml(item.considerationSourceName || "The source")} includes this category in its content ratings.`;
+  const sourceConcernItems = sourceConcernKeys.map((key) => `<li><strong>${escapeHtml(sourceConcernLabels[key] || key)}</strong><span>${sourceConcernDescription}</span></li>`).join("");
+  const sourceLink = item.considerationRatings && item.considerationSource
+    ? `<p class="detail-empty">${currentLanguage === "el" ? "Πηγή:" : "Source:"} <a href="${escapeHtml(item.considerationSource)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.considerationSourceName || "Content guidance")}</a></p>`
+    : "";
+  const considerationItems = `${concerns.length ? themeList(concerns) : ""}${sourceConcernItems}${parentConsiderations.map((consideration) => `<li><span>${escapeHtml(consideration)}</span></li>`).join("")}`;
+  const hasSourceContentRatings = item.considerationRatings && item.considerationSource;
+  const noSourceConcernsCopy = currentLanguage === "el"
+    ? `${escapeHtml(item.considerationSourceName ? `Η ${item.considerationSourceName}` : "Η πηγή")} δεν εμφανίζει μη μηδενικές αξιολογήσεις στις κατηγορίες περιεχομένου που εξετάζει.`
+    : `${escapeHtml(item.considerationSourceName || "The source")} reports no nonzero ratings in its tracked content categories.`;
   const considerationsBlock = considerationItems
-    ? `<ul>${considerationItems}</ul><p class="detail-empty">${parentCheckCopy}</p>`
-    : `<p class="detail-empty">${noConcernsCopy}</p>`;
+    ? `<ul>${considerationItems}</ul>${sourceLink}<p class="detail-empty">${parentCheckCopy}</p>`
+    : hasSourceContentRatings
+      ? `<p class="detail-empty">${noSourceConcernsCopy}</p>${sourceLink}<p class="detail-empty">${parentCheckCopy}</p>`
+      : `<p class="detail-empty">${escapeHtml(fallbackConsideration)}</p><p class="detail-empty">${parentCheckCopy}</p>`;
 
   document.querySelector("#detail-content").innerHTML = `
     <p class="eyebrow detail-kicker">${typeIcons[item.type]} &nbsp;${t("typeGuide", { type: typeNames[item.type].toUpperCase() })} <span>·</span> ${escapeHtml(item.maker)}</p>
@@ -1601,7 +1796,16 @@ Promise.all([
         tags: (item.tags || []).filter((tag) => tag !== "Awaiting review"),
         ...(titleContentByKey.get(titleKey(item)) || {}),
         ...(rating ? { pegiRating: rating.pegiRating, ratingSource: rating.source } : {}),
-        ...(guidance ? { age: guidance.age, ageSource: guidance.source, ageSourceName: guidance.sourceName } : {}),
+        ...(guidance ? {
+          age: guidance.age,
+          ageSource: guidance.source,
+          ageSourceName: guidance.sourceName,
+          ...(guidance.considerationRatings ? {
+            considerationRatings: guidance.considerationRatings,
+            considerationSource: guidance.source,
+            considerationSourceName: guidance.sourceName,
+          } : {}),
+        } : {}),
         ...(estimate ? { age: estimate.age, ageSourceName: "Little Lens" } : {}),
       };
     };
