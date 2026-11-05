@@ -275,6 +275,33 @@ kbd { padding: 3px 6px; border: 1px solid #e9e8e0; border-radius: 3px; color: #9
 .about-dialog { width: min(440px, calc(100% - 32px)); padding: 35px 36px 30px; border: 1px solid #e6e3d9; border-radius: 5px; background: var(--panel); color: var(--ink); box-shadow: 0 18px 70px #202a2250; }
 .about-dialog::backdrop { background: #1f292973; backdrop-filter: blur(2px); }
 .about-dialog > form:first-child { position: absolute; top: 13px; right: 14px; }
+.welcome-dialog { position: fixed; inset: 0; width: min(460px, calc(100% - 32px)); margin: auto; padding: 42px 38px 34px; border: 1px solid #e8d69c; border-radius: 6px; background: linear-gradient(145deg, #fff4ce 0%, #fffefa 56%, #eff7e9 100%); color: var(--ink); box-shadow: 0 18px 70px #202a2250; transform-origin: center; transform-style: preserve-3d; backface-visibility: hidden; }
+.welcome-dialog::backdrop { background: #1f292973; backdrop-filter: blur(2px); }
+.welcome-dialog::before { content: ""; position: absolute; inset: 0 0 auto; height: 8px; border-radius: 5px 5px 0 0; background: linear-gradient(90deg, #eab650 0 34%, #df765c 34% 67%, #75a68c 67%); }
+.welcome-dialog[open] { animation: welcome-flip-in 850ms cubic-bezier(.2,.78,.2,1) both; }
+.welcome-dialog[open]::backdrop { animation: welcome-backdrop-in 260ms ease-out both; }
+.welcome-dialog > form:first-child { position: absolute; top: 13px; right: 14px; }
+.welcome-language-switch { margin: 0 0 20px; }
+.welcome-dialog .eyebrow { margin-bottom: 12px; color: #b75f49; }
+.welcome-family { display: flex; align-items: center; gap: 9px; margin: 0 0 17px; }
+.welcome-family-avatar { display: grid; width: 44px; aspect-ratio: 1; place-items: center; border: 1px solid #b9d2a4; border-radius: 50%; background: #e7f2db; font-size: 23px; }
+.welcome-family-avatar.child { border-color: #edc6a9; background: #fbe5d2; }
+.welcome-family-spark { color: #d66b50; font-size: 19px; }
+.welcome-dialog h2 { max-width: 360px; margin: 0 0 12px; color: #304934; font: 700 27px/1.2 var(--display); }
+.welcome-dialog > p:not(.eyebrow) { margin: 0; color: #596c59; font-size: 12px; line-height: 1.7; }
+.welcome-start-button { width: 100%; min-height: 45px; margin-top: 24px; border: 0; border-radius: 3px; background: #c85f49; color: white; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 150ms, transform 150ms; }
+.welcome-start-button:hover { background: #ad4d3a; transform: translateY(-1px); }
+.welcome-dialog .dialog-close:hover { border-radius: 3px; background: #f6e5bb; color: #804a36; }
+@keyframes welcome-flip-in {
+  0% { opacity: 0; transform: perspective(1000px) rotateY(-88deg) scale(.86); }
+  60% { opacity: 1; transform: perspective(1000px) rotateY(12deg) scale(1.015); }
+  82% { transform: perspective(1000px) rotateY(-5deg) scale(1); }
+  100% { opacity: 1; transform: perspective(1000px) rotateY(0) scale(1); }
+}
+@keyframes welcome-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .dialog-close { width: 29px; height: 29px; border: 0; background: transparent; color: #777e74; font-size: 23px; cursor: pointer; }
 .about-dialog h2 { margin: 13px 0 15px; font: 700 29px/1.16 var(--display); }
 .about-dialog h2 span { color: var(--green); }
@@ -305,7 +332,7 @@ kbd { padding: 3px 6px; border: 1px solid #e9e8e0; border-radius: 3px; color: #9
 .avatar-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
 .avatar-option { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #e1e2d9; border-radius: 50%; background: #fff; cursor: pointer; font-size: 20px; transition: border-color 120ms, transform 120ms; }
 .avatar-option input { position: absolute; opacity: 0; pointer-events: none; }
-.avatar-option.selected { border-color: #7ca06d; background: #edf3e5; transform: scale(1.04); }
+.avatar-option.selected { border-color: #4f7d3b; background: #dcebd4; box-shadow: 0 0 0 2px #c9dfbd; transform: scale(1.04); }
 .avatar-option:hover { border-color: #b9c9a8; }
 .avoid-theme-groups { display: grid; gap: 12px; }
 .avoid-theme-group h3 { margin: 0 0 6px; color: #596358; font-size: 10px; font-weight: 700; }

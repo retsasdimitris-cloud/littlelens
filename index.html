@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261103-title-genres" />
-    <script src="app.js?v=20261103-title-search-relevance" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261105-welcome-3d-flip" />
+    <script src="app.js?v=20261105-welcome-until-setup" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -101,6 +101,23 @@
       <button id="title-close-button" class="dialog-close title-dialog-close" type="button" aria-label="Close title details">×</button>
       <div id="detail-content"></div>
       <form method="dialog"><button class="dialog-done">Close guide</button></form>
+    </dialog>
+
+    <dialog id="welcome-dialog" class="welcome-dialog" aria-labelledby="welcome-dialog-title" aria-describedby="welcome-dialog-copy">
+      <form method="dialog"><button class="dialog-close" aria-label="Close welcome message">×</button></form>
+      <div class="language-switch welcome-language-switch" role="group" aria-label="Language">
+        <button class="language-option" type="button" data-language="en" aria-label="English" title="English" aria-pressed="false">
+          <svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#244477"/><path d="M0 0 24 16M24 0 0 16" stroke="#fff" stroke-width="4"/><path d="M0 0 24 16M24 0 0 16" stroke="#c93b4b" stroke-width="1.5"/><path d="M12 0v16M0 8h24" stroke="#fff" stroke-width="6"/><path d="M12 0v16M0 8h24" stroke="#c93b4b" stroke-width="2.5"/></svg>
+        </button>
+        <button class="language-option" type="button" data-language="el" aria-label="Ελληνικά" title="Ελληνικά" aria-pressed="false">
+          <svg viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#1764a5"/><path d="M0 3h24M0 6h24M0 9h24M0 12h24M0 15h24" stroke="#fff" stroke-width="1.5"/><path d="M0 0h9v9H0Z" fill="#1764a5"/><path d="M4.5 0v9M0 4.5h9" stroke="#fff" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <p class="eyebrow">WELCOME TO LITTLE LENS</p>
+      <div class="welcome-family" aria-hidden="true"><span class="welcome-family-avatar">🦉</span><span class="welcome-family-spark">✳</span><span class="welcome-family-avatar child">🐶</span></div>
+      <h2 id="welcome-dialog-title">Your family's next favorite starts here.</h2>
+      <p id="welcome-dialog-copy">Set up a profile and we'll help you find stories and games that feel right for your child.</p>
+      <button id="welcome-start-button" class="welcome-start-button" type="button">Let's get started</button>
     </dialog>
 
     <dialog id="about-dialog" class="about-dialog">

@@ -114,6 +114,18 @@ Object.assign(interfaceMessages.el, {
   avoidPrompt: "Ποιο περιεχόμενο θα προτιμούσατε να αποφύγετε;",
   learningDevelopment: "Μάθηση και ανάπτυξη",
   learningDevelopmentHint: "Επιλέξτε τις δεξιότητες και τα δυνατά σημεία που θέλετε να ενθαρρύνετε.",
+  welcomeEyebrow: "ΚΑΛΩΣ ΗΡΘΑΤΕ ΣΤΟ LITTLE LENS",
+  welcomeSetupPrompt: "Η επόμενη αγαπημένη ιστορία της οικογένειάς σας ξεκινά εδώ.",
+  welcomeSetupCopy: "Δημιουργήστε ένα προφίλ και θα σας βοηθήσουμε να βρείτε ιστορίες και παιχνίδια που ταιριάζουν στο παιδί σας.",
+  welcomeSetupButton: "Ας ξεκινήσουμε",
+  welcomeClose: "Κλείσιμο μηνύματος καλωσορίσματος",
+});
+Object.assign(interfaceMessages.en, {
+  welcomeEyebrow: "WELCOME TO LITTLE LENS",
+  welcomeSetupPrompt: "Your family's next favorite starts here.",
+  welcomeSetupCopy: "Set up a profile and we'll help you find stories and games that feel right for your child.",
+  welcomeSetupButton: "Let's get started",
+  welcomeClose: "Close welcome message",
 });
 const greekTerms = {
   "Animation": "Κινούμενα σχέδια", "Fantasy": "Φαντασία", "Adventure": "Περιπέτεια", "Comedy": "Κωμωδία", "Science & nature": "Επιστήμη και φύση", "Family & friendship": "Οικογένεια και φιλία", "Puzzles & building": "Γρίφοι και κατασκευές", "Sports & competition": "Αθλητισμός και ανταγωνισμός", "Mystery & spooky": "Μυστήριο και αγωνία", "Action": "Δράση",
@@ -485,7 +497,6 @@ profiles = profiles.map((profile, index) => ({
 let activeProfileId = readStoredJson("little-lens-active-profile", profiles[0].id);
 if (!profiles.some((profile) => profile.id === activeProfileId)) activeProfileId = profiles[0].id;
 const state = { query: "", type: "all", view: "discover", page: 1 };
-const savedTitles = new Set(readStoredJson("little-lens-saved", []));
 const titleReviews = readStoredJson("little-lens-reviews", {});
 
 function getParentName() {
@@ -518,6 +529,10 @@ searchContext.addEventListener("click", (event) => {
 
 function getActiveProfile() {
   return profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
+}
+
+function getSavedTitles(profile = getActiveProfile()) {
+  return new Set(profile.likes);
 }
 
 function getAgeLimit() {
@@ -652,27 +667,43 @@ function recommendationScore(item) {
 
 function getLikedRecommendations() {
   const profile = getActiveProfile();
-  const savedTitleKeys = new Set([...savedTitles, ...profile.likes]);
+  const savedTitleKeys = getSavedTitles(profile);
   const likedTitles = titles.filter((item) => savedTitleKeys.has(titleKey(item)));
   if (!likedTitles.length) return [];
 
-  const likedTags = new Set(likedTitles.flatMap((item) => item.tags));
+  const savedSignals = likedTitles.map((item) => ({
+    tags: new Set(item.tags || []),
+    genres: new Set((item.genres || "").split(",").map((genre) => genre.trim().toLowerCase()).filter(Boolean)),
+  }));
   return titles
     .filter((item) => {
       const age = getAgeInfo(item).age;
       return !savedTitleKeys.has(titleKey(item))
         && (age === null || age <= getAgeLimit())
-        && !item.tags.some((tag) => profile.avoid.includes(tag))
-        && item.tags.some((tag) => likedTags.has(tag));
+        && !(item.tags || []).some((tag) => profile.avoid.includes(tag))
+        && ((item.tags || []).length > 0 || item.genres);
     })
-    .map((item) => ({
-      item,
-      sharedTagCount: item.tags.filter((tag) => likedTags.has(tag)).length,
-    }))
-    .sort((first, second) => second.sharedTagCount - first.sharedTagCount
+    .map((item) => {
+      const tags = new Set(item.tags || []);
+      const genres = new Set((item.genres || "").split(",").map((genre) => genre.trim().toLowerCase()).filter(Boolean));
+      let sharedTagCount = 0;
+      let sharedGenreCount = 0;
+      let relatedSavedCount = 0;
+      savedSignals.forEach((saved) => {
+        const sharedTags = [...tags].filter((tag) => saved.tags.has(tag)).length;
+        const sharedGenres = [...genres].filter((genre) => saved.genres.has(genre)).length;
+        sharedTagCount += sharedTags;
+        sharedGenreCount += sharedGenres;
+        if (sharedTags || sharedGenres) relatedSavedCount += 1;
+      });
+      return { item, relatedSavedCount, sharedTagCount, sharedGenreCount };
+    })
+    .filter(({ sharedTagCount, sharedGenreCount }) => sharedTagCount || sharedGenreCount)
+    .sort((first, second) => second.relatedSavedCount - first.relatedSavedCount
+      || second.sharedTagCount - first.sharedTagCount
+      || second.sharedGenreCount - first.sharedGenreCount
       || recommendationScore(second.item) - recommendationScore(first.item))
-    .map(({ item }) => item)
-    .slice(0, 12);
+    .map(({ item }) => item);
 }
 
 function renderRecommendedSection() {
@@ -834,6 +865,7 @@ function getVisibleTitles(correctedTitles = []) {
   const queryTokens = normalizeSearchTokens(query);
   const normalizedQuery = queryTokens.join(" ");
   const profile = getActiveProfile();
+  const savedTitleKeys = getSavedTitles(profile);
   const correctedTitleSet = new Set(correctedTitles);
   const titleMatchRank = (item) => {
     if (!normalizedQuery) return 0;
@@ -850,7 +882,7 @@ function getVisibleTitles(correctedTitles = []) {
     const age = getAgeInfo(item).age;
     const matchesAge = age === null || age <= getAgeLimit();
     const matchesAvoid = !item.tags.some((tag) => profile.avoid.includes(tag));
-    const matchesSaved = state.view !== "saved" || savedTitles.has(titleKey(item));
+    const matchesSaved = state.view !== "saved" || savedTitleKeys.has(titleKey(item));
     const matchesQuery = !query || itemSearchText(item).includes(query) || correctedTitleSet.has(item.title);
     return matchesType && matchesAge && matchesAvoid && matchesSaved && matchesQuery;
   }).sort((first, second) => titleMatchRank(second) - titleMatchRank(first) || recommendationScore(second) - recommendationScore(first));
@@ -877,7 +909,7 @@ function getCardPreviewCues(item) {
 
 function cardTemplate(item, index) {
   const key = titleKey(item);
-  const isSaved = savedTitles.has(key);
+  const isSaved = getSavedTitles().has(key);
   const ageInfo = getAgeInfo(item);
   const previewCues = getCardPreviewCues(item);
   const tags = [
@@ -1211,7 +1243,7 @@ function render() {
     document.querySelector("#page-title").innerHTML = `Your family<br /><span>profile.</span>`;
     document.querySelector("#results-kicker").textContent = "YOUR LENS";
     document.querySelector("#results-title").childNodes[0].textContent = `Profile for ${profile.name} `;
-    document.querySelector("#saved-count").textContent = savedTitles.size;
+    document.querySelector("#saved-count").textContent = profile.likes.length;
     resultCount.textContent = "";
     results.innerHTML = `<div class="profile-view">
       <section class="profile-summary-card">
@@ -1220,7 +1252,7 @@ function render() {
           <div>
             <p class="eyebrow">PARENT ACCOUNT</p>
             <h3>${escapeHtml(getParentName())}</h3>
-            <p class="profile-summary-meta">Child profile: ${escapeHtml(profile.name)} • ${t("profileAgeSummary", { age: profile.age, saved: savedTitles.size, likes: profile.likes.length })}</p>
+            <p class="profile-summary-meta">Child profile: ${escapeHtml(profile.name)} • ${t("profileAgeSummary", { age: profile.age, saved: profile.likes.length, likes: profile.likes.length })}</p>
             <div class="parent-avatar-controls">
               <button type="button" id="parent-avatar-edit-button" class="profile-panel-button" aria-expanded="false" aria-controls="parent-avatar-picker">Edit avatar</button>
               <div id="parent-avatar-picker" class="parent-avatar-picker" role="group" aria-label="Choose parent avatar" hidden>${parentAvatarOptions.map((avatar, index) => `<button type="button" class="avatar-option${getParentAvatar() === avatar ? " selected" : ""}" data-parent-avatar="${escapeHtml(avatar)}" aria-label="${parentAvatarLabels[index]}" aria-pressed="${getParentAvatar() === avatar}">${escapeHtml(avatar)}</button>`).join("")}</div>
@@ -1228,7 +1260,7 @@ function render() {
           </div>
         </div>
         <div class="profile-summary-stats">
-          <div class="profile-stat"><span>Saved</span><strong>${savedTitles.size}</strong></div>
+          <div class="profile-stat"><span>Saved</span><strong>${profile.likes.length}</strong></div>
           <div class="profile-stat"><span>Profiles</span><strong>${profiles.length}</strong></div>
           <div class="profile-stat"><span>Avoid</span><strong>${profile.avoid.length}</strong></div>
         </div>
@@ -1303,7 +1335,7 @@ function render() {
   document.querySelector("#page-title").innerHTML = state.view === "saved" ? 'Your family\'s<br /><span>shortlist.</span>' : `A clearer way<br />to <span>choose.</span>`;
   document.querySelector("#results-kicker").textContent = state.view === "saved" ? "KEPT CLOSE FOR LATER" : state.query ? "HERE'S WHAT WE FOUND" : `PERSONALIZED FOR ${profile.name.toUpperCase()}`;
   document.querySelector("#results-title").childNodes[0].textContent = state.view === "saved" ? "Your saved titles " : state.query ? "Guide matches " : `Ideas for ${profile.name} `;
-  document.querySelector("#saved-count").textContent = savedTitles.size;
+  document.querySelector("#saved-count").textContent = getActiveProfile().likes.length;
   resultCount.textContent = `(${visibleTitles.length})`;
 
   if (!visibleTitles.length) {
@@ -1432,6 +1464,26 @@ function openProfileDialog(profile = getActiveProfile()) {
   if (!profileDialog.open) profileDialog.showModal();
 }
 
+const welcomeDialog = document.querySelector("#welcome-dialog");
+let startProfileSetup = false;
+welcomeDialog.addEventListener("close", () => {
+  if (!startProfileSetup) return;
+  startProfileSetup = false;
+  openProfileDialog();
+});
+document.querySelector("#welcome-start-button").addEventListener("click", () => {
+  startProfileSetup = true;
+  welcomeDialog.close();
+});
+
+document.querySelector("#avatar-options").addEventListener("change", (event) => {
+  const input = event.target.closest("input[name='avatar']");
+  if (!input) return;
+  document.querySelectorAll("#avatar-options .avatar-option").forEach((option) => {
+    option.classList.toggle("selected", option.querySelector("input") === input);
+  });
+});
+
 document.querySelector("#profile-select").addEventListener("change", (event) => {
   activeProfileId = event.target.value;
   persistProfiles();
@@ -1479,6 +1531,7 @@ document.querySelector("#profile-form").addEventListener("submit", (event) => {
   else profiles.push(updatedProfile);
   activeProfileId = updatedProfile.id;
   persistProfiles();
+  localStorage.setItem("little-lens-profile-setup-complete", JSON.stringify(true));
   profileDialog.close();
   render();
 });
@@ -1560,14 +1613,11 @@ resultsSection.addEventListener("click", (event) => {
   if (button) {
     const key = button.dataset.save;
     const profile = getActiveProfile();
-    if (savedTitles.has(key)) {
-      savedTitles.delete(key);
+    if (profile.likes.includes(key)) {
       profile.likes = profile.likes.filter((like) => like !== key);
     } else {
-      savedTitles.add(key);
       profile.likes = [...new Set([...profile.likes, key])];
     }
-    localStorage.setItem("little-lens-saved", JSON.stringify([...savedTitles]));
     persistProfiles();
     state.page = Math.min(state.page, Math.max(1, Math.ceil(getVisibleTitles().length / pageSize)));
     render();
@@ -1770,6 +1820,7 @@ renderProfileControls();
 renderProfileEditor(getActiveProfile());
 document.querySelector("#profile-form").reset();
 render();
+if (!readStoredJson("little-lens-profile-setup-complete", false)) welcomeDialog.showModal();
 
 Promise.all([
   fetch("catalog-review.json").then((response) => {
